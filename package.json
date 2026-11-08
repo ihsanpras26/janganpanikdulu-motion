@@ -1,0 +1,24 @@
+{
+  "name": "janganpanikdulu-motion",
+  "version": "1.0.0",
+  "description": "Engine Animasi 3D Tiga Dimensi Three.js + GSAP untuk @janganpanikdulu",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "serve": "npx --yes serve -l 8765 .",
+    "audio": "python scripts/build_master_audio.py",
+    "preview:snap": "node scripts/snap_ep01_preview.mjs",
+    "render:clip": "node scripts/render_preview_clip.mjs",
+    "render:full": "node scripts/render_ep01_mp4.mjs master",
+    "render:preview": "node scripts/render_ep01_mp4.mjs preview"
+  },
+  "keywords": [
+    "threejs",
+    "gsap",
+    "motion-graphics",
+    "3d-animation",
+    "code-to-video"
+  ],
+  "author": "ihsanpras",
+  "license": "ISC"
+}

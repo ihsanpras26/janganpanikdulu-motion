@@ -1,0 +1,1673 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Jangan Panik Dulu — EP01: Bau Gas Bocor? Jangan Sentuh Saklar!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+}}
+</script>
+<style>
+/* ===== LOCKED BRAND IDENTITY (OPSI 2): Crisp White (#FFFFFF) x Deep Indigo (#261A66) x Solid Orange (#EF5F18) ===== */
+:root{
+  --brand-orange:#EF5F18;
+  --brand-blue:#261A66;
+  --brand-white:#FFFFFF;
+  --scrim-rgb:20,14,54;
+
+  --hook-stroke:#261A66;
+  --hook-pill-bg:#261A66; --hook-pill-ink:#FFFFFF; --hook-pill-shadow:#EF5F18;
+
+  --step-pill-bg:#FFFFFF; --step-pill-ink:#261A66; --step-pill-border:#261A66;
+  --step-num-bg:#EF5F18; --step-num-ink:#FFFFFF;
+  --prog-track:rgba(255,255,255,.45); --prog-fill:#EF5F18;
+
+  --sub-bg:#FFFFFF; --sub-ink:#261A66; --sub-border:#261A66;
+  --sub-hl-bg:#EF5F18; --sub-hl-ink:#FFFFFF;
+
+  --safe:#0FA968; --danger:#EF5F18;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  width:100%;height:100%;background:#0F141A;overflow:hidden;
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+#stage{
+  position:fixed;left:50%;top:50%;width:1080px;height:1920px;
+  transform:translate(-50%,-50%) scale(1);overflow:hidden;
+  background:linear-gradient(180deg,#DFEEF9 0%,#F2F7FC 44%,#EAE2D6 100%);
+}
+#gl{position:absolute;inset:0;width:1080px;height:1920px;display:block;z-index:1}
+#OverlaySVG{position:absolute;inset:0;width:1080px;height:1920px;pointer-events:none;z-index:4}
+#OverlaySVG line{stroke-width:3.5;stroke-linecap:round}
+#line-c1,#line-c2{stroke:var(--danger)}
+#dot-c1,#dot-c2{fill:var(--danger);stroke:#FFFFFF;stroke-width:3}
+#line-c3{stroke:var(--safe)}
+#dot-c3{fill:var(--safe);stroke:#FFFFFF;stroke-width:3}
+
+#hud{position:absolute;inset:0;pointer-events:none;z-index:6}
+
+/* Subtle Contrast Scrims */
+.scrim-top{
+  position:absolute;left:0;right:0;top:0;height:360px;
+  background:linear-gradient(180deg,rgba(var(--scrim-rgb),.46) 0%,rgba(var(--scrim-rgb),.16) 52%,rgba(var(--scrim-rgb),0) 100%);
+  backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+  mask-image:linear-gradient(180deg,#000 0%,#000 32%,transparent 100%);
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 32%,transparent 100%);
+}
+.scrim-bottom{
+  position:absolute;left:0;right:0;bottom:0;height:360px;
+  background:linear-gradient(0deg,rgba(var(--scrim-rgb),.50) 0%,rgba(var(--scrim-rgb),.18) 50%,rgba(var(--scrim-rgb),0) 100%);
+  backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+  mask-image:linear-gradient(0deg,#000 0%,#000 34%,transparent 100%);
+  -webkit-mask-image:linear-gradient(0deg,#000 0%,#000 34%,transparent 100%);
+}
+
+/* ZONA 1: Clean Brand Card di Kiri Atas (Posisi & Ukuran Proporsional ala @puckermanefacts, Tanpa Inisial) */
+.account-card{
+  position:absolute;left:42px;top:44px;
+  display:inline-flex;align-items:center;
+  background:rgba(255,255,255,.88);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  padding:8px 20px 9px;
+  border-radius:999px;
+  border:2px solid rgba(38,26,102,.20);
+  box-shadow:0 6px 18px rgba(20,14,54,.12);
+  font-size:20px;font-weight:700;letter-spacing:-.01em;
+  color:var(--brand-blue);
+}
+
+/* ZONA 2A: HOOK LOCKUP (Hanya muncul SEKALI di awal 0.00s - 3.46s!) */
+#hook-card{
+  position:absolute;left:46px;right:46px;top:148px;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  will-change:transform,opacity;
+}
+.hook-title{
+  font-size:90px;font-weight:800;letter-spacing:-.035em;line-height:1;
+  color:#FFFFFF;text-align:center;
+  -webkit-text-stroke:14px var(--hook-stroke);paint-order:stroke fill;
+  text-shadow:0 10px 24px rgba(20,14,54,.28);
+}
+.hook-pill{
+  background:var(--hook-pill-bg);color:var(--hook-pill-ink);
+  font-size:42px;font-weight:800;letter-spacing:-.02em;
+  padding:13px 36px;border-radius:16px;transform:rotate(-1.2deg);
+  border:3.5px solid #FFFFFF;
+  box-shadow:0 9px 0 var(--hook-pill-shadow), 0 16px 30px rgba(20,14,54,.28);
+}
+
+/* ZONA 2B: ULTRA-CLEAN SINGLE TOP PILL ala @puckermanefacts (Maksimal 1 Pill, Tanpa Sub-Pill Ganda!) */
+#step-tracker{
+  position:absolute;left:0;right:0;top:132px;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  opacity:0;will-change:transform,opacity;
+}
+.step-pill{
+  display:inline-flex;align-items:center;gap:14px;
+  background:var(--step-pill-bg);padding:10px 30px 10px 12px;border-radius:999px;
+  border:3px solid var(--step-pill-border);
+  box-shadow:0 10px 24px rgba(20,14,54,.18);
+}
+.step-pill.text-only{
+  padding:11px 32px 12px;
+}
+.step-num{
+  width:48px;height:48px;border-radius:50%;
+  background:var(--step-num-bg);color:var(--step-num-ink);
+  font-family:"Space Grotesk","Plus Jakarta Sans",sans-serif;
+  font-size:25px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.step-title{
+  font-size:34px;font-weight:800;letter-spacing:-.02em;
+  color:var(--step-pill-ink);white-space:nowrap;
+}
+.progress{display:flex;gap:14px;align-items:center}
+.progress i{
+  width:22px;height:22px;border-radius:50%;background:#FFFFFF;
+  border:2.5px solid rgba(38,26,102,.25);
+  display:block;box-shadow:0 3px 8px rgba(20,14,54,.15);
+}
+.progress i.on{
+  background:var(--prog-fill);
+  border-color:#FFFFFF;
+}
+
+/* ZONA 3: COMPACT 3D CALLOUT LABELS ala @puckermanefacts (Kecil, Clean, Tanpa Ikon Ramai) */
+.callout{
+  position:absolute;left:0;top:0;
+  background:#FFFFFF;padding:8px 18px 9px;border-radius:12px;
+  font-size:25px;font-weight:800;letter-spacing:-.015em;white-space:nowrap;opacity:0;
+  box-shadow:0 8px 20px rgba(12,10,36,.18);
+  display:inline-flex;align-items:center;
+  will-change:transform,opacity;
+}
+.callout.danger{color:var(--danger);border:2.5px solid var(--danger)}
+.callout.safe{color:var(--safe);border:2.5px solid var(--safe)}
+
+/* ZONA 4: NATURAL WORD-SPACING SUBTITLE BAR ala @puckermanefacts */
+#sub-wrap{
+  position:absolute;left:42px;right:42px;bottom:140px;display:flex;justify-content:center;
+}
+.sub-card{
+  background:var(--sub-bg);color:var(--sub-ink);
+  padding:15px 30px 17px;border-radius:18px;
+  font-size:38px;font-weight:800;letter-spacing:-.015em;line-height:1.25;
+  white-space:nowrap;box-shadow:0 12px 28px rgba(20,14,54,.24);
+  border:3px solid var(--sub-border);
+  display:inline-block;text-align:center;
+  will-change:transform,opacity;
+}
+.sub-card .w{
+  display:inline-block;
+  padding:1px 3px 2px;
+  margin:0 -3px;
+  border-radius:8px;
+  color:var(--sub-ink);
+}
+.sub-card .w.active{
+  background:var(--sub-hl-bg);
+  color:var(--sub-hl-ink);
+  padding:1px 8px 2px;
+  margin:0 -1px;
+  box-shadow:0 4px 10px rgba(239,95,24,.26);
+}
+
+/* Interactive Preview Toolbar (disembunyikan saat capture MP4) */
+#switcher{
+  position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:80;
+  display:flex;gap:10px;align-items:center;
+  background:rgba(24,30,38,.94);padding:10px 16px;border-radius:16px;color:#fff;font-size:12px;
+}
+body.clean-snap #switcher{display:none !important}
+#switcher .sw-label{font-weight:800;color:#EF5F18;text-transform:uppercase}
+#switcher button{background:#2D3748;color:#fff;border:none;padding:7px 12px;border-radius:8px;font:700 12px inherit;cursor:pointer}
+#switcher button.active{background:#EF5F18}
+#time-readout{font-family:"Space Grotesk",monospace;font-size:13px;font-weight:700;color:#90E0EF;min-width:95px;text-align:center}
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <canvas id="gl"></canvas>
+
+  <svg id="OverlaySVG" viewBox="0 0 1080 1920">
+    <line id="line-c1" x1="0" y1="0" x2="0" y2="0" stroke="#EF5F18" stroke-width="3.5" opacity="0"/>
+    <circle id="dot-c1" cx="0" cy="0" r="7" fill="#EF5F18" stroke="#FFF" stroke-width="3" opacity="0"/>
+
+    <line id="line-c2" x1="0" y1="0" x2="0" y2="0" stroke="#EF5F18" stroke-width="3.5" opacity="0"/>
+    <circle id="dot-c2" cx="0" cy="0" r="7" fill="#EF5F18" stroke="#FFF" stroke-width="3" opacity="0"/>
+
+    <line id="line-c3" x1="0" y1="0" x2="0" y2="0" stroke="#0FA968" stroke-width="3.5" opacity="0"/>
+    <circle id="dot-c3" cx="0" cy="0" r="7" fill="#0FA968" stroke="#FFF" stroke-width="3" opacity="0"/>
+  </svg>
+
+  <div id="hud">
+    <div class="scrim-top"></div>
+    <div class="scrim-bottom"></div>
+
+    <!-- ZONA 1: Clean Brand Card di Kiri Atas -->
+    <div class="account-card">@janganpanikdulu</div>
+
+    <!-- ZONA 2A: Hook Lockup (Hanya muncul SEKALI di awal 0.00s - 3.46s) -->
+    <div id="hook-card">
+      <h1 class="hook-title" id="hook-title">BAU GAS BOCOR?</h1>
+      <div class="hook-pill" id="hook-pill">JANGAN SENTUH SAKLAR!</div>
+    </div>
+
+    <!-- ZONA 2B: Single Clean Step Pill ala @puckermanefacts (Tanpa Sub-Pill Ganda) -->
+    <div id="step-tracker">
+      <div class="step-pill" id="step-pill-box">
+        <span class="step-num" id="tr-badge">1</span>
+        <span class="step-title" id="tr-title">Percikan di saklar</span>
+      </div>
+      <div class="progress" id="prog-wrap"><i id="seg1" class="on"></i><i id="seg2"></i><i id="seg3"></i></div>
+    </div>
+
+    <!-- ZONA 3: Compact 3D Callout Labels ala @puckermanefacts -->
+    <div class="callout danger" id="call1">
+      <span id="call1-text">percikan 1.000°C</span>
+    </div>
+    <div class="callout danger" id="call2">
+      <span id="call2-text">mengendap di lantai</span>
+    </div>
+    <div class="callout safe" id="call3">
+      <span id="call3-text">lepas regulator</span>
+    </div>
+
+    <!-- ZONA 4: Natural Word-Spacing Karaoke Subtitle Bar -->
+    <div id="sub-wrap">
+      <div class="sub-card" id="sub-card"></div>
+    </div>
+  </div>
+</div>
+
+<audio id="vo-audio" src="audio_ep01_master.mp3" preload="auto"></audio>
+
+<div id="switcher">
+  <button id="btn-play" class="active">▶ Play Master + Audio</button>
+  <span id="time-readout">00.0s / 59.6s</span>
+  <div class="sw-label">Scene:</div>
+  <button data-t="1.5">Hook</button>
+  <button data-t="9.5">Dapur Gelap</button>
+  <button data-t="14.2">X-Ray Tembaga</button>
+  <button data-t="18.2">Saklar 1.000°C</button>
+  <button data-t="23.0">Gas 2× Berat</button>
+  <button data-t="28.5">Naik ke Saklar</button>
+  <button data-t="41.0">Langkah 1</button>
+  <button data-t="45.4">Langkah 2</button>
+  <button data-t="50.0">Langkah 3</button>
+  <button data-t="58.6">Sign-Off</button>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+const $ = s => document.querySelector(s);
+const Q = new URLSearchParams(location.search);
+if (Q.has('clean') || Q.has('capture')) document.body.classList.add('clean-snap');
+
+/* ============ 1. RENDERER & CAMERA (NARROW-FOV @puckermanefacts ARCHITECTURAL LENS) ============ */
+const W = 1080, H = 1920;
+const renderer = new THREE.WebGLRenderer({
+  canvas: $('#gl'),
+  antialias: true,
+  alpha: true,
+  preserveDrawingBuffer: true
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setSize(W, H, false);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.08;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(25, W / H, 0.2, 160);
+
+const hemi = new THREE.HemisphereLight(0xFFFDF9, 0xD8CFC4, 1.68);
+hemi.position.set(0, 18, 0);
+scene.add(hemi);
+
+const sun = new THREE.DirectionalLight(0xFFF7EB, 2.28);
+sun.position.set(7.5, 14.0, 9.5);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+const sd = 6.8;
+sun.shadow.camera.left = -sd;
+sun.shadow.camera.right = sd;
+sun.shadow.camera.top = sd;
+sun.shadow.camera.bottom = -sd;
+sun.shadow.bias = -0.0005;
+scene.add(sun);
+
+const rim = new THREE.DirectionalLight(0x90E0EF, 0.88);
+rim.position.set(-7, 6, -5);
+scene.add(rim);
+
+const sparkLight = new THREE.PointLight(0xFF7B00, 0, 5.0);
+sparkLight.position.set(1.48, 1.95, -2.30);
+scene.add(sparkLight);
+
+const mat = (hex, rough = 0.45, metal = 0.03, emissive = 0x000000, emInt = 0) =>
+  new THREE.MeshStandardMaterial({ color: hex, roughness: rough, metalness: metal, emissive, emissiveIntensity: emInt });
+
+const outlineMat = new THREE.MeshBasicMaterial({ color: 0x181E26, side: THREE.BackSide });
+function withOutline(mesh, scale = 1.06) {
+  const out = new THREE.Mesh(mesh.geometry, outlineMat);
+  out.scale.setScalar(scale);
+  mesh.add(out);
+  return mesh;
+}
+
+/* ============ 2. LINGKUNGAN DAPUR 3D (@puckermanefacts CUTAWAY + GAS MELON 3KG INDONESIA CLEAN) ============ */
+const world = new THREE.Group();
+scene.add(world);
+
+function makeTileTexture() {
+  const cv = document.createElement('canvas');
+  cv.width = 512; cv.height = 512;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#F6F4EF';
+  ctx.fillRect(0, 0, 512, 512);
+  ctx.strokeStyle = '#DDD6C9';
+  ctx.lineWidth = 6;
+  for (let i = 0; i <= 512; i += 64) {
+    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 512); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(512, i); ctx.stroke();
+  }
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(2, 2);
+  return tex;
+}
+
+function makeBacksplashTexture() {
+  const cv = document.createElement('canvas');
+  cv.width = 512; cv.height = 256;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#F2EFE9';
+  ctx.fillRect(0, 0, 512, 256);
+  ctx.strokeStyle = '#D5CFC4';
+  ctx.lineWidth = 4;
+  for (let y = 0; y <= 256; y += 32) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(512, y); ctx.stroke();
+    const offset = (y / 32) % 2 === 0 ? 0 : 32;
+    for (let x = offset; x <= 512; x += 64) {
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + 32); ctx.stroke();
+    }
+  }
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(4, 2);
+  return tex;
+}
+
+function makeWoodTexture() {
+  const cv = document.createElement('canvas');
+  cv.width = 512; cv.height = 512;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#E0B583';
+  ctx.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 8; i++) {
+    ctx.fillStyle = i % 2 === 0 ? '#E0B583' : '#D6AA78';
+    ctx.fillRect(0, i * 64, 512, 64);
+    ctx.strokeStyle = '#C09260';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(0, i * 64, 512, 64);
+  }
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function makeGasMelonTexture() {
+  // Clean Gas Melon 3kg tanpa teks (hanya warna hijau khas + lingkar merah di bahu atas)
+  const cv = document.createElement('canvas');
+  cv.width = 512; cv.height = 512;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#62BF8A';
+  ctx.fillRect(0, 0, 512, 512);
+
+  ctx.fillStyle = '#E63946';
+  ctx.fillRect(0, 52, 512, 50);
+
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+// Lapisan Tanah & Rumput Cutaway (@puckermanefacts Cross-Section Base)
+const soil = new THREE.Mesh(new THREE.BoxGeometry(7.2, 0.85, 7.2), mat(0x9C6B43, 0.75));
+soil.position.y = -0.45;
+world.add(soil);
+
+const grass = new THREE.Mesh(new THREE.BoxGeometry(7.2, 0.16, 7.2), mat(0x52B788, 0.65));
+grass.position.y = 0.02;
+grass.receiveShadow = true;
+world.add(grass);
+
+const floorSlab = new THREE.Mesh(
+  new THREE.BoxGeometry(5.8, 0.24, 5.8),
+  new THREE.MeshStandardMaterial({ map: makeTileTexture(), roughness: 0.45 })
+);
+floorSlab.position.set(-0.05, 0.22, -0.05);
+floorSlab.receiveShadow = true;
+world.add(floorSlab);
+
+// Dinding Belakang & Kiri (Dengan Detail Arsitektural Backsplash, Lis Kayu, & Plint Lantai)
+const wallBack = new THREE.Mesh(new THREE.BoxGeometry(5.8, 3.85, 0.28), mat(0xF8F5EE, 0.48));
+wallBack.position.set(-0.05, 2.14, -2.85);
+wallBack.castShadow = true;
+wallBack.receiveShadow = true;
+world.add(wallBack);
+
+const wallLeft = new THREE.Mesh(new THREE.BoxGeometry(0.28, 3.85, 5.8), mat(0xF1ECE2, 0.48));
+wallLeft.position.set(-2.85, 2.14, -0.05);
+wallLeft.castShadow = true;
+wallLeft.receiveShadow = true;
+world.add(wallLeft);
+
+const backsplash = new THREE.Mesh(
+  new THREE.BoxGeometry(5.48, 1.05, 0.03),
+  new THREE.MeshStandardMaterial({ map: makeBacksplashTexture(), roughness: 0.35 })
+);
+backsplash.position.set(-0.05, 1.72, -2.70);
+backsplash.receiveShadow = true;
+world.add(backsplash);
+
+const wallChairRail = new THREE.Mesh(
+  new RoundedBoxGeometry(5.52, 0.07, 0.06, 3, 0.015),
+  new THREE.MeshStandardMaterial({ map: makeWoodTexture(), roughness: 0.42 })
+);
+wallChairRail.position.set(-0.05, 2.26, -2.69);
+world.add(wallChairRail);
+
+const wallLowerTrim = new THREE.Mesh(
+  new RoundedBoxGeometry(5.52, 0.06, 0.05, 3, 0.015),
+  new THREE.MeshStandardMaterial({ map: makeWoodTexture(), roughness: 0.42 })
+);
+wallLowerTrim.position.set(-0.05, 1.18, -2.69);
+world.add(wallLowerTrim);
+
+const baseboardBack = new THREE.Mesh(new THREE.BoxGeometry(5.52, 0.14, 0.05), mat(0x2B333C, 0.4));
+baseboardBack.position.set(-0.05, 0.41, -2.69);
+world.add(baseboardBack);
+
+// Jendela Dapur di Dinding Kiri
+const winGroup = new THREE.Group();
+winGroup.position.set(-2.68, 2.18, -0.35);
+world.add(winGroup);
+const winFrame = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.42, 1.66), mat(0x22272E, 0.35));
+winGroup.add(winFrame);
+const winSky = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.24, 1.48), new THREE.MeshBasicMaterial({ color: 0x90E0EF }));
+winSky.position.x = 0.04;
+winGroup.add(winSky);
+
+const winSashPivot = new THREE.Group();
+winSashPivot.position.set(0.07, 0, -0.74);
+winGroup.add(winSashPivot);
+const winSash = new THREE.Mesh(
+  new THREE.BoxGeometry(0.07, 1.22, 1.44),
+  new THREE.MeshStandardMaterial({ color: 0xCAF0F8, transparent: true, opacity: 0.65, roughness: 0.15 })
+);
+winSash.position.set(0, 0, 0.74);
+winSashPivot.add(winSash);
+
+// Kitchen Set Kayu Hangat + Kompor 2 Tungku + Panci
+const kitchenGroup = new THREE.Group();
+kitchenGroup.position.set(-0.82, 0.34, -2.18);
+world.add(kitchenGroup);
+
+const baseCab = new THREE.Mesh(
+  new RoundedBoxGeometry(2.58, 0.90, 0.92, 4, 0.03),
+  new THREE.MeshStandardMaterial({ map: makeWoodTexture(), roughness: 0.48 })
+);
+baseCab.position.y = 0.45;
+baseCab.castShadow = true;
+baseCab.receiveShadow = true;
+kitchenGroup.add(baseCab);
+
+[-0.82, 0, 0.82].forEach(dx => {
+  const door = new THREE.Mesh(new RoundedBoxGeometry(0.76, 0.74, 0.03, 3, 0.01), mat(0xD5A774, 0.45));
+  door.position.set(dx, 0.44, 0.465);
+  kitchenGroup.add(door);
+  const handle = new THREE.Mesh(new RoundedBoxGeometry(0.18, 0.035, 0.04, 2, 0.01), mat(0x1E242B, 0.3));
+  handle.position.set(dx, 0.72, 0.49);
+  kitchenGroup.add(handle);
+});
+
+const counterTop = new THREE.Mesh(new RoundedBoxGeometry(2.68, 0.10, 0.98, 4, 0.02), mat(0xFFFFFF, 0.28));
+counterTop.position.y = 0.93;
+counterTop.castShadow = true;
+kitchenGroup.add(counterTop);
+
+const cooktop = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(1.12, 0.07, 0.64, 3, 0.02), mat(0x1E242B, 0.25)),
+  1.04
+);
+cooktop.position.set(0.28, 1.00, 0);
+kitchenGroup.add(cooktop);
+
+[0.02, 0.54].forEach(bx => {
+  const burner = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.022, 10, 24), mat(0x475569, 0.35, 0.5));
+  burner.rotation.x = Math.PI / 2;
+  burner.position.set(bx, 1.05, 0);
+  kitchenGroup.add(burner);
+  const knob = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.03, 16), mat(0x94A3B8, 0.3));
+  knob.rotation.x = Math.PI / 2;
+  knob.position.set(bx, 1.00, 0.33);
+  kitchenGroup.add(knob);
+});
+
+const cookingPot = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.20, 0.17, 0.24, 24), mat(0xFF5A36, 0.32)),
+  1.06
+);
+cookingPot.position.set(0.02, 1.18, 0);
+cookingPot.castShadow = true;
+kitchenGroup.add(cookingPot);
+
+const upperCab = new THREE.Mesh(
+  new RoundedBoxGeometry(2.58, 0.74, 0.54, 4, 0.03),
+  new THREE.MeshStandardMaterial({ map: makeWoodTexture(), roughness: 0.48 })
+);
+upperCab.position.set(0, 2.42, -0.18);
+upperCab.castShadow = true;
+kitchenGroup.add(upperCab);
+
+const fridge = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(0.92, 2.14, 0.92, 4, 0.04), mat(0x2B333C, 0.32)),
+  1.03
+);
+fridge.position.set(-1.82, 1.07, -0.02);
+fridge.castShadow = true;
+kitchenGroup.add(fridge);
+
+/* ============ TABUNG GAS 3KG ("GAS MELON") INDONESIA CLEAN (TANPA TULISAN) + SELANG KE KOMPOR ============ */
+const lpgGroup = new THREE.Group();
+lpgGroup.position.set(1.12, 0.34, -1.92);
+world.add(lpgGroup);
+
+const melonDarkGreenMat = mat(0x4CA975, 0.38, 0.10);
+
+// 1. Cincin Kaki Bawah (Foot Ring)
+const footRing = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.27, 0.09, 28), melonDarkGreenMat),
+  1.06
+);
+footRing.position.y = 0.045;
+footRing.castShadow = true;
+lpgGroup.add(footRing);
+
+// 2. Bodi Utama Bulat Gemuk ("Melon") Hijau + Lingkar Merah di Bahu Atas (Tanpa Teks)
+const melonBodyGeo = new THREE.SphereGeometry(0.38, 36, 28);
+melonBodyGeo.scale(1.0, 0.88, 1.0);
+const melonBodyMat = new THREE.MeshStandardMaterial({
+  map: makeGasMelonTexture(),
+  roughness: 0.34,
+  metalness: 0.06
+});
+const lpgBody = withOutline(new THREE.Mesh(melonBodyGeo, melonBodyMat), 1.055);
+lpgBody.position.y = 0.38;
+lpgBody.castShadow = true;
+lpgBody.receiveShadow = true;
+lpgGroup.add(lpgBody);
+
+// 3. Sabuk Las Melingkar di Tengah Perut Tabung
+const weldBelt = withOutline(
+  new THREE.Mesh(new THREE.TorusGeometry(0.378, 0.022, 12, 36), melonDarkGreenMat),
+  1.05
+);
+weldBelt.rotation.x = Math.PI / 2;
+weldBelt.position.y = 0.38;
+lpgGroup.add(weldBelt);
+
+// 4. Kerudung Besi Pelindung Katup (Shroud Collar Berlubang Pegangan)
+const shroudGroup = new THREE.Group();
+shroudGroup.position.y = 0.74;
+lpgGroup.add(shroudGroup);
+
+[-1, 1].forEach(side => {
+  const plateGeo = new THREE.CylinderGeometry(0.185, 0.205, 0.19, 16, 1, true, side > 0 ? -0.95 : Math.PI - 0.95, 1.9);
+  const plate = new THREE.Mesh(plateGeo, new THREE.MeshStandardMaterial({
+    color: 0x57B580, roughness: 0.36, metalness: 0.1, side: THREE.DoubleSide
+  }));
+  shroudGroup.add(plate);
+});
+const topLip = withOutline(
+  new THREE.Mesh(new THREE.TorusGeometry(0.185, 0.024, 12, 32), melonDarkGreenMat),
+  1.08
+);
+topLip.rotation.x = Math.PI / 2;
+topLip.position.y = 0.095;
+shroudGroup.add(topLip);
+
+// 5. Katup Kuningan + Karet Sil Merah
+const brassValve = new THREE.Mesh(new THREE.CylinderGeometry(0.056, 0.065, 0.13, 20), mat(0xEAB308, 0.26, 0.65));
+brassValve.position.y = 0.72;
+lpgGroup.add(brassValve);
+
+const redSealRing = new THREE.Mesh(new THREE.TorusGeometry(0.052, 0.012, 10, 20), mat(0xDC2626, 0.4));
+redSealRing.rotation.x = Math.PI / 2;
+redSealRing.position.y = 0.785;
+lpgGroup.add(redSealRing);
+
+// 6. Regulator Gas + Manometer + Pengunci Merah + Pipa Nozzle
+const regulatorGroup = new THREE.Group();
+regulatorGroup.position.set(0, 0.83, 0);
+lpgGroup.add(regulatorGroup);
+
+const regBody = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.135, 0.145, 0.14, 24), mat(0x64748B, 0.30, 0.35)),
+  1.07
+);
+regulatorGroup.add(regBody);
+
+const regCap = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.12, 0.04, 20), mat(0x475569, 0.32, 0.35));
+regCap.position.y = 0.08;
+regulatorGroup.add(regCap);
+
+const gaugeCyl = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.09, 18), mat(0xF8FAFC, 0.25));
+gaugeCyl.rotation.z = Math.PI / 2;
+gaugeCyl.position.set(0.15, 0.01, 0.04);
+regulatorGroup.add(gaugeCyl);
+
+const regSwitch = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(0.055, 0.085, 0.22, 3, 0.015), mat(0xEF4444, 0.28)),
+  1.07
+);
+regSwitch.position.set(0, 0.01, 0.12);
+regulatorGroup.add(regSwitch);
+
+const regNozzle = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.14, 14), mat(0xEAB308, 0.3, 0.6));
+regNozzle.rotation.z = Math.PI / 2;
+regNozzle.position.set(-0.16, 0.0, 0);
+regulatorGroup.add(regNozzle);
+
+const hoseCurve = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(0.92, 1.16, -1.92),
+  new THREE.Vector3(0.62, 0.92, -1.95),
+  new THREE.Vector3(0.32, 0.56, -2.02),
+  new THREE.Vector3(-0.08, 0.78, -2.08),
+  new THREE.Vector3(-0.42, 1.24, -2.12)
+]);
+const gasHose = withOutline(
+  new THREE.Mesh(new THREE.TubeGeometry(hoseCurve, 32, 0.034, 12, false), mat(0x272E36, 0.55)),
+  1.04
+);
+gasHose.castShadow = true;
+world.add(gasHose);
+
+/* ============ SAKLAR DINDING ARSITEKTURAL + SLIDE-OPEN CUTAWAY 2 LEMPENG TEMBAGA ============ */
+const switchGroup = new THREE.Group();
+switchGroup.position.set(1.48, 1.96, -2.66);
+world.add(switchGroup);
+
+const conduitPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.95, 12), mat(0xCBD5E1, 0.4));
+conduitPipe.position.set(0, 0.52, -0.02);
+switchGroup.add(conduitPipe);
+
+const wireRed = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.45, 10), mat(0xEF4444, 0.3));
+wireRed.position.set(-0.025, 0.25, 0.01);
+switchGroup.add(wireRed);
+
+const wireBlue = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.45, 10), mat(0x3B82F6, 0.3));
+wireBlue.position.set(0.025, -0.25, 0.01);
+switchGroup.add(wireBlue);
+
+const switchBackBox = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(0.50, 0.62, 0.10, 4, 0.02), mat(0x1E293B, 0.42)),
+  1.05
+);
+switchBackBox.position.z = -0.02;
+switchGroup.add(switchBackBox);
+
+const switchInnerCavity = new THREE.Mesh(new RoundedBoxGeometry(0.40, 0.50, 0.06, 3, 0.015), mat(0x0F172A, 0.55));
+switchInnerCavity.position.z = 0.01;
+switchGroup.add(switchInnerCavity);
+
+const copperMat = new THREE.MeshStandardMaterial({
+  color: 0xF59E0B,
+  roughness: 0.20,
+  metalness: 0.78,
+  emissive: 0xD97706,
+  emissiveIntensity: 0.42
+});
+
+const terminalTop = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.04, 16), copperMat);
+terminalTop.rotation.x = Math.PI / 2;
+terminalTop.position.set(-0.04, 0.17, 0.03);
+switchGroup.add(terminalTop);
+
+const terminalBot = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.04, 16), copperMat);
+terminalBot.rotation.x = Math.PI / 2;
+terminalBot.position.set(0.04, -0.17, 0.03);
+switchGroup.add(terminalBot);
+
+const copperTop = new THREE.Mesh(new RoundedBoxGeometry(0.095, 0.19, 0.045, 3, 0.01), copperMat);
+copperTop.position.set(-0.02, 0.095, 0.04);
+switchGroup.add(copperTop);
+
+const copperBot = new THREE.Mesh(new RoundedBoxGeometry(0.095, 0.19, 0.045, 3, 0.01), copperMat);
+copperBot.position.set(0.02, -0.095, 0.04);
+switchGroup.add(copperBot);
+
+const switchCoverGroup = new THREE.Group();
+switchCoverGroup.position.z = 0.055;
+switchGroup.add(switchCoverGroup);
+
+const switchPlateMat = new THREE.MeshStandardMaterial({
+  color: 0xFFFFFF,
+  roughness: 0.24
+});
+const switchPlate = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(0.52, 0.64, 0.06, 4, 0.02), switchPlateMat),
+  1.05
+);
+switchCoverGroup.add(switchPlate);
+
+const switchRockerMat = new THREE.MeshStandardMaterial({
+  color: 0xF1F5F9,
+  roughness: 0.26
+});
+const switchRocker = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(0.22, 0.30, 0.065, 3, 0.015), switchRockerMat),
+  1.05
+);
+switchRocker.position.z = 0.042;
+switchCoverGroup.add(switchRocker);
+
+const switchRingMat = new THREE.MeshBasicMaterial({
+  color: 0xEF5F18,
+  transparent: true,
+  opacity: 0.0,
+  side: THREE.DoubleSide
+});
+const switchRing = new THREE.Mesh(new THREE.RingGeometry(0.36, 0.45, 36), switchRingMat);
+switchRing.position.z = 0.13;
+switchGroup.add(switchRing);
+
+function makeSparkGeo(R = 0.36, r = 0.12, depth = 0.08) {
+  const s = new THREE.Shape();
+  for (let i = 0; i < 12; i++) {
+    const a = (i * Math.PI) / 6 - Math.PI / 2;
+    const rad = i % 2 === 0 ? R : r;
+    const x = Math.cos(a) * rad, y = -Math.sin(a) * rad;
+    if (i === 0) s.moveTo(x, y);
+    else s.lineTo(x, y);
+  }
+  s.closePath();
+  const g = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2 });
+  g.center();
+  return g;
+}
+const sparkBurst = new THREE.Mesh(makeSparkGeo(0.34, 0.11, 0.07), new THREE.MeshBasicMaterial({ color: 0xFFB703 }));
+const sparkOuter = new THREE.Mesh(makeSparkGeo(0.50, 0.17, 0.05), new THREE.MeshBasicMaterial({ color: 0xFF5A36 }));
+sparkBurst.add(sparkOuter);
+sparkBurst.position.set(0, 0, 0.12);
+switchGroup.add(sparkBurst);
+
+// Volume Gas Elpiji Mengendap di Lantai & Merayap Naik ke Saklar
+const gasVolumeGroup = new THREE.Group();
+gasVolumeGroup.position.set(-0.05, 0.54, -0.05);
+world.add(gasVolumeGroup);
+
+const gasSlabMat = new THREE.MeshStandardMaterial({
+  color: 0xEF5F18,
+  roughness: 0.52,
+  metalness: 0.0,
+  transparent: true,
+  opacity: 0.34,
+  depthWrite: false
+});
+const gasSlab = new THREE.Mesh(new RoundedBoxGeometry(5.1, 0.42, 4.9, 8, 0.18), gasSlabMat);
+gasVolumeGroup.add(gasSlab);
+
+const gasRiseMat = new THREE.MeshStandardMaterial({
+  color: 0xEF5F18,
+  roughness: 0.52,
+  metalness: 0.0,
+  transparent: true,
+  opacity: 0.0,
+  depthWrite: false
+});
+const gasRiseSlab = new THREE.Mesh(new RoundedBoxGeometry(3.3, 1.48, 2.7, 8, 0.25), gasRiseMat);
+gasRiseSlab.position.set(0.82, 0.72, -1.35);
+gasVolumeGroup.add(gasRiseSlab);
+
+const leakPuffs = Array.from({ length: 4 }, () => {
+  const m = new THREE.Mesh(
+    new THREE.SphereGeometry(0.16, 16, 16),
+    new THREE.MeshStandardMaterial({ color: 0xEF5F18, transparent: true, opacity: 0.45, roughness: 0.6, depthWrite: false })
+  );
+  world.add(m);
+  return m;
+});
+
+const airflowGroup = new THREE.Group();
+world.add(airflowGroup);
+const airArrows = Array.from({ length: 3 }, (_, i) => {
+  const g = new THREE.Group();
+  const body = new THREE.Mesh(
+    new RoundedBoxGeometry(0.92, 0.10, 0.16, 4, 0.04),
+    new THREE.MeshBasicMaterial({ color: 0x0FA968, transparent: true, opacity: 0.88 })
+  );
+  g.add(body);
+  g.position.set(-2.1 + i * 0.45, 2.25 - i * 0.18, -1.75);
+  airflowGroup.add(g);
+  return g;
+});
+
+/* ============ 3. RIG KARAKTER UTAMA: MAS RAKA ============ */
+function makeMasFaceTexture() {
+  const cv = document.createElement('canvas');
+  cv.width = 512; cv.height = 512;
+  const ctx = cv.getContext('2d');
+  ctx.clearRect(0, 0, 512, 512);
+
+  ctx.fillStyle = '#181E26';
+  ctx.strokeStyle = '#181E26';
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  ctx.lineWidth = 20;
+  ctx.beginPath();
+  ctx.moveTo(112, 174);
+  ctx.quadraticCurveTo(156, 160, 204, 172);
+  ctx.moveTo(308, 168);
+  ctx.quadraticCurveTo(356, 152, 400, 170);
+  ctx.stroke();
+
+  [158, 354].forEach(cx => {
+    ctx.fillStyle = '#181E26';
+    ctx.beginPath();
+    ctx.roundRect(cx - 22, 202, 44, 58, 21);
+    ctx.fill();
+    ctx.fillStyle = '#FFFFFF';
+    ctx.beginPath();
+    ctx.arc(cx - 7, 220, 9, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  ctx.strokeStyle = 'rgba(145, 92, 58, 0.78)';
+  ctx.lineWidth = 10;
+  ctx.beginPath();
+  ctx.moveTo(256, 218);
+  ctx.lineTo(248, 268);
+  ctx.lineTo(268, 272);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#181E26';
+  ctx.lineWidth = 14;
+  ctx.beginPath();
+  ctx.moveTo(208, 328);
+  ctx.quadraticCurveTo(258, 350, 310, 316);
+  ctx.stroke();
+
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function buildMasRaka() {
+  const root = new THREE.Group();
+  const bodyPivot = new THREE.Group();
+  bodyPivot.position.y = 0.72;
+  root.add(bodyPivot);
+
+  const skinMat = mat(0xF1C29B, 0.36);
+
+  const innerTee = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.68, 0.82, 0.44, 6, 0.11), mat(0xFFFFFF, 0.32)),
+    1.07
+  );
+  innerTee.position.y = 0.41;
+  innerTee.castShadow = true;
+  bodyPivot.add(innerTee);
+
+  [-0.21, 0.21].forEach(px => {
+    const panel = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.28, 0.83, 0.47, 5, 0.07), mat(0xD95D39, 0.38)),
+      1.06
+    );
+    panel.position.set(px, 0.41, 0.01);
+    panel.castShadow = true;
+    bodyPivot.add(panel);
+  });
+
+  const backPanel = new THREE.Mesh(new RoundedBoxGeometry(0.70, 0.83, 0.24, 5, 0.07), mat(0xD95D39, 0.38));
+  backPanel.position.set(0, 0.41, -0.12);
+  bodyPivot.add(backPanel);
+
+  [-0.16, 0.16].forEach((cx, idx) => {
+    const collar = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.20, 0.12, 0.26, 4, 0.03), mat(0xD95D39, 0.36)),
+      1.06
+    );
+    collar.position.set(cx, 0.81, 0.12);
+    collar.rotation.z = idx === 0 ? 0.35 : -0.35;
+    bodyPivot.add(collar);
+  });
+
+  const pocket = new THREE.Mesh(new RoundedBoxGeometry(0.16, 0.18, 0.04, 3, 0.015), mat(0xB84627, 0.4));
+  pocket.position.set(-0.22, 0.56, 0.245);
+  bodyPivot.add(pocket);
+
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 0.22, 16), skinMat);
+  neck.position.set(0, 0.86, 0);
+  bodyPivot.add(neck);
+
+  const headPivot = new THREE.Group();
+  headPivot.position.y = 0.90;
+  bodyPivot.add(headPivot);
+
+  const head = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.74, 0.74, 0.70, 8, 0.21), skinMat),
+    1.065
+  );
+  head.position.y = 0.37;
+  head.castShadow = true;
+  headPivot.add(head);
+
+  const facePlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.64, 0.64),
+    new THREE.MeshBasicMaterial({ map: makeMasFaceTexture(), transparent: true })
+  );
+  facePlane.position.set(0, 0.37, 0.356);
+  headPivot.add(facePlane);
+
+  const hairDark = new THREE.MeshStandardMaterial({ color: 0x241A14, roughness: 0.36, metalness: 0.04 });
+  const hairMid  = new THREE.MeshStandardMaterial({ color: 0x2E221A, roughness: 0.34, metalness: 0.05 });
+
+  const hairBase = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.785, 0.27, 0.72, 10, 0.13), hairDark),
+    1.045
+  );
+  hairBase.position.set(0, 0.65, -0.035);
+  hairBase.rotation.x = -0.05;
+  headPivot.add(hairBase);
+
+  const sideBackTaper = new THREE.Mesh(new RoundedBoxGeometry(0.762, 0.28, 0.58, 10, 0.11), hairDark);
+  sideBackTaper.position.set(0, 0.535, -0.075);
+  sideBackTaper.rotation.x = 0.04;
+  headPivot.add(sideBackTaper);
+
+  const waveRightMain = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.47, 0.20, 0.70, 10, 0.095), hairMid),
+    1.045
+  );
+  waveRightMain.position.set(0.135, 0.735, 0.015);
+  waveRightMain.rotation.set(-0.09, -0.06, -0.13);
+  headPivot.add(waveRightMain);
+
+  const frontCommaR = new THREE.Mesh(new RoundedBoxGeometry(0.38, 0.165, 0.36, 8, 0.08), hairMid);
+  frontCommaR.position.set(0.155, 0.705, 0.22);
+  frontCommaR.rotation.set(-0.20, -0.14, -0.18);
+  headPivot.add(frontCommaR);
+
+  const waveLeftPart = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.27, 0.16, 0.67, 10, 0.078), hairDark),
+    1.045
+  );
+  waveLeftPart.position.set(-0.235, 0.70, 0.005);
+  waveLeftPart.rotation.set(-0.06, 0.05, 0.15);
+  headPivot.add(waveLeftPart);
+
+  const topStrand = new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.11, 0.48, 8, 0.052), hairMid);
+  topStrand.position.set(0.05, 0.785, 0.06);
+  topStrand.rotation.set(-0.12, -0.10, -0.08);
+  headPivot.add(topStrand);
+
+  const sleeveMat = mat(0xD95D39, 0.36);
+  function makeArm(side) {
+    const p = new THREE.Group();
+    p.position.set(side * 0.47, 0.72, 0);
+
+    const upperSleeve = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.25, 0.36, 0.27, 5, 0.08), sleeveMat), 1.08);
+    upperSleeve.position.y = -0.13;
+    p.add(upperSleeve);
+
+    const cuffRoll = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.27, 0.09, 0.29, 4, 0.03), sleeveMat), 1.07);
+    cuffRoll.position.y = -0.29;
+    p.add(cuffRoll);
+
+    const forearm = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.21, 0.30, 0.23, 5, 0.07), skinMat), 1.08);
+    forearm.position.y = -0.44;
+    p.add(forearm);
+
+    if (side === -1) {
+      const watchStrap = new THREE.Mesh(new RoundedBoxGeometry(0.23, 0.07, 0.25, 4, 0.02), mat(0x181E26, 0.3));
+      watchStrap.position.y = -0.52;
+      p.add(watchStrap);
+      const watchDial = new THREE.Mesh(new RoundedBoxGeometry(0.11, 0.10, 0.04, 3, 0.01), mat(0x0F172A, 0.2));
+      watchDial.position.set(0, -0.52, 0.13);
+      p.add(watchDial);
+    }
+
+    const hand = withOutline(new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 16), skinMat), 1.08);
+    hand.position.y = -0.60;
+    p.add(hand);
+
+    bodyPivot.add(p);
+    return p;
+  }
+  const armL = makeArm(-1);
+  const armR = makeArm(1);
+
+  function makeLeg(side) {
+    const p = new THREE.Group();
+    p.position.set(side * 0.19, 0.72, 0);
+    const leg = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.29, 0.64, 0.32, 5, 0.07), mat(0x1E293B, 0.45)), 1.08);
+    leg.position.y = -0.32;
+    p.add(leg);
+    const shoe = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.31, 0.17, 0.42, 4, 0.05), mat(0xF8FAFC, 0.3)), 1.08);
+    shoe.position.set(0, -0.62, 0.05);
+    p.add(shoe);
+    root.add(p);
+    return p;
+  }
+  const legL = makeLeg(-1);
+  const legR = makeLeg(1);
+
+  return { root, bodyPivot, headPivot, armL, armR, legL, legR };
+}
+
+const RAKA = buildMasRaka();
+world.add(RAKA.root);
+
+/* ============ 4. KOREOGRAFI KAMERA 3/4 ARSITEKTURAL (@puckermanefacts NARROW-FOV 22°-25°) ============ */
+const DURATION = 59.56;
+const S = {
+  camX: 3.10, camY: 3.05, camZ: 7.45,
+  lookX: 0.32, lookY: 1.72, lookZ: -1.45,
+  fov: 25,
+
+  cX: 0.12, cY: 0.34, cZ: -0.78, cRotY: 0.32,
+  cArmL: -1.20, cArmR: -0.25, cKneel: 0,
+
+  darkMode: 0,
+  cutawayAlpha: 0,
+  copperClose: 0,
+  rockerTilt: 0,
+  sparkScale: 0,
+  ringScale: 0,
+  ringAlpha: 0,
+
+  gasOpacity: 0.30,
+  gasRise: 0,
+  regLift: 0,
+  winOpen: 0,
+  airOpacity: 0,
+
+  c1Alpha: 0,
+  c2Alpha: 0,
+  c3Alpha: 0
+};
+
+const tl = gsap.timeline({ paused: true });
+
+// SCENE 01 (0.00s - 3.46s): Hook Question — Clean 3/4 Architectural Medium-Wide Framing
+tl.fromTo(S,
+  {
+    camX: 3.15, camY: 3.08, camZ: 7.55,
+    lookX: 0.28, lookY: 1.72, lookZ: -1.48,
+    fov: 25,
+    cX: 0.08, cZ: -0.82, cRotY: 0.32, cArmL: -1.25, cArmR: -0.25, cKneel: 0,
+    darkMode: 0, cutawayAlpha: 0, copperClose: 0, rockerTilt: 0,
+    sparkScale: 0, ringScale: 0.8, ringAlpha: 0,
+    gasOpacity: 0.28, gasRise: 0, regLift: 0, winOpen: 0, airOpacity: 0,
+    c1Alpha: 0, c2Alpha: 0, c3Alpha: 0
+  },
+  {
+    camX: 2.82, camY: 2.92, camZ: 6.95,
+    lookX: 0.35, lookY: 1.75, lookZ: -1.55,
+    cArmL: -1.48,
+    duration: 3.46, ease: 'sine.inOut'
+  }, 0
+);
+
+// SCENE 02 (3.46s - 7.55s): "Karena satu klik saklar, bisa langsung memicu ledakan." (Tanpa Judul Kedua — Fokus Visual!)
+tl.to(S, {
+  camX: 2.15, camY: 2.62, camZ: 5.35,
+  lookX: 0.92, lookY: 1.82, lookZ: -2.10,
+  fov: 24,
+  cX: 0.05, cRotY: 0.45, cArmL: -0.35, cArmR: -1.35,
+  duration: 1.75, ease: 'power2.inOut'
+}, 3.46);
+tl.to(S, {
+  sparkScale: 1.15, ringScale: 1.55, ringAlpha: 0.9, c1Alpha: 1,
+  duration: 0.38, ease: 'back.out(2)'
+}, 5.45);
+tl.to(S, {
+  sparkScale: 0, ringAlpha: 0, c1Alpha: 0,
+  duration: 0.38, ease: 'power2.in'
+}, 7.05);
+
+// SCENE 03 (7.55s - 12.42s): "Misalnya dapur gelap, tercium bau gas, lalu tangan refleks menekan saklar." (Tanpa Pill Atas — Clean!)
+tl.to(S, {
+  camX: -0.95, camY: 2.68, camZ: 6.25,
+  lookX: 0.65, lookY: 1.72, lookZ: -1.95,
+  fov: 25,
+  darkMode: 0.90, gasOpacity: 0.65,
+  cX: 0.28, cZ: -1.35, cRotY: 0.58, cArmL: -0.30, cArmR: -0.55,
+  duration: 1.15, ease: 'power2.inOut'
+}, 7.55);
+tl.to(S, {
+  camX: -0.55, camY: 2.48, camZ: 4.85,
+  lookX: 0.95, lookY: 1.84, lookZ: -2.25,
+  cX: 0.65, cZ: -1.62, cRotY: 0.52, cArmR: -1.58, rockerTilt: 1,
+  duration: 1.15, ease: 'power2.out'
+}, 9.95);
+tl.to(S, { sparkScale: 0.92, duration: 0.22 }, 11.30);
+tl.to(S, { sparkScale: 0, darkMode: 0.12, duration: 0.35 }, 12.02);
+
+// SCENE 04 (12.42s - 16.03s): "Di dalam saklar, ada dua lempeng tembaga penyambung listrik."
+tl.to(S, {
+  camX: 0.28, camY: 2.24, camZ: 1.15,
+  lookX: 1.44, lookY: 2.02, lookZ: -2.62,
+  fov: 22,
+  cX: -0.65, cZ: -0.65, cRotY: 0.45, cArmR: -0.35,
+  cutawayAlpha: 1, copperClose: 0, c1Alpha: 1,
+  duration: 0.95, ease: 'power3.inOut'
+}, 12.42);
+
+// SCENE 05 (16.03s - 21.40s): "Saat ditekan, tembaga ini beradu dan memercikkan api kecil bersuhu seribu derajat."
+tl.to(S, {
+  camX: 0.45, camY: 2.18, camZ: 0.95,
+  lookX: 1.46, lookY: 2.00, lookZ: -2.64,
+  copperClose: 1, sparkScale: 0.52, ringScale: 0.72, ringAlpha: 0.85,
+  duration: 0.42, ease: 'back.out(2)'
+}, 17.15);
+tl.to(S, {
+  sparkScale: 0, cutawayAlpha: 0, ringAlpha: 0, c1Alpha: 0, darkMode: 0,
+  duration: 0.42, ease: 'power2.in'
+}, 20.88);
+
+// SCENE 06 (21.40s - 25.20s): "Masalahnya, gas elpiji dua kali lebih berat dari udara."
+tl.to(S, {
+  camX: 7.45, camY: 7.85, camZ: 9.85,
+  lookX: 0.08, lookY: 1.12, lookZ: -0.85,
+  fov: 22,
+  cX: -0.58, cZ: -0.65, cKneel: 0, cRotY: 0.35, cArmL: 0.15, cArmR: -0.25,
+  gasOpacity: 0.72, gasRise: 0.08, c2Alpha: 1,
+  duration: 1.0, ease: 'power3.inOut'
+}, 21.40);
+
+// SCENE 07 (25.20s - 30.90s): "Saat bocor, gas tidak naik ke atas, tapi mengendap di lantai, lalu naik sampai setinggi saklar."
+tl.to(S, {
+  camX: 5.55, camY: 5.15, camZ: 7.85,
+  lookX: 0.32, lookY: 1.32, lookZ: -1.35,
+  fov: 24,
+  gasOpacity: 0.84, gasRise: 1.0,
+  duration: 3.2, ease: 'power2.inOut'
+}, 25.50);
+
+// SCENE 08 (30.90s - 36.62s): "Mau saklar dinyalakan atau dimatikan, percikan apinya tetap keluar dan langsung menyambar gas."
+tl.to(S, {
+  camX: -0.15, camY: 2.38, camZ: 3.15,
+  lookX: 1.22, lookY: 1.92, lookZ: -2.42,
+  fov: 24,
+  c2Alpha: 0, c1Alpha: 1, cutawayAlpha: 0.85,
+  duration: 0.85, ease: 'power3.inOut'
+}, 30.90);
+tl.to(S, { rockerTilt: 0, sparkScale: 1.05, ringAlpha: 0.9, duration: 0.25 }, 31.65);
+tl.to(S, { rockerTilt: 1, sparkScale: 1.28, ringScale: 1.65, duration: 0.25 }, 32.55);
+tl.to(S, { sparkScale: 0, cutawayAlpha: 0, ringAlpha: 0, c1Alpha: 0, gasRise: 0.22, duration: 0.42, ease: 'power2.in' }, 36.15);
+
+// SCENE 09 (36.62s - 39.65s): "Kalau mencium bau gas, lakukan tiga langkah ini."
+tl.to(S, {
+  camX: 2.75, camY: 2.85, camZ: 6.75,
+  lookX: 0.28, lookY: 1.75, lookZ: -1.45,
+  fov: 25,
+  cX: 0.12, cZ: -0.78, cRotY: 0.28, cArmL: -1.35, cArmR: -1.35,
+  gasOpacity: 0.38,
+  duration: 0.85, ease: 'power3.inOut'
+}, 36.62);
+
+// SCENE 10 (39.65s - 43.63s): "Pertama, jangan sentuh saklar lampu atau alat elektronik apa pun."
+tl.to(S, {
+  camX: 1.45, camY: 2.52, camZ: 4.85,
+  lookX: 0.82, lookY: 1.84, lookZ: -2.05,
+  fov: 24,
+  cX: 0.22, cZ: -1.05, cRotY: 0.38, cArmL: -1.52, cArmR: -0.35,
+  ringScale: 1.25, ringAlpha: 0.88, c3Alpha: 1,
+  duration: 0.85, ease: 'power3.inOut'
+}, 39.65);
+tl.to(S, { ringAlpha: 0, c3Alpha: 0, duration: 0.32, ease: 'power2.in' }, 43.25);
+
+// SCENE 11 (43.63s - 47.46s): "Kedua, putar pengunci regulator, dan lepas dari tabung gas."
+tl.to(S, {
+  camX: 2.45, camY: 2.58, camZ: 5.75,
+  lookX: 0.55, lookY: 1.38, lookZ: -1.75,
+  fov: 24,
+  cX: 0.08, cZ: -1.48, cRotY: -0.45, cKneel: 0.32, cArmR: -1.42, cArmL: -0.35,
+  duration: 0.82, ease: 'power3.inOut'
+}, 43.63);
+tl.to(S, {
+  regLift: 1, gasOpacity: 0.14, c3Alpha: 1,
+  duration: 0.65, ease: 'back.out(1.7)'
+}, 44.85);
+tl.to(S, { c3Alpha: 0, duration: 0.28, ease: 'power2.in' }, 47.15);
+
+// SCENE 12 (47.46s - 52.83s): "Ketiga, buka pintu dan jendela lebar-lebar, supaya udara luar mendorong gas keluar."
+tl.to(S, {
+  camX: 3.25, camY: 2.95, camZ: 7.15,
+  lookX: -0.45, lookY: 1.78, lookZ: -1.25,
+  fov: 25,
+  cX: 0.18, cZ: -0.78, cKneel: 0, cRotY: 0.35, cArmL: -1.52, cArmR: -0.35,
+  winOpen: 1, airOpacity: 1, gasOpacity: 0, gasRise: 0, c3Alpha: 1,
+  duration: 0.95, ease: 'power3.inOut'
+}, 47.46);
+tl.to(S, { c3Alpha: 0, duration: 0.32, ease: 'power2.in' }, 52.45);
+
+// SCENE 13 (52.83s - 57.38s): "Jadi yang memicu ledakan bukan tabungnya, tapi percikan listrik saat kita panik."
+tl.to(S, {
+  camX: 2.85, camY: 2.85, camZ: 6.75,
+  lookX: 0.32, lookY: 1.75, lookZ: -1.45,
+  fov: 25,
+  cX: 0.15, cZ: -0.78, cRotY: 0.28, cArmL: -0.35, cArmR: -0.35,
+  airOpacity: 0.32,
+  duration: 1.05, ease: 'power2.inOut'
+}, 52.83);
+
+// SCENE 14 (57.38s - 59.56s): "Jadi... jangan panik dulu." (Clean Hero Framing Tanpa Overlay Atas)
+tl.to(S, {
+  camX: 2.55, camY: 2.78, camZ: 6.25,
+  lookX: 0.25, lookY: 1.78, lookZ: -1.35,
+  fov: 24,
+  cX: 0.15, cZ: -0.78, cRotY: 0.28, cArmL: -1.48, cArmR: -0.25,
+  airOpacity: 0,
+  duration: 0.75, ease: 'power3.out'
+}, 57.38);
+
+tl.to({}, { duration: 0.01 }, DURATION);
+
+/* ============ 5. SMOOTH EASE-IN / EASE-OUT HELPER & @puckermanefacts SPARSE OVERLAY SCHEDULE ============ */
+function easeOutBack(x) {
+  const c1 = 1.70158;
+  const c3 = c1 + 1;
+  return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+}
+function easeInQuad(x) {
+  return x * x;
+}
+function easeOutCubic(x) {
+  return 1 - Math.pow(1 - x, 3);
+}
+
+function getWindowMotion(t, tIn, tOut, enterDur = 0.36, exitDur = 0.26) {
+  if (t < tIn || t > tOut) return { alpha: 0, y: -22, scale: 0.90 };
+  if (t - tIn < enterDur) {
+    const p = Math.max(0, Math.min(1, (t - tIn) / enterDur));
+    const eb = easeOutBack(p);
+    return {
+      alpha: Math.min(1, p * 1.35),
+      y: (1 - eb) * -24,
+      scale: 0.88 + 0.12 * eb
+    };
+  }
+  if (tOut - t < exitDur) {
+    const p = Math.max(0, Math.min(1, (tOut - t) / exitDur));
+    const eq = 1 - easeInQuad(1 - p);
+    return {
+      alpha: eq,
+      y: (1 - eq) * -18,
+      scale: 0.94 + 0.06 * eq
+    };
+  }
+  return { alpha: 1, y: 0, scale: 1 };
+}
+
+// Natural Word-Spacing Karaoke Caption Chunks
+const CAPTION_CHUNKS = [
+  // S01 (0.00s - 3.46s)
+  { s: 0.04, e: 1.68, words: ['Kenapa', 'saat', 'dapur', 'bau', 'gas,'] },
+  { s: 1.70, e: 3.46, words: ['nggak', 'boleh', 'nyentuh', 'saklar', 'lampu?'] },
+  // S02 (4.02s - 7.03s)
+  { s: 4.00, e: 5.42, words: ['Karena', 'satu', 'klik', 'saklar,'] },
+  { s: 5.44, e: 7.12, words: ['bisa', 'langsung', 'memicu', 'ledakan.'] },
+  // S03 (7.55s - 12.02s)
+  { s: 7.52, e: 9.88, words: ['Misalnya', 'dapur', 'gelap,', 'bau', 'gas,'] },
+  { s: 9.92, e: 12.10, words: ['lalu', 'refleks', 'menekan', 'saklar.'] },
+  // S04 (12.42s - 15.49s)
+  { s: 12.40, e: 13.82, words: ['Di', 'dalam', 'saklar,', 'ada', 'dua'] },
+  { s: 13.84, e: 15.58, words: ['lempeng', 'tembaga', 'penyambung', 'listrik.'] },
+  // S05 (16.03s - 20.88s)
+  { s: 16.00, e: 18.28, words: ['Saat', 'ditekan,', 'tembaga', 'ini', 'beradu'] },
+  { s: 18.30, e: 20.95, words: ['memercikkan', 'api', '1.000', 'derajat.'] },
+  // S06 (21.40s - 24.69s)
+  { s: 21.38, e: 23.02, words: ['Masalahnya,', 'gas', 'elpiji', 'itu'] },
+  { s: 23.04, e: 24.78, words: ['2×', 'lebih', 'berat', 'dari', 'udara.'] },
+  // S07 (25.20s - 30.40s)
+  { s: 25.18, e: 27.92, words: ['Gas', 'mengendap', 'di', 'lantai,'] },
+  { s: 27.94, e: 30.48, words: ['lalu', 'naik', 'setinggi', 'saklar.'] },
+  // S08 (30.90s - 36.19s)
+  { s: 30.88, e: 33.48, words: ['Saklar', 'dinyalakan', 'atau', 'dimatikan,'] },
+  { s: 33.50, e: 36.25, words: ['apinya', 'langsung', 'menyambar', 'gas.'] },
+  // S09 (36.62s - 39.20s)
+  { s: 36.60, e: 39.28, words: ['Kalau', 'bau', 'gas,', 'lakukan', '3', 'langkah:'] },
+  // S10 (39.65s - 43.19s)
+  { s: 39.62, e: 41.42, words: ['Pertama,', 'jangan', 'sentuh', 'saklar'] },
+  { s: 41.44, e: 43.28, words: ['atau', 'alat', 'elektronik', 'apa', 'pun.'] },
+  // S11 (43.63s - 47.06s)
+  { s: 43.60, e: 45.32, words: ['Kedua,', 'putar', 'pengunci', 'regulator,'] },
+  { s: 45.34, e: 47.15, words: ['dan', 'lepas', 'dari', 'tabung', 'gas.'] },
+  // S12 (47.46s - 52.35s)
+  { s: 47.44, e: 49.85, words: ['Ketiga,', 'buka', 'pintu', 'dan', 'jendela,'] },
+  { s: 49.87, e: 52.42, words: ['agar', 'udara', 'mendorong', 'gas', 'keluar.'] },
+  // S13 (52.83s - 56.92s)
+  { s: 52.80, e: 54.82, words: ['Pemicunya', 'bukan', 'tabung', 'gasnya,'] },
+  { s: 54.84, e: 57.00, words: ['tapi', 'percikan', 'saat', 'kita', 'panik.'] },
+  // S14 (57.38s - 59.56s)
+  { s: 57.34, e: 59.56, words: ['Jadi...', 'jangan', 'panik', 'dulu.'] }
+];
+
+CAPTION_CHUNKS.forEach(ch => {
+  const weights = ch.words.map(w => Math.max(2, w.replace(/[^a-zA-Z0-9]/g, '').length));
+  const totalW = weights.reduce((a, b) => a + b, 0);
+  const span = (ch.e - ch.s) * 0.92;
+  let cursor = ch.s + 0.02;
+  ch.wordTimes = ch.words.map((w, idx) => {
+    const dur = (weights[idx] / totalW) * span;
+    const wt = { word: w, ws: cursor, we: cursor + dur };
+    cursor += dur;
+    return wt;
+  });
+});
+
+// ULTRA-CLEAN @puckermanefacts TOP HEADER SCHEDULE:
+// 1. Hook Title hanya muncul SEKALI di awal (0.00s - 3.60s).
+// 2. Scene 02-03 (3.60s - 12.40s): KOSONG di atas (penonton fokus ke visual dapur & skenario).
+// 3. Scene 04-05 (12.42s - 21.35s): 1 Single Pill "Kenapa bisa?" (persis seperti DfdsHjqzRxf @puckermanefacts!).
+// 4. Scene 06-07 (21.40s - 30.86s): 1 Single Pill "Sifat gas elpiji".
+// 5. Scene 08 (30.90s - 36.58s): KOSONG di atas (fokus ke percikan menyambar gas).
+// 6. Scene 09 (36.62s - 39.60s): 1 Single Pill "3 langkah aman".
+// 7. Scene 10-12 (39.65s - 52.78s): 1 Single Step Pill + 3 Progress Dots (1 Jangan sentuh saklar / 2 Lepas regulator / 3 Buka pintu & jendela).
+// 8. Scene 13-14 (52.83s - 59.56s): KOSONG di atas (clean sign-off).
+const TOP_SEGMENTS = [
+  { s: 0.00, e: 3.60, type: 'hook', hTitle: 'BAU GAS BOCOR?', hPill: 'JANGAN SENTUH SAKLAR!' },
+  { s: 12.42, e: 21.35, type: 'step', badge: null, title: 'Kenapa bisa?', showDots: false, prog: 0 },
+  { s: 21.40, e: 30.86, type: 'step', badge: null, title: 'Sifat gas elpiji', showDots: false, prog: 0 },
+  { s: 36.62, e: 39.60, type: 'step', badge: null, title: '3 langkah aman', showDots: true, prog: 0 },
+  { s: 39.65, e: 43.58, type: 'step', badge: '1', title: 'Jangan sentuh saklar', showDots: true, prog: 1 },
+  { s: 43.63, e: 47.42, type: 'step', badge: '2', title: 'Lepas regulator gas', showDots: true, prog: 2 },
+  { s: 47.46, e: 52.78, type: 'step', badge: '3', title: 'Buka pintu & jendela', showDots: true, prog: 3 }
+];
+
+function setCalloutLine(lineId, dotId, callEl, worldTarget, offsetX, offsetY, alpha) {
+  const line = $(lineId), dot = $(dotId);
+  if (alpha <= 0.01) {
+    callEl.style.opacity = '0';
+    line.setAttribute('opacity', '0');
+    dot.setAttribute('opacity', '0');
+    return;
+  }
+  const v = worldTarget.clone().project(camera);
+  const px = (v.x * 0.5 + 0.5) * W;
+  const py = (-v.y * 0.5 + 0.5) * H;
+  const cx = Math.max(210, Math.min(870, px + offsetX));
+  const cy = Math.max(400, Math.min(1520, py + offsetY));
+
+  const lineProg = easeOutCubic(Math.min(1, alpha * 1.35));
+  const badgeProg = easeOutBack(Math.max(0, Math.min(1, (alpha - 0.18) / 0.82)));
+  const badgeAlpha = Math.max(0, Math.min(1, (alpha - 0.15) / 0.65));
+
+  const lx2 = px + (cx - px) * lineProg;
+  const ly2 = py + (cy - py) * lineProg;
+
+  line.setAttribute('x1', px.toFixed(1));
+  line.setAttribute('y1', py.toFixed(1));
+  line.setAttribute('x2', lx2.toFixed(1));
+  line.setAttribute('y2', ly2.toFixed(1));
+  line.setAttribute('opacity', Math.min(1, alpha * 1.4).toFixed(2));
+
+  dot.setAttribute('cx', px.toFixed(1));
+  dot.setAttribute('cy', py.toFixed(1));
+  dot.setAttribute('r', (7 * Math.min(1.12, easeOutBack(Math.min(1, alpha * 1.5)))).toFixed(1));
+  dot.setAttribute('opacity', Math.min(1, alpha * 1.5).toFixed(2));
+
+  callEl.style.left = `${cx}px`;
+  callEl.style.top = `${cy}px`;
+  callEl.style.opacity = badgeAlpha.toFixed(2);
+  const sc = (0.85 + 0.15 * badgeProg).toFixed(3);
+  const ty = ((1 - badgeProg) * 12).toFixed(1);
+  callEl.style.transform = `translate(-50%, calc(-50% + ${ty}px)) scale(${sc})`;
+}
+
+function updateHUD(t) {
+  const hook = $('#hook-card'), tracker = $('#step-tracker'), subCard = $('#sub-card');
+  const hookTitle = $('#hook-title'), hookPill = $('#hook-pill');
+  const pillBox = $('#step-pill-box'), badgeEl = $('#tr-badge'), titleEl = $('#tr-title');
+  const progWrap = $('#prog-wrap');
+  const segs = [$('#seg1'), $('#seg2'), $('#seg3')];
+
+  // 1. Update Sparse Top Header Segment (Only when active; empty otherwise!)
+  const seg = TOP_SEGMENTS.find(x => t >= x.s && t <= x.e);
+  if (!seg) {
+    hook.style.opacity = '0';
+    tracker.style.opacity = '0';
+  } else if (seg.type === 'hook') {
+    const m = getWindowMotion(t, seg.s, seg.e, 0.36, 0.26);
+    tracker.style.opacity = '0';
+    hook.style.opacity = m.alpha.toFixed(3);
+    hook.style.transform = `translate3d(0, ${m.y.toFixed(1)}px, 0) scale(${m.scale.toFixed(3)})`;
+    hookTitle.textContent = seg.hTitle;
+    hookPill.textContent = seg.hPill;
+  } else {
+    const m = getWindowMotion(t, seg.s, seg.e, 0.36, 0.26);
+    hook.style.opacity = '0';
+    tracker.style.opacity = m.alpha.toFixed(3);
+    tracker.style.transform = `translate3d(0, ${m.y.toFixed(1)}px, 0) scale(${m.scale.toFixed(3)})`;
+
+    if (seg.badge) {
+      badgeEl.style.display = 'flex';
+      badgeEl.textContent = seg.badge;
+      pillBox.classList.remove('text-only');
+    } else {
+      badgeEl.style.display = 'none';
+      pillBox.classList.add('text-only');
+    }
+    titleEl.textContent = seg.title;
+    progWrap.style.display = seg.showDots ? 'flex' : 'none';
+    if (seg.showDots) segs.forEach((el, i) => el.classList.toggle('on', i < seg.prog));
+  }
+
+  // 2. Update Compact 3D Callout Text per Scene
+  if (t < 7.55) {
+    $('#call1-text').textContent = 'pemicu ledakan';
+  } else if (t < 16.03) {
+    $('#call1-text').textContent = '2 lempeng tembaga';
+  } else if (t < 21.40) {
+    $('#call1-text').textContent = 'percikan 1.000°C';
+  } else if (t < 25.20) {
+    $('#call2-text').textContent = 'mengendap di lantai';
+  } else if (t < 30.90) {
+    $('#call2-text').textContent = 'naik ke saklar';
+  } else if (t < 36.62) {
+    $('#call1-text').textContent = 'menyambar gas';
+  } else if (t < 43.63) {
+    $('#call3-text').textContent = 'jangan disentuh';
+  } else if (t < 47.46) {
+    $('#call3-text').textContent = 'lepas regulator';
+  } else {
+    $('#call3-text').textContent = 'udara masuk';
+  }
+
+  // 3. Update Natural-Spacing Word-by-Word Subtitle Bar
+  let activeChunk = CAPTION_CHUNKS.find(c => t >= c.s && t <= c.e);
+  if (!activeChunk) {
+    activeChunk = CAPTION_CHUNKS.reduce((best, cur) => {
+      const dist = Math.min(Math.abs(t - cur.s), Math.abs(t - cur.e));
+      const bestDist = Math.min(Math.abs(t - best.s), Math.abs(t - best.e));
+      return dist < bestDist ? cur : best;
+    }, CAPTION_CHUNKS[0]);
+  }
+
+  const dtChunk = Math.max(0, t - activeChunk.s);
+  const popProg = Math.min(1, dtChunk / 0.20);
+  const popEase = easeOutBack(popProg);
+  const subScale = 0.96 + 0.04 * popEase;
+  const subY = (1 - popEase) * 10;
+  subCard.style.opacity = '1';
+  subCard.style.transform = `translate3d(0, ${subY.toFixed(1)}px, 0) scale(${subScale.toFixed(3)})`;
+
+  let activeIdx = 0;
+  for (let i = 0; i < activeChunk.wordTimes.length; i++) {
+    if (t >= activeChunk.wordTimes[i].ws) activeIdx = i;
+  }
+
+  // Join with normal space ' ' so word spacing is 100% natural typography
+  subCard.innerHTML = activeChunk.wordTimes.map((wt, idx) => {
+    const cls = idx === activeIdx ? 'w active' : 'w';
+    return `<span class="${cls}">${wt.word}</span>`;
+  }).join(' ');
+}
+
+function render(t) {
+  updateHUD(t);
+  const tr = $('#time-readout');
+  if (tr) tr.textContent = `${t.toFixed(1).padStart(4, '0')}s / 59.6s`;
+
+  const dm = S.darkMode;
+  hemi.intensity = 1.68 - dm * 1.12;
+  sun.intensity = 2.28 - dm * 1.72;
+  rim.intensity = 0.88 + dm * 0.55;
+
+  camera.fov = S.fov;
+  camera.updateProjectionMatrix();
+  camera.position.set(S.camX, S.camY, S.camZ);
+  camera.lookAt(S.lookX, S.lookY, S.lookZ);
+
+  const kn = S.cKneel;
+  const breath = Math.sin(t * 2.6) * 0.012;
+  RAKA.root.position.set(S.cX, S.cY + breath, S.cZ);
+  RAKA.root.rotation.y = S.cRotY;
+  RAKA.bodyPivot.position.y = 0.72 - kn * 0.22;
+  RAKA.armL.rotation.x = S.cArmL;
+  RAKA.armR.rotation.x = S.cArmR;
+
+  const cut = S.cutawayAlpha;
+  switchCoverGroup.position.x = cut * 0.42;
+  switchCoverGroup.position.z = 0.055 + cut * 0.05;
+  switchCoverGroup.rotation.y = cut * 0.48;
+  conduitPipe.visible = cut > 0.05;
+  wireRed.visible = cut > 0.05;
+  wireBlue.visible = cut > 0.05;
+
+  switchRocker.rotation.x = (S.rockerTilt - 0.5) * 0.35;
+  copperTop.position.y = 0.095 - S.copperClose * 0.038;
+  copperBot.position.y = -0.095 + S.copperClose * 0.038;
+  copperBot.rotation.z = (1 - S.copperClose) * 0.18;
+
+  sparkBurst.visible = S.sparkScale > 0.01;
+  const spPulse = 0.88 + 0.24 * Math.sin(t * 24.0);
+  sparkBurst.scale.setScalar(Math.max(0.001, S.sparkScale * spPulse));
+  sparkBurst.rotation.z = t * 4.5;
+  sparkLight.intensity = S.sparkScale * 4.2 * spPulse;
+
+  switchRing.scale.setScalar(Math.max(0.001, S.ringScale));
+  switchRingMat.opacity = S.ringAlpha;
+
+  gasVolumeGroup.visible = S.gasOpacity > 0.01;
+  gasSlabMat.opacity = S.gasOpacity * 0.60;
+  gasRiseSlab.visible = S.gasRise > 0.01;
+  gasRiseMat.opacity = S.gasRise * 0.46;
+  gasRiseSlab.scale.y = Math.max(0.05, S.gasRise);
+  gasRiseSlab.position.y = 0.35 + S.gasRise * 0.72;
+
+  leakPuffs.forEach((pf, i) => {
+    const showLeak = S.gasOpacity > 0.2 && S.regLift < 0.5;
+    pf.visible = showLeak;
+    if (showLeak) {
+      const lp = (t * 0.55 + i * 0.25) % 1;
+      pf.position.set(
+        1.12 - lp * 0.35 + Math.sin(lp * 6 + i) * 0.08,
+        1.15 - lp * 0.62,
+        -1.88 + lp * 0.45
+      );
+      const sc = Math.sin(lp * Math.PI) * (0.65 + lp * 0.85);
+      pf.scale.setScalar(Math.max(0.001, sc));
+    }
+  });
+
+  regulatorGroup.position.y = 0.83 + S.regLift * 0.46;
+  regSwitch.rotation.y = S.regLift * (Math.PI * 0.5);
+  winSashPivot.rotation.y = -S.winOpen * 1.08;
+
+  airflowGroup.visible = S.airOpacity > 0.01;
+  airArrows.forEach((ar, i) => {
+    const p = (t * 0.75 + i * 0.33) % 1;
+    ar.position.x = -2.35 + p * 1.25;
+    ar.position.y = 2.28 - i * 0.20;
+    ar.position.z = -1.78;
+    ar.scale.setScalar(Math.max(0.001, Math.sin(p * Math.PI) * S.airOpacity));
+  });
+
+  const c2Target = (t < 25.20)
+    ? new THREE.Vector3(0.95, 0.55, -0.75)
+    : new THREE.Vector3(1.15, 1.35, -1.65);
+  const c2OffX = (t < 25.20) ? -135 : -155;
+  const c2OffY = (t < 25.20) ? -150 : -160;
+
+  const c3Target = (t >= 39.5 && t < 43.6)
+    ? new THREE.Vector3(1.48, 1.96, -2.55)
+    : (t >= 47.4 ? new THREE.Vector3(-2.15, 2.15, -1.25) : new THREE.Vector3(1.12, 1.55, -1.92));
+  const c3OffX = (t >= 47.4) ? 160 : -155;
+  const c3OffY = (t >= 43.6 && t < 47.4) ? -175 : -160;
+
+  setCalloutLine('#line-c1', '#dot-c1', $('#call1'), new THREE.Vector3(1.44, 1.96, -2.58), -155, -190, S.c1Alpha);
+  setCalloutLine('#line-c2', '#dot-c2', $('#call2'), c2Target, c2OffX, c2OffY, S.c2Alpha);
+  setCalloutLine('#line-c3', '#dot-c3', $('#call3'), c3Target, c3OffX, c3OffY, S.c3Alpha);
+
+  renderer.render(scene, camera);
+}
+
+/* ============ 6. STAGE SCALE & DETERMINISTIC CAPTURE HOOKS ============ */
+const stage = $('#stage');
+const fit = () => {
+  const s = Math.min(innerWidth / W, innerHeight / H);
+  stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+};
+addEventListener('resize', fit);
+fit();
+
+const audioEl = $('#vo-audio');
+let isPlaying = false;
+
+(function frame() {
+  if (isPlaying && !audioEl.paused) {
+    tl.time(audioEl.currentTime, false);
+  }
+  render(tl.time());
+  requestAnimationFrame(frame);
+})();
+
+$('#btn-play').onclick = () => {
+  if (audioEl.paused) {
+    isPlaying = true;
+    audioEl.play();
+    tl.play(audioEl.currentTime);
+    $('#btn-play').textContent = '⏸ Pause';
+  } else {
+    isPlaying = false;
+    audioEl.pause();
+    tl.pause();
+    $('#btn-play').textContent = '▶ Play Master + Audio';
+  }
+};
+
+document.querySelectorAll('#switcher button[data-t]').forEach(btn => {
+  btn.onclick = () => {
+    const t = parseFloat(btn.dataset.t);
+    isPlaying = false;
+    audioEl.pause();
+    audioEl.currentTime = t;
+    tl.pause(t);
+    render(t);
+    $('#btn-play').textContent = '▶ Play Master + Audio';
+  };
+});
+
+const seek = (t) => {
+  document.body.classList.add('clean-snap');
+  isPlaying = false;
+  tl.pause();
+  tl.time(t, false);
+  if (gsap.ticker.tick) gsap.ticker.tick();
+  render(t);
+};
+
+window.OPENER = {
+  tl,
+  DURATION,
+  W,
+  H,
+  seek,
+  S,
+  render,
+  ready: false
+};
+
+document.fonts.ready.then(() => {
+  window.OPENER.ready = true;
+  if (!Q.has('clean')) render(0);
+});
+</script>
+</body>
+</html>

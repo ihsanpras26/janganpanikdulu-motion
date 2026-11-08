@@ -1,0 +1,14 @@
+# Dependencies
+**/node_modules/
+
+# Chrome Sessions & Caches
+.chrome-ig-session/
+.temp_chrome/
+chrome_*
+*.tmp
+*.pma
+*.log
+
+# Operating System files
+.DS_Store
+Thumbs.db

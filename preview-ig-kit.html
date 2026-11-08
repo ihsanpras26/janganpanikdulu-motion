@@ -1,0 +1,988 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Jangan Panik Dulu — 3D Conceptual Avatar & Instagram Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+}}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  width:100%;height:100%;background:#FFFFFF;overflow:hidden;
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;color:#14181F;
+}
+
+/* ===== STAGE A: 1080x1080 3D CONCEPTUAL AVATAR PREVIEW ===== */
+#avatar-stage{
+  position:fixed;inset:0;width:1080px;height:1080px;overflow:hidden;
+  display:none;align-items:center;justify-content:center;
+  background:#F4F3FA;
+}
+body[data-mode^="avatar"] #avatar-stage{display:flex}
+body[data-mode="avatar1"] #avatar-stage{background:#F3F2FA}
+body[data-mode="avatar2"] #avatar-stage{background:#181142}
+body[data-mode="avatar3"] #avatar-stage{background:#FFF6F0}
+
+.av-circle-outer{
+  position:relative;width:930px;height:930px;border-radius:50%;overflow:hidden;
+  box-shadow:0 28px 68px rgba(20,14,54,.28);
+  border:16px solid #FFFFFF;
+}
+body[data-mode="avatar2"] .av-circle-outer{border-color:#EF5F18;box-shadow:0 28px 70px rgba(0,0,0,.45)}
+body[data-mode="avatar3"] .av-circle-outer{border-color:#261A66;box-shadow:0 28px 68px rgba(38,26,102,.24)}
+
+#av-gl{
+  position:absolute;inset:0;width:100%;height:100%;display:block;z-index:2;
+}
+.av-badge-corner{
+  position:absolute;left:54px;top:46px;z-index:5;
+  background:#261A66;color:#FFFFFF;border:4px solid #EF5F18;
+  padding:12px 26px;border-radius:999px;font-size:25px;font-weight:800;letter-spacing:-.015em;
+  box-shadow:0 12px 28px rgba(20,14,54,.22);
+}
+.av-tag{
+  position:absolute;left:50%;bottom:38px;transform:translateX(-50%);z-index:5;
+  background:#FFFFFF;color:#261A66;border:5px solid #261A66;
+  padding:12px 32px;border-radius:999px;font-size:32px;font-weight:800;letter-spacing:-.02em;
+  white-space:nowrap;box-shadow:0 16px 36px rgba(20,14,54,.26);
+  display:inline-flex;align-items:center;gap:12px;
+}
+.av-tag em{
+  font-style:normal;background:#EF5F18;color:#FFFFFF;
+  padding:4px 14px;border-radius:10px;font-family:"Space Grotesk",sans-serif;
+}
+
+/* ===== STAGE B: 1080x1920 INSTAGRAM PROFILE MOCKUP ===== */
+#profile-stage{
+  position:fixed;inset:0;width:1080px;height:1920px;background:#FFFFFF;
+  display:none;flex-direction:column;overflow:hidden;
+}
+body[data-mode="profile"] #profile-stage{display:flex}
+
+.ig-topbar{
+  height:118px;padding:24px 44px 0;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:2px solid #F1F0F7;
+}
+.ig-handle-top{
+  display:flex;align-items:center;gap:12px;font-size:36px;font-weight:800;color:#261A66;letter-spacing:-.02em;
+}
+.ig-verified{
+  width:32px;height:32px;border-radius:50%;background:#EF5F18;color:#FFFFFF;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.ig-verified svg{width:18px;height:18px;fill:none;stroke:#FFFFFF;stroke-width:3.5}
+.ig-top-icons{display:flex;gap:28px;color:#261A66}
+.ig-top-icons svg{width:38px;height:38px;stroke:currentColor;stroke-width:2.4;fill:none}
+
+.ig-header{padding:34px 44px 24px;display:flex;align-items:center;gap:48px}
+.ig-avatar-wrap{
+  width:222px;height:222px;border-radius:50%;padding:7px;
+  background:#EF5F18;border:5px solid #261A66;flex-shrink:0;position:relative;
+  box-shadow:0 12px 28px rgba(38,26,102,.18);
+}
+.ig-avatar-inner{
+  width:100%;height:100%;border-radius:50%;overflow:hidden;position:relative;
+  border:5px solid #FFFFFF;background:#261A66;
+}
+#ig-mini-gl{position:relative;z-index:2;width:100%;height:100%;display:block}
+.ig-stats{
+  flex:1;display:grid;grid-template-columns:repeat(3,1fr);text-align:center;
+}
+.ig-stat b{display:block;font-size:38px;font-weight:800;color:#261A66;letter-spacing:-.02em}
+.ig-stat span{font-size:24px;font-weight:600;color:#5A5380}
+
+.ig-bio{padding:0 44px 26px;display:flex;flex-direction:column;gap:8px}
+.ig-name{font-size:32px;font-weight:800;color:#261A66;letter-spacing:-.015em}
+.ig-cat{font-size:24px;font-weight:700;color:#EF5F18}
+.ig-bio-lines{
+  font-size:26px;font-weight:600;line-height:1.4;color:#1F1B38;margin-top:4px;
+}
+.ig-link{
+  display:inline-flex;align-items:center;gap:10px;margin-top:6px;
+  font-size:25px;font-weight:800;color:#261A66;
+}
+.ig-link svg{width:24px;height:24px;stroke:#EF5F18;stroke-width:2.8;fill:none}
+
+.ig-actions{
+  padding:0 44px 30px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;
+}
+.ig-btn{
+  padding:18px 0;border-radius:16px;text-align:center;font-size:25px;font-weight:800;
+}
+.ig-btn.primary{background:#EF5F18;color:#FFFFFF}
+.ig-btn.secondary{background:#F3F1FA;color:#261A66;border:2px solid #E2DDF5}
+
+.ig-highlights{
+  padding:4px 44px 32px;display:flex;gap:32px;border-bottom:2px solid #F1F0F7;
+}
+.hl-item{display:flex;flex-direction:column;align-items:center;gap:10px;width:146px}
+.hl-circle{
+  width:132px;height:132px;border-radius:50%;padding:6px;
+  border:4px solid #261A66;background:#FFFFFF;display:flex;align-items:center;justify-content:center;
+}
+.hl-inner{
+  width:100%;height:100%;border-radius:50%;background:#261A66;color:#FFFFFF;
+  display:flex;align-items:center;justify-content:center;position:relative;
+}
+.hl-item.accent .hl-inner{background:#EF5F18}
+.hl-inner svg{width:54px;height:54px;stroke:#FFFFFF;stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.hl-label{font-size:22px;font-weight:700;color:#261A66;white-space:nowrap}
+
+.ig-tabs{
+  height:86px;display:grid;grid-template-columns:repeat(3,1fr);border-bottom:2px solid #E6E3F2;
+}
+.ig-tab{display:flex;align-items:center;justify-content:center;color:#9A94B8;position:relative}
+.ig-tab.active{color:#261A66}
+.ig-tab.active::after{
+  content:"";position:absolute;left:25%;right:25%;bottom:-2px;height:5px;background:#EF5F18;border-radius:99px;
+}
+.ig-tab svg{width:36px;height:36px;stroke:currentColor;stroke-width:2.4;fill:none}
+
+.ig-grid{
+  flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#E6E3F2;padding-top:2px;
+}
+.reel-card{
+  position:relative;background:linear-gradient(180deg,#E8F3FC 0%,#F5F9FD 50%,#EDE6DC 100%);
+  overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:20px;
+}
+.reel-scrim{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(180deg,rgba(20,14,54,.55) 0%,rgba(20,14,54,0) 42%),
+    linear-gradient(0deg,rgba(20,14,54,.68) 0%,rgba(20,14,54,0) 45%);
+}
+.reel-pin{
+  position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;
+}
+.reel-badge{
+  background:#FFFFFF;color:#261A66;border:3px solid #261A66;
+  padding:5px 14px;border-radius:999px;font-size:17px;font-weight:800;
+}
+.reel-badge.orange{background:#EF5F18;color:#FFFFFF;border-color:#FFFFFF}
+.reel-center-art{
+  position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;
+  margin-top:-150px;
+}
+.reel-title{
+  font-size:38px;font-weight:800;line-height:1.02;letter-spacing:-.03em;text-align:center;
+  color:#FFFFFF;-webkit-text-stroke:8px #261A66;paint-order:stroke fill;
+}
+.reel-pill{
+  background:#261A66;color:#FFFFFF;border:3px solid #FFFFFF;
+  box-shadow:0 5px 0 #EF5F18;
+  font-size:20px;font-weight:800;padding:7px 16px;border-radius:10px;transform:rotate(-2deg);
+}
+.reel-pill.orange{background:#EF5F18;box-shadow:0 5px 0 #261A66}
+.reel-views{
+  position:relative;z-index:2;display:flex;align-items:center;gap:6px;
+  color:#FFFFFF;font-size:20px;font-weight:800;
+}
+.reel-views svg{width:22px;height:22px;fill:#FFFFFF}
+.reel-illus{
+  position:absolute;left:50%;bottom:64px;transform:translateX(-50%);z-index:1;
+  width:240px;height:240px;
+}
+body.clean-upload #avatar-stage{background:#261A66}
+body.clean-upload .av-badge-corner,
+body.clean-upload .av-tag{display:none !important}
+body.clean-upload .av-circle-outer{
+  width:1080px;height:1080px;border-radius:0;border:none;box-shadow:none;
+}
+</style>
+</head>
+<body data-mode="avatar1">
+
+<!-- STAGE A: 1080x1080 3D CONCEPTUAL AVATAR -->
+<div id="avatar-stage">
+  <div class="av-badge-corner" id="av-label">KONSEP 1: TENANG DI TENGAH BAHAYA</div>
+  <div class="av-circle-outer">
+    <canvas id="av-gl" width="930" height="930"></canvas>
+  </div>
+  <div class="av-tag" id="av-sub"><em>01</em><span>Gestur "Tenang Dulu" + Efek Bahaya 3D</span></div>
+</div>
+
+<!-- STAGE B: 1080x1920 INSTAGRAM PROFILE MOCKUP -->
+<div id="profile-stage">
+  <div class="ig-topbar">
+    <div class="ig-handle-top">
+      <span>janganpanikdulu</span>
+      <span class="ig-verified"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span>
+    </div>
+    <div class="ig-top-icons">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 8v8M8 12h8"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </div>
+  </div>
+
+  <div class="ig-header">
+    <div class="ig-avatar-wrap">
+      <div class="ig-avatar-inner">
+        <canvas id="ig-mini-gl" width="208" height="208"></canvas>
+      </div>
+    </div>
+    <div class="ig-stats">
+      <div class="ig-stat"><b>48</b><span>Postingan</span></div>
+      <div class="ig-stat"><b>125RB</b><span>Pengikut</span></div>
+      <div class="ig-stat"><b>12</b><span>Mengikuti</span></div>
+    </div>
+  </div>
+
+  <div class="ig-bio">
+    <div class="ig-name">Jangan Panik Dulu | Sains Darurat</div>
+    <div class="ig-cat">Pendidikan · Keselamatan &amp; P3K</div>
+    <div class="ig-bio-lines">
+      Bahas tuntas apa yang harus &amp; jangan dilakukan saat kondisi genting.<br>
+      Fakta sains, pertolongan pertama, &amp; penyelamatan diri.<br>
+      Follow sekarang, karena panik nggak bikin selamat.
+    </div>
+    <div class="ig-link">
+      <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <span>janganpanikdulu.id/panduan-darurat</span>
+    </div>
+  </div>
+
+  <div class="ig-actions">
+    <div class="ig-btn primary">Ikuti</div>
+    <div class="ig-btn secondary">Kirim Pesan</div>
+    <div class="ig-btn secondary">Usul Topik</div>
+  </div>
+
+  <div class="ig-highlights">
+    <div class="hl-item accent">
+      <div class="hl-circle"><div class="hl-inner">
+        <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1v-9.5z"/></svg>
+      </div></div>
+      <span class="hl-label">Di Rumah</span>
+    </div>
+    <div class="hl-item">
+      <div class="hl-circle"><div class="hl-inner">
+        <svg viewBox="0 0 24 24"><path d="M5 17h14v-5l-2-6H7L5 12v5z"/><circle cx="7.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg>
+      </div></div>
+      <span class="hl-label">Di Jalan</span>
+    </div>
+    <div class="hl-item accent">
+      <div class="hl-circle"><div class="hl-inner">
+        <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="M9 6V4h6v2M12 10v6M9 13h6"/></svg>
+      </div></div>
+      <span class="hl-label">P3K Medis</span>
+    </div>
+    <div class="hl-item">
+      <div class="hl-circle"><div class="hl-inner">
+        <svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z"/></svg>
+      </div></div>
+      <span class="hl-label">Bencana</span>
+    </div>
+    <div class="hl-item">
+      <div class="hl-circle"><div class="hl-inner">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+      </div></div>
+      <span class="hl-label">Ceklis Aman</span>
+    </div>
+  </div>
+
+  <div class="ig-tabs">
+    <div class="ig-tab active"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+    <div class="ig-tab"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M10 8l6 4-6 4V8z"/></svg></div>
+    <div class="ig-tab"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
+  </div>
+
+  <div class="ig-grid">
+    <div class="reel-card">
+      <div class="reel-scrim"></div>
+      <div class="reel-pin"><span class="reel-badge orange">EP 01 · PINNED</span></div>
+      <div class="reel-center-art">
+        <div class="reel-title">BAU GAS<br>BOCOR?</div>
+        <div class="reel-pill">JANGAN SENTUH SAKLAR!</div>
+      </div>
+      <svg class="reel-illus" viewBox="0 0 200 200" fill="none">
+        <circle cx="100" cy="128" r="56" fill="#3CC47C" stroke="#181E26" stroke-width="6"/>
+        <rect x="64" y="114" width="72" height="14" fill="#EF4444"/>
+        <rect x="76" y="56" width="48" height="22" rx="8" fill="#3CC47C" stroke="#181E26" stroke-width="6"/>
+        <path d="M148 24l-22 38h20l-10 34 34-44h-20l10-28z" fill="#EF5F18" stroke="#FFFFFF" stroke-width="4"/>
+      </svg>
+      <div class="reel-views"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><span>482RB</span></div>
+    </div>
+
+    <div class="reel-card">
+      <div class="reel-scrim"></div>
+      <div class="reel-pin"><span class="reel-badge">EP 02 · DAPUR</span></div>
+      <div class="reel-center-art">
+        <div class="reel-title">WAJAN<br>TERBAKAR?</div>
+        <div class="reel-pill orange">JANGAN SIRAM AIR!</div>
+      </div>
+      <svg class="reel-illus" viewBox="0 0 200 200" fill="none">
+        <path d="M40 136h120l-14 36H54l-14-36z" fill="#261A66" stroke="#181E26" stroke-width="6"/>
+        <path d="M100 42c24 26 34 48 18 74-12 18-32 14-38-4-6-20 4-44 20-70z" fill="#EF5F18" stroke="#FFFFFF" stroke-width="4"/>
+      </svg>
+      <div class="reel-views"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><span>319RB</span></div>
+    </div>
+
+    <div class="reel-card">
+      <div class="reel-scrim"></div>
+      <div class="reel-pin"><span class="reel-badge">EP 03 · JALAN</span></div>
+      <div class="reel-center-art">
+        <div class="reel-title">REM MOBIL<br>BLONG?</div>
+        <div class="reel-pill">TURUNKAN GIGI BERTAHAP</div>
+      </div>
+      <svg class="reel-illus" viewBox="0 0 200 200" fill="none">
+        <rect x="42" y="102" width="116" height="54" rx="18" fill="#EF5F18" stroke="#181E26" stroke-width="6"/>
+        <circle cx="72" cy="158" r="20" fill="#261A66" stroke="#FFFFFF" stroke-width="5"/>
+        <circle cx="128" cy="158" r="20" fill="#261A66" stroke="#FFFFFF" stroke-width="5"/>
+      </svg>
+      <div class="reel-views"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><span>274RB</span></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+const Q = new URLSearchParams(location.search);
+const initialMode = Q.get('mode') || 'avatar1';
+
+const mat = (hex, rough = 0.38, metal = 0.04, emissive = 0x000000, emInt = 0) =>
+  new THREE.MeshStandardMaterial({ color: hex, roughness: rough, metalness: metal, emissive, emissiveIntensity: emInt });
+const outlineMat = new THREE.MeshBasicMaterial({ color: 0x141821, side: THREE.BackSide });
+function withOutline(mesh, scale = 1.06) {
+  const out = new THREE.Mesh(mesh.geometry, outlineMat);
+  out.scale.setScalar(scale);
+  mesh.add(out);
+  return mesh;
+}
+
+// Expressive face texture (Calm, Confident "Jangan Panik Dulu" expression with raised eyebrow & warm smile)
+function makeExpressiveFaceTex() {
+  const cv = document.createElement('canvas');
+  cv.width = 512; cv.height = 512;
+  const ctx = cv.getContext('2d');
+
+  // Subtle warm cheek blush for life & depth
+  ctx.fillStyle = 'rgba(230, 120, 95, 0.22)';
+  ctx.beginPath(); ctx.ellipse(118, 276, 36, 22, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(394, 276, 36, 22, 0, 0, Math.PI * 2); ctx.fill();
+
+  ctx.strokeStyle = '#181E26';
+  ctx.fillStyle = '#181E26';
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  // Eyebrows: Left calm, Right confidently raised ("Tenang, ada solusinya")
+  ctx.lineWidth = 22;
+  ctx.beginPath();
+  ctx.moveTo(108, 174); ctx.quadraticCurveTo(156, 158, 206, 170);
+  ctx.moveTo(304, 158); ctx.quadraticCurveTo(354, 136, 404, 158);
+  ctx.stroke();
+
+  // Eyes with dual catchlights
+  [158, 354].forEach(cx => {
+    ctx.fillStyle = '#181E26';
+    ctx.beginPath(); ctx.roundRect(cx - 24, 198, 48, 62, 23); ctx.fill();
+    ctx.fillStyle = '#FFFFFF';
+    ctx.beginPath(); ctx.arc(cx - 8, 216, 10, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx + 8, 240, 4.5, 0, Math.PI * 2); ctx.fill();
+  });
+
+  // Clean sculpted nose bridge
+  ctx.strokeStyle = 'rgba(140, 86, 52, 0.82)';
+  ctx.lineWidth = 11;
+  ctx.beginPath();
+  ctx.moveTo(256, 214); ctx.lineTo(246, 266); ctx.lineTo(268, 270);
+  ctx.stroke();
+
+  // Confident asymmetric reassuring smile
+  ctx.strokeStyle = '#181E26';
+  ctx.lineWidth = 16;
+  ctx.beginPath();
+  ctx.moveTo(202, 314);
+  ctx.quadraticCurveTo(258, 352, 320, 304);
+  ctx.stroke();
+
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+// Star/Spark burst geometry for 3D hazard effects
+function makeSparkGeo(outerR = 0.45, innerR = 0.18, points = 7, depth = 0.10) {
+  const s = new THREE.Shape();
+  for (let i = 0; i < points * 2; i++) {
+    const r = i % 2 === 0 ? outerR : innerR;
+    const a = (i / (points * 2)) * Math.PI * 2;
+    const x = Math.cos(a) * r, y = Math.sin(a) * r;
+    if (i === 0) s.moveTo(x, y); else s.lineTo(x, y);
+  }
+  s.closePath();
+  const g = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.02, bevelSegments: 2 });
+  g.center();
+  return g;
+}
+
+// 3D Lightning Bolt Geometry
+function makeBoltGeo(scale = 1) {
+  const s = new THREE.Shape();
+  const pts = [
+    [0.08, 0.52], [-0.28, -0.02], [-0.02, -0.02],
+    [-0.14, -0.52], [0.30, 0.06], [0.03, 0.06]
+  ];
+  pts.forEach(([x, y], i) => {
+    if (i === 0) s.moveTo(x * scale, y * scale);
+    else s.lineTo(x * scale, y * scale);
+  });
+  s.closePath();
+  const g = new THREE.ExtrudeGeometry(s, { depth: 0.12 * scale, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.02, bevelSegments: 2 });
+  g.center();
+  return g;
+}
+
+// 3D Warning Triangle (!) Prop
+function makeWarningTriangleProp() {
+  const g = new THREE.Group();
+  const s = new THREE.Shape();
+  s.moveTo(0, 0.42);
+  s.lineTo(-0.38, -0.30);
+  s.lineTo(0.38, -0.30);
+  s.closePath();
+  const triGeo = new THREE.ExtrudeGeometry(s, { depth: 0.10, bevelEnabled: true, bevelThickness: 0.04, bevelSize: 0.04, bevelSegments: 3 });
+  triGeo.center();
+  const triMesh = withOutline(new THREE.Mesh(triGeo, mat(0xEF5F18, 0.3, 0.05)), 1.07);
+  g.add(triMesh);
+
+  const innerS = new THREE.Shape();
+  innerS.moveTo(0, 0.26);
+  innerS.lineTo(-0.23, -0.20);
+  innerS.lineTo(0.23, -0.20);
+  innerS.closePath();
+  const inGeo = new THREE.ExtrudeGeometry(innerS, { depth: 0.04, bevelEnabled: false });
+  inGeo.center();
+  const inMesh = new THREE.Mesh(inGeo, mat(0xFFFFFF, 0.25));
+  inMesh.position.z = 0.065;
+  g.add(inMesh);
+
+  // Exclamation mark inside triangle
+  const bangBar = new THREE.Mesh(new RoundedBoxGeometry(0.065, 0.18, 0.04, 3, 0.02), mat(0x261A66, 0.3));
+  bangBar.position.set(0, 0.02, 0.09);
+  g.add(bangBar);
+  const bangDot = new THREE.Mesh(new THREE.SphereGeometry(0.04, 12, 12), mat(0x261A66, 0.3));
+  bangDot.position.set(0, -0.13, 0.09);
+  g.add(bangDot);
+
+  return g;
+}
+
+// 3D Fire Extinguisher (Tabung APAR Penyelamat) Prop
+function makeAPARProp() {
+  const g = new THREE.Group();
+  const tank = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.34, 0.64, 0.34, 8, 0.15), mat(0xEF5F18, 0.28, 0.08)),
+    1.065
+  );
+  g.add(tank);
+
+  // White label band on APAR
+  const band = new THREE.Mesh(new THREE.CylinderGeometry(0.176, 0.176, 0.22, 24), mat(0xFFFFFF, 0.3));
+  band.position.y = 0.02;
+  g.add(band);
+
+  // Neck & Valve
+  const neck = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.12, 16), mat(0x261A66, 0.3, 0.2)), 1.08);
+  neck.position.y = 0.36;
+  g.add(neck);
+
+  // Handle lever
+  const lever = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.22, 0.045, 0.06, 3, 0.015), mat(0x261A66, 0.3)), 1.08);
+  lever.position.set(0.05, 0.43, 0);
+  lever.rotation.z = -0.22;
+  g.add(lever);
+
+  // Pressure gauge dot (Green = Ready)
+  const gauge = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.04, 16), mat(0x0FA968, 0.2));
+  gauge.rotation.x = Math.PI * 0.5;
+  gauge.position.set(0, 0.36, 0.08);
+  g.add(gauge);
+
+  // Nozzle hose
+  const nozzle = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.055, 0.28, 14), mat(0x181E26, 0.4)), 1.08);
+  nozzle.position.set(-0.18, 0.22, 0.06);
+  nozzle.rotation.z = 0.38;
+  g.add(nozzle);
+
+  return g;
+}
+
+// 3D Safety Check Badge (Perisai / Lingkaran Hijau Aman)
+function makeSafetyBadgeProp() {
+  const g = new THREE.Group();
+  const disc = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.46, 0.46, 0.12, 8, 0.16), mat(0x0FA968, 0.28)),
+    1.07
+  );
+  g.add(disc);
+
+  const rim = new THREE.Mesh(new RoundedBoxGeometry(0.36, 0.36, 0.04, 6, 0.12), mat(0xFFFFFF, 0.25));
+  rim.position.z = 0.055;
+  g.add(rim);
+
+  const inner = new THREE.Mesh(new RoundedBoxGeometry(0.28, 0.28, 0.05, 6, 0.09), mat(0x0FA968, 0.28));
+  inner.position.z = 0.065;
+  g.add(inner);
+
+  // 3D Checkmark bars
+  const c1 = new THREE.Mesh(new RoundedBoxGeometry(0.055, 0.13, 0.05, 3, 0.02), mat(0xFFFFFF, 0.2));
+  c1.position.set(-0.045, -0.02, 0.095);
+  c1.rotation.z = 0.72;
+  g.add(c1);
+
+  const c2 = new THREE.Mesh(new RoundedBoxGeometry(0.055, 0.22, 0.05, 3, 0.02), mat(0xFFFFFF, 0.2));
+  c2.position.set(0.04, 0.02, 0.095);
+  c2.rotation.z = -0.68;
+  g.add(c2);
+
+  return g;
+}
+
+// Build Mas Raka with articulated 3D Open-Palm Stop/Calm Hand & Head Rig
+function buildMasRakaHeroRig() {
+  const root = new THREE.Group();
+  const bodyPivot = new THREE.Group();
+  bodyPivot.position.y = 0.72;
+  root.add(bodyPivot);
+
+  const skinMat = mat(0xF2C29B, 0.40);
+
+  // Inner White Crewneck Tee
+  const innerTee = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.68, 0.82, 0.44, 6, 0.11), mat(0xFFFFFF, 0.30)),
+    1.065
+  );
+  innerTee.position.y = 0.41;
+  innerTee.castShadow = true;
+  bodyPivot.add(innerTee);
+
+  // Terracotta Overshirt Panels
+  [-0.21, 0.21].forEach(px => {
+    const panel = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.28, 0.83, 0.47, 5, 0.07), mat(0xD95D39, 0.36)),
+      1.06
+    );
+    panel.position.set(px, 0.41, 0.01);
+    panel.castShadow = true;
+    bodyPivot.add(panel);
+  });
+
+  const backPanel = new THREE.Mesh(new RoundedBoxGeometry(0.70, 0.83, 0.24, 5, 0.07), mat(0xD95D39, 0.36));
+  backPanel.position.set(0, 0.41, -0.12);
+  bodyPivot.add(backPanel);
+
+  [-0.16, 0.16].forEach((cx, idx) => {
+    const collar = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.20, 0.12, 0.26, 4, 0.03), mat(0xD95D39, 0.34)),
+      1.06
+    );
+    collar.position.set(cx, 0.81, 0.12);
+    collar.rotation.z = idx === 0 ? 0.35 : -0.35;
+    bodyPivot.add(collar);
+  });
+
+  const pocket = new THREE.Mesh(new RoundedBoxGeometry(0.16, 0.18, 0.04, 3, 0.015), mat(0xB84627, 0.38));
+  pocket.position.set(-0.22, 0.56, 0.245);
+  bodyPivot.add(pocket);
+
+  // Left Arm Raised in 3D "STOP / TENANG DULU" Pose (Foreshortened Toward Camera)
+  const armL = new THREE.Group();
+  armL.position.set(-0.44, 0.68, 0.04);
+  bodyPivot.add(armL);
+
+  // Upper arm angling forward & slightly down to elbow
+  const upperL = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.23, 0.34, 0.23, 4, 0.07), mat(0xD95D39, 0.36)), 1.07);
+  upperL.position.set(-0.05, -0.10, 0.12);
+  upperL.rotation.set(0.65, 0, -0.22);
+  armL.add(upperL);
+
+  const cuffL = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.25, 0.08, 0.25, 4, 0.03), mat(0xFFFFFF, 0.32)), 1.07);
+  cuffL.position.set(-0.08, -0.18, 0.24);
+  cuffL.rotation.set(0.65, 0, -0.22);
+  armL.add(cuffL);
+
+  // Forearm rising up from elbow toward foreground camera
+  const forearmL = new THREE.Group();
+  forearmL.position.set(-0.08, -0.04, 0.34);
+  armL.add(forearmL);
+
+  const lowerL = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.19, 0.28, 0.19, 4, 0.06), skinMat), 1.07);
+  lowerL.position.set(0, 0.02, 0.02);
+  lowerL.rotation.set(-0.25, 0, 0.08);
+  forearmL.add(lowerL);
+
+  // Watch on left wrist
+  const watchStrap = new THREE.Mesh(new RoundedBoxGeometry(0.205, 0.055, 0.205, 3, 0.02), mat(0x181E26, 0.3));
+  watchStrap.position.set(-0.01, 0.12, 0.05);
+  watchStrap.rotation.set(-0.25, 0, 0.08);
+  forearmL.add(watchStrap);
+
+  // Sculpted 3D Open Palm Facing Viewer ("STOP / TENANG DULU" Gesture)
+  const palmGroup = new THREE.Group();
+  palmGroup.position.set(-0.02, 0.28, 0.10);
+  palmGroup.rotation.set(0.08, 0.22, 0.08);
+  forearmL.add(palmGroup);
+
+  const palm = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.22, 0.21, 0.10, 5, 0.048), skinMat), 1.07);
+  palmGroup.add(palm);
+
+  // 4 Sculpted Fingers Pointing Upward (+Y)
+  [-0.075, -0.025, 0.025, 0.075].forEach((fx, fi) => {
+    const fLen = fi === 1 || fi === 2 ? 0.15 : 0.125;
+    const finger = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.046, fLen, 0.068, 4, 0.022), skinMat), 1.08);
+    finger.position.set(fx, 0.14 + (fLen - 0.125) * 0.5, 0);
+    palmGroup.add(finger);
+  });
+
+  // Thumb on inner side (+X)
+  const thumb = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.068, 0.135, 0.072, 4, 0.03), skinMat), 1.08);
+  thumb.position.set(0.13, 0.01, 0.015);
+  thumb.rotation.z = -0.58;
+  palmGroup.add(thumb);
+
+  // Right Arm
+  const armR = new THREE.Group();
+  armR.position.set(0.46, 0.70, 0.04);
+  bodyPivot.add(armR);
+
+  const upperR = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.34, 0.24, 4, 0.07), mat(0xD95D39, 0.36)), 1.07);
+  upperR.position.y = -0.12;
+  armR.add(upperR);
+
+  const cuffR = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.08, 0.26, 4, 0.03), mat(0xFFFFFF, 0.32)), 1.07);
+  cuffR.position.y = -0.28;
+  armR.add(cuffR);
+
+  const forearmR = new THREE.Group();
+  forearmR.position.set(0, -0.30, 0.02);
+  armR.add(forearmR);
+
+  const lowerR = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.20, 0.28, 0.20, 4, 0.06), skinMat), 1.07);
+  lowerR.position.y = -0.12;
+  forearmR.add(lowerR);
+
+  const handR = withOutline(new THREE.Mesh(new THREE.SphereGeometry(0.125, 16, 16), skinMat), 1.07);
+  handR.position.y = -0.30;
+  forearmR.add(handR);
+
+  // Head + 360 Sculpted Side-Part Quiff Hair
+  const headPivot = new THREE.Group();
+  headPivot.position.y = 0.86;
+  bodyPivot.add(headPivot);
+
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.14, 0.16, 16), skinMat);
+  neck.position.y = 0.04;
+  headPivot.add(neck);
+
+  const headMesh = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.74, 0.72, 0.62, 8, 0.21), skinMat),
+    1.055
+  );
+  headMesh.position.y = 0.44;
+  headMesh.castShadow = true;
+  headPivot.add(headMesh);
+
+  [-0.38, 0.38].forEach(ex => {
+    const ear = withOutline(new THREE.Mesh(new THREE.SphereGeometry(0.085, 14, 14), skinMat), 1.08);
+    ear.scale.set(0.65, 1.05, 0.75);
+    ear.position.set(ex, 0.42, 0.0);
+    headPivot.add(ear);
+  });
+
+  const facePlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.58, 0.56),
+    new THREE.MeshBasicMaterial({ map: makeExpressiveFaceTex(), transparent: true })
+  );
+  facePlane.position.set(0, 0.43, 0.314);
+  headPivot.add(facePlane);
+
+  const hairDark = new THREE.MeshStandardMaterial({ color: 0x241A14, roughness: 0.34, metalness: 0.05 });
+  const hairMid  = new THREE.MeshStandardMaterial({ color: 0x2E221A, roughness: 0.32, metalness: 0.06 });
+  const hairFade = new THREE.MeshStandardMaterial({ color: 0x382A21, roughness: 0.46, metalness: 0.02 });
+
+  const hairBase = withOutline(new THREE.Mesh(new THREE.SphereGeometry(0.415, 28, 22), hairDark), 1.045);
+  hairBase.scale.set(0.95, 0.56, 0.86);
+  hairBase.position.set(0, 0.72, -0.02);
+  headPivot.add(hairBase);
+
+  const sideBackTaper = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.762, 0.28, 0.58, 10, 0.11), hairFade), 1.042);
+  sideBackTaper.position.set(0, 0.58, -0.05);
+  headPivot.add(sideBackTaper);
+
+  const napeTaper = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.60, 0.22, 0.24, 8, 0.08), hairFade), 1.04);
+  napeTaper.position.set(0, 0.43, -0.23);
+  headPivot.add(napeTaper);
+
+  [-0.362, 0.362].forEach(bx => {
+    const burn = new THREE.Mesh(new RoundedBoxGeometry(0.055, 0.16, 0.095, 4, 0.025), hairFade);
+    burn.position.set(bx, 0.48, 0.09);
+    headPivot.add(burn);
+  });
+
+  const waveRightMain = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.50, 0.19, 0.62, 10, 0.088), hairDark), 1.045);
+  waveRightMain.position.set(0.11, 0.82, 0.02);
+  waveRightMain.rotation.set(-0.06, 0.06, -0.10);
+  headPivot.add(waveRightMain);
+
+  const frontCommaR = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.32, 0.145, 0.22, 8, 0.068), hairMid), 1.042);
+  frontCommaR.position.set(0.16, 0.80, 0.26);
+  frontCommaR.rotation.set(0.14, -0.16, -0.14);
+  headPivot.add(frontCommaR);
+
+  const waveLeftPart = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.14, 0.54, 8, 0.065), hairDark), 1.045);
+  waveLeftPart.position.set(-0.22, 0.77, 0.01);
+  waveLeftPart.rotation.set(-0.04, -0.08, 0.20);
+  headPivot.add(waveLeftPart);
+
+  const topStrand = new THREE.Mesh(new RoundedBoxGeometry(0.28, 0.095, 0.38, 6, 0.045), hairMid);
+  topStrand.position.set(0.06, 0.885, 0.06);
+  topStrand.rotation.set(-0.05, 0.12, -0.08);
+  headPivot.add(topStrand);
+
+  return { root, bodyPivot, headPivot, armL, forearmL, palmGroup, armR, forearmR };
+}
+
+function createConceptualAvatarScene(canvas, w, h) {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+  renderer.setPixelRatio(2);
+  renderer.setSize(w, h, false);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.12;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x261A66);
+
+  const camera = new THREE.PerspectiveCamera(30, w / h, 0.1, 50);
+
+  // Studio 3-point dimensional lighting
+  const hemi = new THREE.HemisphereLight(0xFFFDF9, 0x261A66, 1.55);
+  hemi.position.set(0, 10, 0);
+  scene.add(hemi);
+
+  const keyLight = new THREE.DirectionalLight(0xFFF8EE, 2.35);
+  keyLight.position.set(3.5, 6.5, 5.5);
+  keyLight.castShadow = true;
+  keyLight.shadow.mapSize.set(1024, 1024);
+  scene.add(keyLight);
+
+  const orangeRim = new THREE.PointLight(0xEF5F18, 4.5, 8);
+  orangeRim.position.set(-2.2, 2.4, -0.8);
+  scene.add(orangeRim);
+
+  const coolRim = new THREE.DirectionalLight(0xA5F3FC, 1.15);
+  coolRim.position.set(3.5, 3.2, -3.0);
+  scene.add(coolRim);
+
+  const raka = buildMasRakaHeroRig();
+  scene.add(raka.root);
+
+  // ----- CONCEPT 1 GROUP: "CALM IN THE CHAOS" (3D Portal Torus + 3D Spark Burst + 3D Warning Triangle + Smoke Puffs) -----
+  const concept1 = new THREE.Group();
+  scene.add(concept1);
+
+  // 3D Dimensional Tilted Portal Ring behind Mas Raka
+  const torus1 = withOutline(
+    new THREE.Mesh(new THREE.TorusGeometry(0.92, 0.11, 20, 64), mat(0xEF5F18, 0.32)),
+    1.05
+  );
+  torus1.position.set(0.0, 1.72, -0.58);
+  torus1.rotation.set(0.12, -0.18, 0.0);
+  concept1.add(torus1);
+
+  const innerDisc1 = new THREE.Mesh(new THREE.CylinderGeometry(0.84, 0.84, 0.06, 48), mat(0x37268C, 0.45));
+  innerDisc1.rotation.x = Math.PI * 0.5;
+  innerDisc1.position.set(0.0, 1.72, -0.66);
+  concept1.add(innerDisc1);
+
+  // Floating 3D Spark Explosion on Upper-Right Back
+  const spark1 = new THREE.Mesh(makeSparkGeo(0.36, 0.14, 7, 0.08), mat(0xFFB703, 0.2, 0.0, 0xFFB703, 0.25));
+  const spark1Outer = new THREE.Mesh(makeSparkGeo(0.50, 0.20, 7, 0.05), mat(0xEF5F18, 0.25));
+  spark1Outer.position.z = -0.03;
+  spark1.add(spark1Outer);
+  spark1.position.set(0.55, 2.15, -0.18);
+  spark1.rotation.set(0.1, -0.25, 0.35);
+  concept1.add(spark1);
+
+  // Floating 3D Warning Triangle on Upper-Left
+  const warn1 = makeWarningTriangleProp();
+  warn1.scale.setScalar(0.62);
+  warn1.position.set(-0.56, 2.12, -0.08);
+  warn1.rotation.set(0.12, 0.32, 0.18);
+  concept1.add(warn1);
+
+  // 3D Stylized Smoke/Gas Puffs behind shoulder
+  [[-0.64, 1.50, -0.28, 0.18], [0.64, 1.54, -0.30, 0.17], [-0.50, 2.44, -0.35, 0.13]].forEach(([x, y, z, r]) => {
+    const puff = withOutline(new THREE.Mesh(new THREE.SphereGeometry(r, 18, 18), mat(0xFFFFFF, 0.35)), 1.06);
+    puff.position.set(x, y, z);
+    concept1.add(puff);
+  });
+
+  // ----- CONCEPT 2 GROUP: "THE RESCUE HERO" (Mas Raka Holding 3D APAR + 3D Green Check Shield + Architectural Halo) -----
+  const concept2 = new THREE.Group();
+  concept2.visible = false;
+  scene.add(concept2);
+
+  const arch2 = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(1.68, 1.92, 0.14, 10, 0.45), mat(0xEF5F18, 0.34)),
+    1.04
+  );
+  arch2.position.set(0.0, 1.68, -0.68);
+  arch2.rotation.z = -0.06;
+  concept2.add(arch2);
+
+  const aparProp = makeAPARProp();
+  aparProp.scale.setScalar(0.90);
+  aparProp.position.set(0.48, 1.48, 0.32);
+  aparProp.rotation.set(0.14, -0.38, 0.14);
+  concept2.add(aparProp);
+
+  const safeBadge2 = makeSafetyBadgeProp();
+  safeBadge2.scale.setScalar(0.80);
+  safeBadge2.position.set(-0.54, 2.08, 0.12);
+  safeBadge2.rotation.set(0.12, 0.32, -0.12);
+  concept2.add(safeBadge2);
+
+  // ----- CONCEPT 3 GROUP: "SPLIT PANIC VS CALM" (Diagonal 3D Split Stage: Left Chaos Bolt vs Right Safe Shield) -----
+  const concept3 = new THREE.Group();
+  concept3.visible = false;
+  scene.add(concept3);
+
+  // Left-side Chaos Zone Block (Signal Orange)
+  const splitLeft = new THREE.Mesh(new RoundedBoxGeometry(1.55, 2.4, 0.12, 6, 0.08), mat(0xEF5F18, 0.38));
+  splitLeft.position.set(-0.68, 1.75, -0.65);
+  splitLeft.rotation.z = -0.18;
+  concept3.add(splitLeft);
+
+  // 3D Lightning Bolt in Left Chaos Zone
+  const bolt3 = withOutline(new THREE.Mesh(makeBoltGeo(0.64), mat(0xFFE600, 0.25)), 1.07);
+  bolt3.position.set(-0.55, 2.12, -0.06);
+  bolt3.rotation.set(0.1, 0.28, 0.18);
+  concept3.add(bolt3);
+
+  // Right-side Calm Zone Shield
+  const safeBadge3 = makeSafetyBadgeProp();
+  safeBadge3.scale.setScalar(0.82);
+  safeBadge3.position.set(0.55, 2.06, 0.12);
+  safeBadge3.rotation.set(0.08, -0.30, 0.12);
+  concept3.add(safeBadge3);
+
+  const ring3 = withOutline(
+    new THREE.Mesh(new THREE.TorusGeometry(0.92, 0.08, 18, 64), mat(0xFFFFFF, 0.3)),
+    1.05
+  );
+  ring3.position.set(0.0, 1.74, -0.52);
+  concept3.add(ring3);
+
+  function applyConcept(mode) {
+    concept1.visible = (mode === 'avatar1' || mode === 'profile');
+    concept2.visible = (mode === 'avatar2');
+    concept3.visible = (mode === 'avatar3');
+
+    if (mode === 'avatar1' || mode === 'profile') {
+      // Concept 1: Dynamic 3/4 Angle + Foreground Open-Palm "Tenang Dulu" Gesture + 3D Hazard Background
+      scene.background.setHex(0x261A66);
+      raka.root.position.set(0.06, 0.0, 0.0);
+      raka.root.rotation.y = 0.16;
+      raka.headPivot.rotation.set(0.02, -0.10, 0.04);
+
+      raka.armL.position.set(-0.44, 0.68, 0.04);
+      raka.armL.rotation.set(0, 0, 0);
+      raka.forearmL.rotation.set(0, 0, 0);
+      raka.palmGroup.rotation.set(0.05, 0.18, 0.06);
+
+      raka.armR.rotation.set(-0.28, -0.15, 0.16);
+      raka.forearmR.rotation.set(-0.45, 0, 0);
+
+      camera.position.set(-0.18, 1.84, 3.32);
+      camera.lookAt(0.0, 1.76, 0.0);
+    } else if (mode === 'avatar2') {
+      // Concept 2: Low-Angle Hero Rescue (Holding 3D APAR + Safety Check Shield)
+      scene.background.setHex(0x1E1552);
+      raka.root.position.set(-0.04, 0.0, 0.0);
+      raka.root.rotation.y = -0.12;
+      raka.headPivot.rotation.set(-0.02, 0.10, -0.03);
+
+      raka.armL.position.set(-0.44, 0.68, 0.04);
+      raka.armL.rotation.set(0, 0, 0);
+      raka.forearmL.rotation.set(0, 0, 0);
+      raka.palmGroup.rotation.set(0.05, 0.25, 0.05);
+
+      raka.armR.rotation.set(-0.68, -0.25, 0.20);
+      raka.forearmR.rotation.set(-0.85, 0, -0.15);
+
+      camera.position.set(0.16, 1.74, 3.34);
+      camera.lookAt(0.0, 1.78, 0.0);
+    } else if (mode === 'avatar3') {
+      // Concept 3: Split Panic (Left) vs Calm Solution (Right)
+      scene.background.setHex(0x261A66);
+      raka.root.position.set(0.04, 0.0, 0.0);
+      raka.root.rotation.y = -0.10;
+      raka.headPivot.rotation.set(0.02, 0.10, -0.03);
+
+      raka.armL.position.set(-0.44, 0.68, 0.04);
+      raka.armL.rotation.set(0, 0, 0);
+      raka.forearmL.rotation.set(0, 0, 0);
+      raka.palmGroup.rotation.set(0.05, 0.22, 0.06);
+
+      raka.armR.rotation.set(-0.32, -0.15, 0.16);
+      raka.forearmR.rotation.set(-0.55, 0, 0);
+
+      camera.position.set(0.14, 1.84, 3.32);
+      camera.lookAt(0.0, 1.76, 0.0);
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  return { applyConcept };
+}
+
+const mainStage = createConceptualAvatarScene(document.getElementById('av-gl'), 930, 930);
+const miniStage = createConceptualAvatarScene(document.getElementById('ig-mini-gl'), 208, 208);
+
+const META = {
+  avatar1: {
+    badge: 'OPSI 1: TENANG DI TENGAH BAHAYA',
+    num: '01',
+    sub: 'Gestur "Tenang Dulu" + Efek Percikan & Segitiga Darurat 3D'
+  },
+  avatar2: {
+    badge: 'OPSI 2: SIAP SELAMATKAN (HERO APAR 3D)',
+    num: '02',
+    sub: 'Mas Raka + Tabung APAR 3D & Perisai Ceklis Aman'
+  },
+  avatar3: {
+    badge: 'OPSI 3: SPLIT PANIK VS SOLUSI',
+    num: '03',
+    sub: 'Kontras Zona Panik (Kiri) vs Zona Tenang (Kanan)'
+  }
+};
+
+function setMode(mode) {
+  document.body.dataset.mode = mode;
+  if (META[mode]) {
+    document.getElementById('av-label').textContent = META[mode].badge;
+    document.getElementById('av-sub').innerHTML = `<em>${META[mode].num}</em><span>${META[mode].sub}</span>`;
+  }
+  mainStage.applyConcept(mode);
+  miniStage.applyConcept('avatar1');
+}
+
+setMode(initialMode);
+window.IGKIT = { setMode };
+</script>
+</body>
+</html>

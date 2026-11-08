@@ -1,0 +1,1398 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Jangan Panik Dulu — 3 Mascot Personas & Multi-Angle 3D Video Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+}}
+</script>
+<style>
+:root{
+  --brand-coral:#FF5A36;
+  --brand-amber:#FFB703;
+  --brand-teal:#10B981;
+  --brand-slate:#181E26;
+  --brand-cream:#FFFBF5;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  width:100%;height:100%;background:#0F141A;overflow:hidden;
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Kanvas Vertikal 9:16 (1080x1920) */
+#stage{
+  position:fixed;left:50%;top:50%;width:1080px;height:1920px;
+  transform:translate(-50%,-50%) scale(1);overflow:hidden;
+  background:linear-gradient(180deg,#E8F3FC 0%,#F5F9FD 42%,#EDE6DC 100%);
+}
+#gl{position:absolute;inset:0;width:1080px;height:1920px;display:block;z-index:1}
+
+#OverlaySVG{
+  position:absolute;inset:0;width:1080px;height:1920px;
+  pointer-events:none;z-index:4;
+}
+
+/* ============ SISTEM UI BRANDING ORIGINAL @janganpanikdulu (Bukan Jiplakan pf) ============ */
+#hud{position:absolute;inset:0;pointer-events:none;z-index:6}
+
+/* 1. Top Bar: Squircle Shield Brand Badge + Segmented Survival Progress Bar */
+#top-bar{
+  position:absolute;left:48px;right:48px;top:52px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.jpd-badge{
+  display:inline-flex;align-items:center;gap:14px;
+  background:var(--brand-slate);color:#FFFFFF;
+  padding:12px 24px 12px 14px;border-radius:24px;
+  box-shadow:0 10px 26px rgba(24,30,38,.20);
+  border:3px solid rgba(255,255,255,.85);
+}
+.jpd-icon{
+  width:52px;height:52px;border-radius:16px;
+  background:var(--brand-coral);
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:28px;color:#FFF;
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.2);
+}
+.jpd-handle{
+  display:flex;flex-direction:column;
+}
+.jpd-handle strong{
+  font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.1;color:#FFFFFF;
+}
+.jpd-handle span{
+  font-size:18px;font-weight:700;color:var(--brand-amber);letter-spacing:.02em;
+}
+
+/* Camera Angle Pill Indicator (Kanan Atas) */
+.angle-pill{
+  background:rgba(255,255,255,.92);color:var(--brand-slate);
+  padding:12px 24px;border-radius:20px;
+  font-size:22px;font-weight:800;letter-spacing:-.01em;
+  border:2.5px solid rgba(24,30,38,.12);
+  box-shadow:0 8px 20px rgba(0,0,0,.10);
+}
+.angle-pill b{color:var(--brand-coral)}
+
+/* 2A. Hook Banner Khas @janganpanikdulu (Card Berlapis dengan Tag Darurat) */
+#hook-card{
+  position:absolute;left:50%;top:168px;transform:translateX(-50%);
+  width:960px;display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.hook-alert{
+  background:var(--brand-coral);color:#FFFFFF;
+  font-size:26px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  padding:8px 26px;border-radius:999px;
+  border:3px solid #FFFFFF;box-shadow:0 6px 18px rgba(255,90,54,.35);
+}
+.hook-main{
+  background:var(--brand-slate);color:#FFFFFF;
+  padding:20px 42px;border-radius:26px;
+  font-size:56px;font-weight:800;letter-spacing:-.02em;line-height:1.08;
+  text-align:center;border:4px solid #FFFFFF;
+  box-shadow:0 14px 32px rgba(24,30,38,.25);
+}
+.hook-main em{
+  font-style:normal;color:var(--brand-amber);
+}
+
+/* 2B. Segmented Survival Tracker (Menggantikan 3 titik bulat pf dengan Bar 3 Tahap Khas JPD) */
+#step-tracker{
+  position:absolute;left:50%;top:164px;transform:translateX(-50%);
+  width:960px;display:flex;flex-direction:column;align-items:center;gap:14px;
+  opacity:0;
+}
+.tracker-card{
+  display:inline-flex;align-items:center;gap:18px;
+  background:#FFFFFF;padding:14px 34px 14px 16px;border-radius:24px;
+  border:3.5px solid var(--brand-slate);
+  box-shadow:0 10px 0 var(--brand-slate), 0 14px 28px rgba(0,0,0,.16);
+}
+.tracker-badge{
+  background:var(--brand-coral);color:#FFFFFF;
+  font-size:28px;font-weight:800;padding:8px 20px;border-radius:14px;
+}
+.tracker-title{
+  font-size:38px;font-weight:800;color:var(--brand-slate);letter-spacing:-.015em;
+  white-space:nowrap;
+}
+.segments-row{
+  display:flex;align-items:center;gap:12px;margin-top:4px;
+}
+.seg-item{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.90);color:#64748B;
+  padding:8px 20px;border-radius:999px;
+  font-size:23px;font-weight:800;
+  border:2.5px solid rgba(24,30,38,.15);
+  box-shadow:0 4px 12px rgba(0,0,0,.10);
+}
+.seg-item.active{
+  background:var(--brand-amber);color:var(--brand-slate);
+  border-color:var(--brand-slate);transform:scale(1.06);
+}
+.seg-item.done{
+  background:var(--brand-teal);color:#FFFFFF;
+  border-color:#FFFFFF;
+}
+
+/* 3. Mascot Persona Badge (Menampilkan detail desain maskot yang sedang aktif) */
+#persona-banner{
+  position:absolute;left:48px;bottom:264px;
+  background:rgba(255,255,255,.95);
+  border:3.5px solid var(--brand-slate);
+  box-shadow:0 8px 0 var(--brand-slate), 0 12px 24px rgba(0,0,0,.18);
+  border-radius:22px;padding:14px 24px;
+  display:flex;align-items:center;gap:16px;
+}
+.persona-tag{
+  background:var(--brand-coral);color:#FFFFFF;
+  font-size:22px;font-weight:800;padding:6px 16px;border-radius:12px;
+}
+.persona-info strong{
+  display:block;font-size:28px;font-weight:800;color:var(--brand-slate);line-height:1.15;
+}
+.persona-info span{
+  font-size:21px;font-weight:700;color:#475569;
+}
+
+/* 4. Callout Labels 3D */
+.callout{
+  position:absolute;left:0;top:0;transform:translate(-50%,-50%);
+  background:#FFFFFF;padding:11px 24px;border-radius:16px;
+  font-size:30px;font-weight:800;letter-spacing:-.01em;
+  border:3.5px solid var(--brand-slate);
+  box-shadow:0 6px 0 var(--brand-slate), 0 10px 22px rgba(0,0,0,.18);
+  white-space:nowrap;opacity:0;color:var(--brand-slate);
+}
+.callout.danger{background:var(--brand-coral);color:#FFFFFF;border-color:#FFFFFF;box-shadow:0 6px 0 #991B1B, 0 10px 22px rgba(0,0,0,.22)}
+.callout.safe{background:var(--brand-teal);color:#FFFFFF;border-color:#FFFFFF;box-shadow:0 6px 0 #065F46, 0 10px 22px rgba(0,0,0,.22)}
+
+/* 5. Bottom Subtitle Card Khas @janganpanikdulu */
+#sub-wrap{
+  position:absolute;left:50%;bottom:118px;transform:translateX(-50%);
+  width:984px;display:flex;justify-content:center;
+}
+.sub-card{
+  background:var(--brand-slate);
+  padding:20px 38px;border-radius:22px;
+  border:3.5px solid rgba(255,255,255,.90);
+  box-shadow:0 12px 32px rgba(0,0,0,.28);
+  font-size:42px;font-weight:800;color:#FFFFFF;
+  letter-spacing:-.015em;text-align:center;line-height:1.18;
+  white-space:nowrap;
+}
+.sub-card em{
+  font-style:normal;color:var(--brand-amber);
+  text-decoration:underline;text-decoration-color:rgba(255,183,3,.45);
+  text-underline-offset:6px;
+}
+
+/* Panel Switcher Interaktif (Bisa ganti Persona 1/2/3 & Angle 1/2/3/4 langsung di browser!) */
+#switcher{
+  position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:80;
+  display:flex;flex-direction:row;align-items:center;gap:14px;
+  background:rgba(24,30,38,.94);padding:10px 16px;border-radius:16px;
+  border:1px solid rgba(255,255,255,.18);color:#fff;font-size:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,.35);
+}
+body.clean-snap #switcher{display:none}
+#switcher .sw-label{font-weight:800;color:var(--brand-amber);text-transform:uppercase;letter-spacing:.04em}
+#switcher .sw-row{display:flex;gap:6px;flex-wrap:wrap}
+#switcher button{
+  background:#2D3748;color:#fff;border:none;padding:7px 11px;
+  border-radius:8px;font:600 12px inherit;cursor:pointer;
+}
+#switcher button.active{background:var(--brand-coral);color:#fff}
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <canvas id="gl"></canvas>
+
+  <svg id="OverlaySVG" viewBox="0 0 1080 1920">
+    <line id="line-c1" x1="0" y1="0" x2="0" y2="0" stroke="#FF5A36" stroke-width="5" opacity="0"/>
+    <circle id="dot-c1" cx="0" cy="0" r="10" fill="#FF5A36" stroke="#FFF" stroke-width="3" opacity="0"/>
+
+    <line id="line-c2" x1="0" y1="0" x2="0" y2="0" stroke="#FF5A36" stroke-width="5" opacity="0"/>
+    <circle id="dot-c2" cx="0" cy="0" r="10" fill="#FF5A36" stroke="#FFF" stroke-width="3" opacity="0"/>
+
+    <line id="line-c3" x1="0" y1="0" x2="0" y2="0" stroke="#10B981" stroke-width="5" opacity="0"/>
+    <circle id="dot-c3" cx="0" cy="0" r="10" fill="#10B981" stroke="#FFF" stroke-width="3" opacity="0"/>
+  </svg>
+
+  <div id="hud">
+    <div id="top-bar">
+      <div class="jpd-badge">
+        <div class="jpd-icon" id="jpd-icon">+</div>
+        <div class="jpd-handle">
+          <strong>@janganpanikdulu</strong>
+          <span id="jpd-sub">SURVIVAL &amp; SAINS</span>
+        </div>
+      </div>
+      <div class="angle-pill" id="angle-pill">ANGLE: <b>EYE-LEVEL MCU</b></div>
+    </div>
+
+    <!-- Hook Card (Angle 1) -->
+    <div id="hook-card">
+      <div class="hook-alert">DARURAT DAPUR</div>
+      <div class="hook-main">CIUM BAU GAS BOCOR?<br><em>JANGAN SENTUH SAKLAR!</em></div>
+    </div>
+
+    <!-- Segmented Survival Tracker (Angle 2, 3, 4) -->
+    <div id="step-tracker">
+      <div class="tracker-card">
+        <div class="tracker-badge" id="tr-badge">POIN 01</div>
+        <div class="tracker-title" id="tr-title">Percikan Saklar 1.000°C</div>
+      </div>
+      <div class="segments-row">
+        <div class="seg-item" id="seg1">01 BAHAYA</div>
+        <div class="seg-item" id="seg2">02 SAINS GAS</div>
+        <div class="seg-item" id="seg3">03 SOLUSI AMAN</div>
+      </div>
+    </div>
+
+    <!-- Callouts 3D -->
+    <div class="callout danger" id="call1">⚡ Percikan 1.000°C di dalam saklar</div>
+    <div class="callout danger" id="call2">⚠️ Gas 2× lebih berat: mengendap di lantai</div>
+    <div class="callout safe" id="call3">✓ Cabut regulator &amp; buka jendela</div>
+
+    <!-- Mascot Persona Info Card -->
+    <div id="persona-banner">
+      <div class="persona-tag" id="p-tag">DESAIN 1</div>
+      <div class="persona-info">
+        <strong id="p-name">"MAS RAKA" — Kemeja Lengan Gulung &amp; Kaos Putih</strong>
+        <span id="p-desc">Overshirt Terracotta Terbuka, Lengan Gulung, Jam Tangan &amp; Chino Navy</span>
+      </div>
+    </div>
+
+    <!-- Bottom Subtitle -->
+    <div id="sub-wrap">
+      <div class="sub-card" id="sub-card">Masuk dapur tiba-tiba cium <em>bau gas?</em></div>
+    </div>
+  </div>
+</div>
+
+<!-- Live Switcher untuk Browser Preview -->
+<div id="switcher">
+  <div class="sw-label">Pilih Desain Mas-Mas:</div>
+  <div class="sw-row">
+    <button id="btn-p1" class="active">1. MAS RAKA (Overshirt Gulung)</button>
+    <button id="btn-p2">2. MAS DAMAR (Polo Rapi)</button>
+    <button id="btn-p3">3. MAS BIMA (Casual + Sling)</button>
+  </div>
+  <div class="sw-label" style="margin-top:6px">Pilih Sudut Kamera:</div>
+  <div class="sw-row">
+    <button id="btn-a0" class="active">Auto Play (Semua)</button>
+    <button id="btn-a1">Angle 1: Eye-Level</button>
+    <button id="btn-a2">Angle 2: OTS Macro</button>
+    <button id="btn-a3">Angle 3: 3/4 Cutaway</button>
+    <button id="btn-a4">Angle 4: Low-Hero</button>
+  </div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+const $ = s => document.querySelector(s);
+const Q = new URLSearchParams(location.search);
+if (Q.has('clean') || Q.has('capture')) document.body.classList.add('clean-snap');
+
+/* ============ 1. RENDERER & CAMERA (MENDUKUNG MULTI-ANGLE DINAMIS) ============ */
+const W = 1080, H = 1920;
+const renderer = new THREE.WebGLRenderer({ canvas: $('#gl'), antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setSize(W, H, false);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.08;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(32, W / H, 0.2, 160);
+
+const hemi = new THREE.HemisphereLight(0xFFFDF9, 0xD8CFC4, 1.65);
+hemi.position.set(0, 18, 0);
+scene.add(hemi);
+
+const sun = new THREE.DirectionalLight(0xFFF7EB, 2.25);
+sun.position.set(7.5, 13.5, 9.0);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+const sd = 6.8;
+sun.shadow.camera.left = -sd;
+sun.shadow.camera.right = sd;
+sun.shadow.camera.top = sd;
+sun.shadow.camera.bottom = -sd;
+sun.shadow.bias = -0.0005;
+scene.add(sun);
+
+const rim = new THREE.DirectionalLight(0x90E0EF, 0.85);
+rim.position.set(-7, 6, -5);
+scene.add(rim);
+
+const mat = (hex, rough = 0.45, metal = 0.03, emissive = 0x000000, emInt = 0) =>
+  new THREE.MeshStandardMaterial({ color: hex, roughness: rough, metalness: metal, emissive, emissiveIntensity: emInt });
+
+const outlineMat = new THREE.MeshBasicMaterial({ color: 0x181E26, side: THREE.BackSide });
+function withOutline(mesh, scale = 1.065) {
+  const out = new THREE.Mesh(mesh.geometry, outlineMat);
+  out.scale.setScalar(scale);
+  mesh.add(out);
+  return mesh;
+}
+
+/* ============ 2. LINGKUNGAN DAPUR 3D DETAIL TINGGI (ENAK DILIHAT DARI SEGALA ANGLE) ============ */
+const world = new THREE.Group();
+scene.add(world);
+
+function makeTileTexture() {
+  const cv = document.createElement('canvas');
+  cv.width = 512; cv.height = 512;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#F6F4F0';
+  ctx.fillRect(0, 0, 512, 512);
+  ctx.strokeStyle = '#DFD9CE';
+  ctx.lineWidth = 6;
+  for (let i = 0; i <= 512; i += 64) {
+    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 512); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(512, i); ctx.stroke();
+  }
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(2, 2);
+  return tex;
+}
+
+function makeWoodTexture() {
+  const cv = document.createElement('canvas');
+  cv.width = 512; cv.height = 512;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#E2B887';
+  ctx.fillRect(0, 0, 512, 512);
+  for (let i = 0; i < 8; i++) {
+    ctx.fillStyle = i % 2 === 0 ? '#E2B887' : '#D9AE7C';
+    ctx.fillRect(0, i * 64, 512, 64);
+    ctx.strokeStyle = '#C69868';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(0, i * 64, 512, 64);
+  }
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+// Lapisan Tanah & Rumput Cutaway
+const soil = new THREE.Mesh(new THREE.BoxGeometry(7.2, 0.85, 7.2), mat(0x9C6B43, 0.75));
+soil.position.y = -0.45;
+world.add(soil);
+
+const grass = new THREE.Mesh(new THREE.BoxGeometry(7.2, 0.16, 7.2), mat(0x52B788, 0.65));
+grass.position.y = 0.02;
+grass.receiveShadow = true;
+world.add(grass);
+
+const floorSlab = new THREE.Mesh(
+  new THREE.BoxGeometry(5.6, 0.24, 5.6),
+  new THREE.MeshStandardMaterial({ map: makeTileTexture(), roughness: 0.45 })
+);
+floorSlab.position.set(-0.1, 0.22, -0.1);
+floorSlab.receiveShadow = true;
+world.add(floorSlab);
+
+// Dinding Belakang & Kiri (Warm Cream-White)
+const wallBack = new THREE.Mesh(new THREE.BoxGeometry(5.6, 3.8, 0.28), mat(0xFBF9F5, 0.48));
+wallBack.position.set(-0.1, 2.12, -2.85);
+wallBack.castShadow = true;
+wallBack.receiveShadow = true;
+world.add(wallBack);
+
+const wallLeft = new THREE.Mesh(new THREE.BoxGeometry(0.28, 3.8, 5.6), mat(0xF4F0EA, 0.48));
+wallLeft.position.set(-2.85, 2.12, -0.1);
+wallLeft.castShadow = true;
+wallLeft.receiveShadow = true;
+world.add(wallLeft);
+
+// Jendela Dapur di Dinding Kiri
+const winGroup = new THREE.Group();
+winGroup.position.set(-2.68, 2.18, -0.35);
+world.add(winGroup);
+const winFrame = new THREE.Mesh(new THREE.BoxGeometry(0.10, 1.38, 1.62), mat(0x22272E, 0.35));
+winGroup.add(winFrame);
+const winSky = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.20, 1.44), new THREE.MeshBasicMaterial({ color: 0x90E0EF }));
+winSky.position.x = 0.04;
+winGroup.add(winSky);
+
+const winSashPivot = new THREE.Group();
+winSashPivot.position.set(0.07, 0, -0.72);
+winGroup.add(winSashPivot);
+const winSash = new THREE.Mesh(
+  new THREE.BoxGeometry(0.07, 1.18, 1.40),
+  new THREE.MeshStandardMaterial({ color: 0xCAF0F8, transparent: true, opacity: 0.65, roughness: 0.15 })
+);
+winSash.position.set(0, 0, 0.72);
+winSashPivot.add(winSash);
+
+// Kitchen Set Kayu Hangat + Kompor + Panci
+const kitchenGroup = new THREE.Group();
+kitchenGroup.position.set(-0.75, 0.34, -2.18);
+world.add(kitchenGroup);
+
+const baseCab = new THREE.Mesh(
+  new RoundedBoxGeometry(2.65, 0.90, 0.92, 4, 0.03),
+  new THREE.MeshStandardMaterial({ map: makeWoodTexture(), roughness: 0.48 })
+);
+baseCab.position.y = 0.45;
+baseCab.castShadow = true;
+baseCab.receiveShadow = true;
+kitchenGroup.add(baseCab);
+
+const counterTop = new THREE.Mesh(new RoundedBoxGeometry(2.74, 0.10, 0.98, 4, 0.02), mat(0xFFFFFF, 0.3));
+counterTop.position.y = 0.93;
+counterTop.castShadow = true;
+kitchenGroup.add(counterTop);
+
+const cooktop = new THREE.Mesh(new RoundedBoxGeometry(1.10, 0.06, 0.64, 3, 0.02), mat(0x1E242B, 0.25));
+cooktop.position.set(-0.22, 0.99, 0);
+kitchenGroup.add(cooktop);
+
+const cookingPot = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.18, 0.25, 24), mat(0xFF5A36, 0.32)),
+  1.06
+);
+cookingPot.position.set(-0.48, 1.16, 0);
+cookingPot.castShadow = true;
+kitchenGroup.add(cookingPot);
+
+const upperCab = new THREE.Mesh(
+  new RoundedBoxGeometry(2.65, 0.74, 0.54, 4, 0.03),
+  new THREE.MeshStandardMaterial({ map: makeWoodTexture(), roughness: 0.48 })
+);
+upperCab.position.set(0, 2.34, -0.18);
+upperCab.castShadow = true;
+kitchenGroup.add(upperCab);
+
+const fridge = new THREE.Mesh(new RoundedBoxGeometry(0.92, 2.12, 0.92, 4, 0.04), mat(0x2B333C, 0.32));
+fridge.position.set(-1.82, 1.06, -0.02);
+fridge.castShadow = true;
+kitchenGroup.add(fridge);
+
+// Tabung LPG 3kg + Regulator Bersendi
+const lpgGroup = new THREE.Group();
+lpgGroup.position.set(1.25, 0.34, -1.85);
+world.add(lpgGroup);
+
+const lpgBody = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.48, 32), mat(0x52B788, 0.35)),
+  1.06
+);
+lpgBody.position.y = 0.28;
+lpgBody.castShadow = true;
+lpgGroup.add(lpgBody);
+
+const lpgDome = new THREE.Mesh(
+  new THREE.SphereGeometry(0.36, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.5),
+  mat(0x52B788, 0.35)
+);
+lpgDome.scale.y = 0.55;
+lpgDome.position.y = 0.52;
+lpgGroup.add(lpgDome);
+
+const lpgRedStripe = new THREE.Mesh(new THREE.CylinderGeometry(0.365, 0.365, 0.08, 32), mat(0xEF4444, 0.35));
+lpgRedStripe.position.y = 0.47;
+lpgGroup.add(lpgRedStripe);
+
+const lpgCollar = withOutline(
+  new THREE.Mesh(new THREE.TorusGeometry(0.20, 0.035, 12, 28), mat(0x40916C, 0.38)),
+  1.08
+);
+lpgCollar.rotation.x = Math.PI / 2;
+lpgCollar.position.y = 0.78;
+lpgGroup.add(lpgCollar);
+
+const brassValve = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.068, 0.14, 18), mat(0xF59E0B, 0.28, 0.3));
+brassValve.position.y = 0.70;
+lpgGroup.add(brassValve);
+
+const regulatorGroup = new THREE.Group();
+regulatorGroup.position.set(0, 0.80, 0);
+lpgGroup.add(regulatorGroup);
+const regMesh = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.16, 24), mat(0x64748B, 0.3, 0.2)),
+  1.08
+);
+regulatorGroup.add(regMesh);
+const regSwitch = new THREE.Mesh(new RoundedBoxGeometry(0.05, 0.08, 0.22, 3, 0.01), mat(0x181E26, 0.3));
+regSwitch.position.set(0, 0.02, 0.13);
+regulatorGroup.add(regSwitch);
+
+// Saklar Dinding + Percikan 1.000°C
+const switchGroup = new THREE.Group();
+switchGroup.position.set(1.52, 1.92, -2.68);
+world.add(switchGroup);
+const switchPlate = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(0.44, 0.56, 0.07, 4, 0.02), mat(0xFFFFFF, 0.25)),
+  1.07
+);
+switchGroup.add(switchPlate);
+const switchRocker = new THREE.Mesh(new RoundedBoxGeometry(0.20, 0.28, 0.07, 3, 0.015), mat(0xE2E8F0, 0.3));
+switchRocker.position.z = 0.04;
+switchGroup.add(switchRocker);
+
+function makeSparkGeo(R = 0.36, r = 0.12, depth = 0.08) {
+  const s = new THREE.Shape();
+  for (let i = 0; i < 12; i++) {
+    const a = (i * Math.PI) / 6 - Math.PI / 2;
+    const rad = i % 2 === 0 ? R : r;
+    const x = Math.cos(a) * rad, y = -Math.sin(a) * rad;
+    if (i === 0) s.moveTo(x, y);
+    else s.lineTo(x, y);
+  }
+  s.closePath();
+  const g = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2 });
+  g.center();
+  return g;
+}
+const sparkBurst = new THREE.Mesh(makeSparkGeo(0.36, 0.12, 0.08), new THREE.MeshBasicMaterial({ color: 0xFFB703 }));
+const sparkOuter = new THREE.Mesh(makeSparkGeo(0.54, 0.18, 0.05), new THREE.MeshBasicMaterial({ color: 0xFF5A36 }));
+sparkBurst.add(sparkOuter);
+sparkBurst.position.set(0, 0, 0.14);
+switchGroup.add(sparkBurst);
+
+// Blok Volume Gas Translusen di Lantai
+const gasVolumeGroup = new THREE.Group();
+gasVolumeGroup.position.set(-0.1, 0.62, -0.1);
+world.add(gasVolumeGroup);
+const gasSlabMat = new THREE.MeshBasicMaterial({ color: 0xFF5A36, transparent: true, opacity: 0.38, depthWrite: false });
+const gasSlab = new THREE.Mesh(new THREE.BoxGeometry(5.2, 0.56, 5.0), gasSlabMat);
+gasVolumeGroup.add(gasSlab);
+const gasEdges = new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(5.2, 0.56, 5.0)),
+  new THREE.LineBasicMaterial({ color: 0xDC2626, transparent: true, opacity: 0.85 })
+);
+gasVolumeGroup.add(gasEdges);
+
+// Aliran Udara Segar Hijau Mint
+const airflowGroup = new THREE.Group();
+world.add(airflowGroup);
+const airArrows = Array.from({ length: 4 }, (_, i) => {
+  const g = new THREE.Group();
+  const body = new THREE.Mesh(
+    new RoundedBoxGeometry(1.15, 0.11, 0.24, 3, 0.03),
+    new THREE.MeshBasicMaterial({ color: 0x10B981, transparent: true, opacity: 0.82 })
+  );
+  g.add(body);
+  g.position.set(-1.6 + i * 0.85, 1.55 - i * 0.18, -0.35 + (i % 2) * 0.45);
+  airflowGroup.add(g);
+  return g;
+});
+
+/* ============ 3. BUILDER TOP 3 DESAIN "MAS-MAS SIMPEL TAPI BISA DIANDALKAN" ============ */
+
+// Tekstur wajah Mas-Mas Kalem, Dewasa, & Bisa Diandalkan (Proporsi Golden-Ratio, Tanpa Hidung Kentang)
+function makeMasFaceTexture(variant = 0) {
+  const cv = document.createElement('canvas');
+  cv.width = 512; cv.height = 512;
+  const ctx = cv.getContext('2d');
+  ctx.clearRect(0, 0, 512, 512);
+
+  ctx.fillStyle = '#181E26';
+  ctx.strokeStyle = '#181E26';
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  // 1. Alis maskulin tegas & tenang (di posisi natural wajah)
+  ctx.lineWidth = 20;
+  ctx.beginPath();
+  // Alis kiri
+  ctx.moveTo(112, 174);
+  ctx.quadraticCurveTo(156, 160, 204, 172);
+  // Alis kanan (sedikit terangkat kalem / meyakinkan)
+  ctx.moveTo(308, 168);
+  ctx.quadraticCurveTo(356, 152, 400, 170);
+  ctx.stroke();
+
+  // 2. Mata proporsional fokus & tenang (jarak ideal, tidak terlalu rapat)
+  [158, 354].forEach(cx => {
+    ctx.fillStyle = '#181E26';
+    ctx.beginPath();
+    ctx.roundRect(cx - 22, 202, 44, 58, 21);
+    ctx.fill();
+    // Highlight mata bersih
+    ctx.fillStyle = '#FFFFFF';
+    ctx.beginPath();
+    ctx.arc(cx - 7, 220, 9, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // 3. Garis Hidung Minimalis Maskulin (Clean L-Bridge — jauh lebih rapi daripada bola 3D)
+  ctx.strokeStyle = 'rgba(145, 92, 58, 0.78)';
+  ctx.lineWidth = 10;
+  ctx.beginPath();
+  ctx.moveTo(256, 218);
+  ctx.lineTo(248, 268);
+  ctx.lineTo(268, 272);
+  ctx.stroke();
+
+  // 4. Khusus Desain 2 (Mas Damar): Kacamata Frame Persegi Tipis Maskulin (Sleek Rectangular Frame)
+  if (variant === 1) {
+    ctx.strokeStyle = '#1E293B';
+    ctx.lineWidth = 11;
+    // Frame kiri & kanan persegi modern
+    ctx.beginPath();
+    ctx.roundRect(100, 186, 116, 86, 16);
+    ctx.roundRect(296, 186, 116, 86, 16);
+    ctx.stroke();
+    // Bridge tengah & gagang samping
+    ctx.lineWidth = 10;
+    ctx.beginPath();
+    ctx.moveTo(216, 214); ctx.lineTo(296, 214);
+    ctx.moveTo(64, 212); ctx.lineTo(100, 212);
+    ctx.moveTo(412, 212); ctx.lineTo(448, 212);
+    ctx.stroke();
+  }
+
+  // 5. Senyum tipis kalem & meyakinkan ("Tenang, jangan panik dulu")
+  ctx.strokeStyle = '#181E26';
+  ctx.lineWidth = 14;
+  ctx.beginPath();
+  if (variant === 1) {
+    ctx.moveTo(210, 326);
+    ctx.quadraticCurveTo(256, 350, 304, 324);
+  } else {
+    ctx.moveTo(208, 328);
+    ctx.quadraticCurveTo(258, 350, 310, 316);
+  }
+  ctx.stroke();
+
+  // 6. Khusus Desain 3 (Mas Bima): Kumis tipis & Goatee dagu rapi (Clean Adult Stubble)
+  if (variant === 2) {
+    ctx.strokeStyle = '#27201C';
+    ctx.lineWidth = 11;
+    ctx.beginPath();
+    ctx.moveTo(212, 302);
+    ctx.quadraticCurveTo(256, 292, 300, 302);
+    ctx.stroke();
+
+    ctx.lineWidth = 14;
+    ctx.beginPath();
+    ctx.moveTo(222, 378);
+    ctx.quadraticCurveTo(256, 392, 290, 378);
+    ctx.stroke();
+  }
+
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+// Helper membuat Kepala 3D Mas-Mas (Siluet 100% seamless tanpa garis bocor di pipi)
+function buildMasHead(bodyPivot, variant = 0) {
+  const skinMat = mat(0xF1C29B, 0.36);
+
+  // Leher proporsional
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 0.22, 16), skinMat);
+  neck.position.set(0, 0.86, 0);
+  bodyPivot.add(neck);
+
+  const headPivot = new THREE.Group();
+  headPivot.position.y = 0.90;
+  bodyPivot.add(headPivot);
+
+  // Bentuk kepala maskulin clean
+  const head = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.74, 0.74, 0.70, 8, 0.21), skinMat),
+    1.065
+  );
+  head.position.y = 0.37;
+  head.castShadow = true;
+  headPivot.add(head);
+
+  // Plane Wajah Ekspresi
+  const facePlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.64, 0.64),
+    new THREE.MeshBasicMaterial({ map: makeMasFaceTexture(variant), transparent: true })
+  );
+  facePlane.position.set(0, 0.37, 0.356);
+  headPivot.add(facePlane);
+
+  return headPivot;
+}
+
+// Helper Lengan dengan Lengan Bawah + Jam Tangan di Tangan Kiri (Ciri khas mas-mas yang bisa diandalkan)
+function buildMasArms(bodyPivot, sleeveColor, isRolledOrShort = true, watchBandColor = 0x181E26) {
+  const skinMat = mat(0xF1C29B, 0.36);
+  const sleeveMat = mat(sleeveColor, 0.36);
+
+  function makeArm(side) {
+    const p = new THREE.Group();
+    p.position.set(side * 0.47, 0.72, 0);
+
+    if (isRolledOrShort) {
+      // Lengan atas tertutup baju/kemeja gulung
+      const upperSleeve = withOutline(
+        new THREE.Mesh(new RoundedBoxGeometry(0.25, 0.36, 0.27, 5, 0.08), sleeveMat),
+        1.08
+      );
+      upperSleeve.position.y = -0.13;
+      p.add(upperSleeve);
+
+      // Lipatan gulungan lengan (Cuff Roll)
+      const cuffRoll = withOutline(
+        new THREE.Mesh(new RoundedBoxGeometry(0.27, 0.09, 0.29, 4, 0.03), sleeveMat),
+        1.07
+      );
+      cuffRoll.position.y = -0.29;
+      p.add(cuffRoll);
+
+      // Lengan bawah kulit (Forearm)
+      const forearm = withOutline(
+        new THREE.Mesh(new RoundedBoxGeometry(0.21, 0.30, 0.23, 5, 0.07), skinMat),
+        1.08
+      );
+      forearm.position.y = -0.44;
+      p.add(forearm);
+    } else {
+      const fullArm = withOutline(
+        new THREE.Mesh(new RoundedBoxGeometry(0.25, 0.62, 0.27, 5, 0.08), sleeveMat),
+        1.08
+      );
+      fullArm.position.y = -0.25;
+      p.add(fullArm);
+    }
+
+    // Jam Tangan Simpel di Pergelangan Kiri (side === -1)
+    if (side === -1) {
+      const watchStrap = new THREE.Mesh(
+        new RoundedBoxGeometry(0.23, 0.07, 0.25, 4, 0.02),
+        mat(watchBandColor, 0.3)
+      );
+      watchStrap.position.y = -0.52;
+      p.add(watchStrap);
+
+      const watchDial = new THREE.Mesh(
+        new RoundedBoxGeometry(0.11, 0.10, 0.04, 3, 0.01),
+        mat(0x0F172A, 0.2)
+      );
+      watchDial.position.set(0, -0.52, 0.13);
+      p.add(watchDial);
+    }
+
+    const hand = withOutline(
+      new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 16), skinMat),
+      1.08
+    );
+    hand.position.y = -0.60;
+    p.add(hand);
+
+    bodyPivot.add(p);
+    return p;
+  }
+
+  return { armL: makeArm(-1), armR: makeArm(1) };
+}
+
+/* ---- DESAIN 1: "MAS RAKA" (Kemeja Overshirt Lengan Gulung + Kaos Putih — Siap Turun Tangan) ---- */
+function buildMascot1_Siaga() {
+  const root = new THREE.Group();
+  const bodyPivot = new THREE.Group();
+  bodyPivot.position.y = 0.72;
+  root.add(bodyPivot);
+
+  // Base Torso: Kaos Dalam Putih Bersih (Clean White Crewneck Tee)
+  const innerTee = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.68, 0.82, 0.44, 6, 0.11), mat(0xFFFFFF, 0.32)),
+    1.07
+  );
+  innerTee.position.y = 0.41;
+  innerTee.castShadow = true;
+  bodyPivot.add(innerTee);
+
+  // Kemeja Luar (Open Overshirt / Workshirt) warna Terracotta-Rust Hangat (#D95D39)
+  // Panel Kiri & Kanan Kemeja Terbuka sehingga kaos putih di tengah dada terlihat jelas
+  [-0.21, 0.21].forEach(px => {
+    const panel = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.28, 0.83, 0.47, 5, 0.07), mat(0xD95D39, 0.38)),
+      1.06
+    );
+    panel.position.set(px, 0.41, 0.01);
+    panel.castShadow = true;
+    bodyPivot.add(panel);
+  });
+
+  // Punggung Kemeja Overshirt
+  const backPanel = new THREE.Mesh(new RoundedBoxGeometry(0.70, 0.83, 0.24, 5, 0.07), mat(0xD95D39, 0.38));
+  backPanel.position.set(0, 0.41, -0.12);
+  bodyPivot.add(backPanel);
+
+  // Kerah Kemeja Lipat Kiri & Kanan
+  [-0.16, 0.16].forEach((cx, idx) => {
+    const collar = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.20, 0.12, 0.26, 4, 0.03), mat(0xD95D39, 0.36)),
+      1.06
+    );
+    collar.position.set(cx, 0.81, 0.12);
+    collar.rotation.z = idx === 0 ? 0.35 : -0.35;
+    bodyPivot.add(collar);
+  });
+
+  // Kantong Dada Kemeja Kiri + Pulpen/Testpen Kecil (Detail Mas-Mas Cekatan)
+  const pocket = new THREE.Mesh(new RoundedBoxGeometry(0.16, 0.18, 0.04, 3, 0.015), mat(0xB84627, 0.4));
+  pocket.position.set(-0.22, 0.56, 0.245);
+  bodyPivot.add(pocket);
+
+  // Kepala Mas Raka + Rambut Clean Side-Part / Comma Crop Rapi
+  const headPivot = buildMasHead(bodyPivot, 0);
+  const hairMat = mat(0x1C1613, 0.35);
+
+  const hairTop = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.78, 0.26, 0.74, 6, 0.10), hairMat),
+    1.06
+  );
+  hairTop.position.set(0, 0.73, -0.01);
+  headPivot.add(hairTop);
+
+  // Belahan jambul depan rapi menyamping (Clean Side-Part Fringe)
+  const fringeR = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.46, 0.18, 0.26, 5, 0.07), hairMat),
+    1.06
+  );
+  fringeR.position.set(0.13, 0.71, 0.29);
+  fringeR.rotation.z = -0.14;
+  headPivot.add(fringeR);
+
+  const fringeL = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.14, 0.22, 4, 0.05), hairMat),
+    1.06
+  );
+  fringeL.position.set(-0.23, 0.70, 0.27);
+  fringeL.rotation.z = 0.20;
+  headPivot.add(fringeL);
+
+  // Rambut samping tipis rapi (Clean Taper Sides)
+  [-0.365, 0.365].forEach(sx => {
+    const sideHair = new THREE.Mesh(new RoundedBoxGeometry(0.06, 0.18, 0.46, 4, 0.02), hairMat);
+    sideHair.position.set(sx, 0.62, -0.06);
+    headPivot.add(sideHair);
+  });
+
+  // Lengan Gulung Sebatas Siku + Jam Tangan Hitam
+  const { armL, armR } = buildMasArms(bodyPivot, 0xD95D39, true, 0x181E26);
+
+  // Celana Chino Navy Gelap + Sneakers Putih Bersih
+  function makeLeg(side) {
+    const p = new THREE.Group();
+    p.position.set(side * 0.19, 0.72, 0);
+    const leg = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.29, 0.64, 0.32, 5, 0.07), mat(0x1E293B, 0.45)),
+      1.08
+    );
+    leg.position.y = -0.32;
+    p.add(leg);
+    const shoe = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.31, 0.17, 0.42, 4, 0.05), mat(0xF8FAFC, 0.3)),
+      1.08
+    );
+    shoe.position.set(0, -0.62, 0.05);
+    p.add(shoe);
+    root.add(p);
+    return p;
+  }
+  const legL = makeLeg(-1);
+  const legR = makeLeg(1);
+
+  return { root, bodyPivot, headPivot, armL, armR, legL, legR };
+}
+
+/* ---- DESAIN 2: "MAS DAMAR" (Kaos Polo Kerah Rapi Forest-Sage + Chino Khaki — Kalem & Logis) ---- */
+function buildMascot2_Aka() {
+  const root = new THREE.Group();
+  const bodyPivot = new THREE.Group();
+  bodyPivot.position.y = 0.72;
+  root.add(bodyPivot);
+
+  // Kaos Polo Knit Rapi warna Deep Forest-Sage (#1E4D40)
+  const torso = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.70, 0.82, 0.45, 6, 0.12), mat(0x1E4D40, 0.38)),
+    1.07
+  );
+  torso.position.y = 0.41;
+  torso.castShadow = true;
+  bodyPivot.add(torso);
+
+  // Plaket Kancing Polo Krem di Tengah Dada Atas
+  const placket = new THREE.Mesh(new RoundedBoxGeometry(0.11, 0.30, 0.47, 3, 0.02), mat(0xFFFDF9, 0.3));
+  placket.position.set(0, 0.64, 0);
+  bodyPivot.add(placket);
+
+  // Kerah Polo Lipat Rapi
+  [-0.14, 0.14].forEach((cx, idx) => {
+    const collar = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.20, 0.11, 0.24, 4, 0.03), mat(0x163A30, 0.38)),
+      1.06
+    );
+    collar.position.set(cx, 0.82, 0.11);
+    collar.rotation.z = idx === 0 ? 0.30 : -0.30;
+    bodyPivot.add(collar);
+  });
+
+  // Kepala Mas Damar + Rambut Short Textured Quiff Rapi
+  const headPivot = buildMasHead(bodyPivot, 1);
+  const hairMat = mat(0x231915, 0.36);
+
+  const hairCrown = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.77, 0.24, 0.73, 6, 0.09), hairMat),
+    1.06
+  );
+  hairCrown.position.set(0, 0.72, -0.02);
+  headPivot.add(hairCrown);
+
+  // Jambul Quiff Pendek Rapi terangkat sedikit di depan
+  const quiffFront = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.58, 0.20, 0.26, 5, 0.08), hairMat),
+    1.06
+  );
+  quiffFront.position.set(0, 0.75, 0.28);
+  quiffFront.rotation.x = -0.18;
+  headPivot.add(quiffFront);
+
+  [-0.365, 0.365].forEach(sx => {
+    const sideHair = new THREE.Mesh(new RoundedBoxGeometry(0.06, 0.18, 0.46, 4, 0.02), hairMat);
+    sideHair.position.set(sx, 0.62, -0.06);
+    headPivot.add(sideHair);
+  });
+
+  // Lengan Pendek Polo + Jam Tangan Strap Kulit Coklat
+  const { armL, armR } = buildMasArms(bodyPivot, 0x1E4D40, true, 0x78350F);
+
+  // Celana Panjang Chino Warm Khaki / Sand (#D6C2A5) + Sepatu Casual Coklat Tua
+  function makeLeg(side) {
+    const p = new THREE.Group();
+    p.position.set(side * 0.19, 0.72, 0);
+    const leg = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.29, 0.64, 0.32, 5, 0.07), mat(0xD6C2A5, 0.42)),
+      1.08
+    );
+    leg.position.y = -0.32;
+    p.add(leg);
+    const shoe = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.31, 0.17, 0.42, 4, 0.05), mat(0x451A03, 0.38)),
+      1.08
+    );
+    shoe.position.set(0, -0.62, 0.05);
+    p.add(shoe);
+    root.add(p);
+    return p;
+  }
+  const legL = makeLeg(-1);
+  const legR = makeLeg(1);
+
+  return { root, bodyPivot, headPivot, armL, armR, legL, legR };
+}
+
+/* ---- DESAIN 3: "MAS BIMA" (Kaos Raglan Mustard-Charcoal + Sling Bag Hitam — Abang Andalan) ---- */
+function buildMascot3_Bimo() {
+  const root = new THREE.Group();
+  const bodyPivot = new THREE.Group();
+  bodyPivot.position.y = 0.72;
+  root.add(bodyPivot);
+
+  // Kaos Crewneck / Sweater Tipis warna Warm Mustard-Amber (#E09F3E) dengan Kerah Rib Charcoal
+  const torso = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.70, 0.82, 0.45, 6, 0.12), mat(0xE09F3E, 0.38)),
+    1.07
+  );
+  torso.position.y = 0.41;
+  torso.castShadow = true;
+  bodyPivot.add(torso);
+
+  // Rib Kerah Bulat Hitam-Charcoal
+  const neckRib = new THREE.Mesh(new RoundedBoxGeometry(0.36, 0.08, 0.47, 4, 0.03), mat(0x1E242B, 0.38));
+  neckRib.position.set(0, 0.80, 0);
+  bodyPivot.add(neckRib);
+
+  // Tas Selempang Kecil Hitam Polos (Urban Crossbody Sling Bag — khas mas-mas praktis sehari-hari)
+  const slingStrap = new THREE.Mesh(new RoundedBoxGeometry(0.11, 0.86, 0.48, 3, 0.025), mat(0x181E26, 0.35));
+  slingStrap.position.set(0, 0.42, 0);
+  slingStrap.rotation.z = 0.50;
+  bodyPivot.add(slingStrap);
+
+  const slingPouch = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.28, 0.17, 0.10, 4, 0.03), mat(0x181E26, 0.32)),
+    1.06
+  );
+  slingPouch.position.set(-0.04, 0.44, 0.25);
+  slingPouch.rotation.z = 0.50;
+  bodyPivot.add(slingPouch);
+
+  // Kepala Mas Bima (dengan kumis/stubble tipis dewasa) + Rambut Clean Taper Crop
+  const headPivot = buildMasHead(bodyPivot, 2);
+  const hairMat = mat(0x18181B, 0.36);
+
+  const hairTop = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.76, 0.23, 0.72, 6, 0.09), hairMat),
+    1.06
+  );
+  hairTop.position.set(0, 0.72, -0.01);
+  headPivot.add(hairTop);
+
+  // Potongan French Crop / Taper Pendek Rapi
+  const cropFront = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.64, 0.14, 0.22, 4, 0.05), hairMat),
+    1.06
+  );
+  cropFront.position.set(0, 0.69, 0.28);
+  headPivot.add(cropFront);
+
+  // Lengan Raglan 3/4 warna Charcoal (#232B35) + Jam Tangan Sporty
+  const { armL, armR } = buildMasArms(bodyPivot, 0x232B35, true, 0xFF5A36);
+
+  // Celana Jeans Indigo Gelap + Sneakers Abu-Putih
+  function makeLeg(side) {
+    const p = new THREE.Group();
+    p.position.set(side * 0.19, 0.72, 0);
+    const leg = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.29, 0.64, 0.32, 5, 0.07), mat(0x2B3A4A, 0.45)),
+      1.08
+    );
+    leg.position.y = -0.32;
+    p.add(leg);
+    const shoe = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.31, 0.17, 0.42, 4, 0.05), mat(0xE2E8F0, 0.32)),
+      1.08
+    );
+    shoe.position.set(0, -0.62, 0.05);
+    p.add(shoe);
+    root.add(p);
+    return p;
+  }
+  const legL = makeLeg(-1);
+  const legR = makeLeg(1);
+
+  return { root, bodyPivot, headPivot, armL, armR, legL, legR };
+}
+
+const MASCOTS = [
+  buildMascot1_Siaga(),
+  buildMascot2_Aka(),
+  buildMascot3_Bimo()
+];
+MASCOTS.forEach(m => world.add(m.root));
+
+const PERSONA_META = [
+  {
+    tag: 'DESAIN 1',
+    name: '"MAS RAKA" — Kemeja Lengan Gulung & Kaos Putih',
+    desc: 'Overshirt Terracotta Terbuka, Lengan Gulung, Jam Tangan & Chino Navy',
+    icon: '✓',
+    color: '#D95D39'
+  },
+  {
+    tag: 'DESAIN 2',
+    name: '"MAS DAMAR" — Kaos Polo Rapi & Kacamata Tipis',
+    desc: 'Polo Knit Forest-Sage, Kacamata Persegi Tipis, & Chino Khaki',
+    icon: '✓',
+    color: '#1E4D40'
+  },
+  {
+    tag: 'DESAIN 3',
+    name: '"MAS BIMA" — Raglan Casual & Sling Bag Hitam',
+    desc: 'Kaos Raglan Mustard-Charcoal, Kumis Tipis Rapi, & Sling Bag Urban',
+    icon: '✓',
+    color: '#E09F3E'
+  }
+];
+
+let activePersona = Number(Q.get('persona') || 0);
+function setPersona(idx) {
+  activePersona = idx;
+  MASCOTS.forEach((m, i) => { m.root.visible = (i === idx); });
+  const meta = PERSONA_META[idx];
+  $('#p-tag').textContent = meta.tag;
+  $('#p-tag').style.background = meta.color;
+  $('#p-name').textContent = meta.name;
+  $('#p-desc').textContent = meta.desc;
+  $('#jpd-icon').textContent = meta.icon;
+  $('#jpd-icon').style.background = meta.color;
+  ['#btn-p1', '#btn-p2', '#btn-p3'].forEach((sel, i) => {
+    $(sel).classList.toggle('active', i === idx);
+  });
+}
+setPersona(activePersona);
+
+/* ============ 4. KOREOGRAFI 4 SUDUT KAMERA BERBEDA (BUKAN HANYA ISOMETRIK!) ============ */
+const S = {
+  camX: 2.2, camY: 2.45, camZ: 4.85,
+  lookX: 0.55, lookY: 1.42, lookZ: -1.25,
+  fov: 35,
+
+  cX: 0.45, cY: 0.34, cZ: -0.45, cRotY: 0.35,
+  cArmL: -0.25, cArmR: -1.25,
+  cKneel: 0,
+
+  sparkScale: 0,
+  gasOpacity: 0.38,
+  regLift: 0,
+  winOpen: 0,
+  airOpacity: 0,
+
+  c1Alpha: 0,
+  c2Alpha: 0,
+  c3Alpha: 0
+};
+
+function projectToScreen(vec3) {
+  const v = vec3.clone().project(camera);
+  return {
+    x: (v.x * 0.5 + 0.5) * W,
+    y: (-v.y * 0.5 + 0.5) * H
+  };
+}
+
+function setCalloutLine(lineId, dotId, callEl, worldTarget, offsetX, offsetY, alpha) {
+  const line = $(lineId), dot = $(dotId);
+  if (alpha <= 0.01) {
+    callEl.style.opacity = '0';
+    line.setAttribute('opacity', '0');
+    dot.setAttribute('opacity', '0');
+    return;
+  }
+  const p = projectToScreen(worldTarget);
+  const cx = p.x + offsetX;
+  const cy = p.y + offsetY;
+  callEl.style.left = `${cx}px`;
+  callEl.style.top = `${cy}px`;
+  callEl.style.opacity = alpha.toFixed(2);
+
+  line.setAttribute('x1', p.x.toFixed(1));
+  line.setAttribute('y1', p.y.toFixed(1));
+  line.setAttribute('x2', cx.toFixed(1));
+  line.setAttribute('y2', cy.toFixed(1));
+  line.setAttribute('opacity', alpha.toFixed(2));
+
+  dot.setAttribute('cx', p.x.toFixed(1));
+  dot.setAttribute('cy', p.y.toFixed(1));
+  dot.setAttribute('opacity', alpha.toFixed(2));
+}
+
+const DURATION = 12.0;
+const tl = gsap.timeline({ paused: true });
+
+// ANGLE 1 (0.0s - 3.0s): EYE-LEVEL MEDIUM SHOT (35 deg Perspective — Kenalan dengan Maskot & Situasi)
+tl.fromTo(S,
+  {
+    camX: 2.35, camY: 2.65, camZ: 5.85,
+    lookX: 0.45, lookY: 1.95, lookZ: -1.10,
+    fov: 35,
+    cX: 0.25, cZ: -0.55, cRotY: 0.25, cArmL: -0.2, cArmR: -1.15, cKneel: 0,
+    sparkScale: 0, gasOpacity: 0, regLift: 0, winOpen: 0, airOpacity: 0,
+    c1Alpha: 0, c2Alpha: 0, c3Alpha: 0
+  },
+  {
+    camX: 2.05, camY: 2.55, camZ: 5.45,
+    cArmR: -1.42,
+    duration: 3.0, ease: 'sine.inOut', immediateRender: false
+  }, 0
+);
+
+// ANGLE 2 (3.0s - 6.0s): OVER-THE-SHOULDER (OTS) MACRO SHOT (Fokus ke Saklar & Percikan 1.000°C)
+tl.to(S, {
+  camX: 0.15, camY: 2.35, camZ: 2.45,
+  lookX: 0.95, lookY: 1.85, lookZ: -2.25,
+  fov: 34,
+  cX: 0.18, cZ: -0.55, cKneel: 0.35, cRotY: 2.55, cArmR: -1.45,
+  sparkScale: 1, gasOpacity: 0, c1Alpha: 1,
+  duration: 0.85, ease: 'power3.inOut'
+}, 3.0);
+tl.to(S, { cArmR: -0.55, duration: 0.65, ease: 'power2.out' }, 4.0);
+tl.to(S, { sparkScale: 0, c1Alpha: 0, duration: 0.3 }, 5.65);
+
+// ANGLE 3 (6.0s - 9.0s): 3/4 HIGH-ANGLE CUTAWAY SHOT (Memperlihatkan Lapisan Gas Mengendap di Lantai)
+tl.to(S, {
+  camX: 9.2, camY: 10.8, camZ: 12.2,
+  lookX: -0.1, lookY: 0.98, lookZ: -0.35,
+  fov: 23,
+  cX: 0.45, cZ: 0.05, cKneel: 0, cRotY: -0.45, cArmL: 0.15, cArmR: -0.25,
+  gasOpacity: 0.52, c2Alpha: 1,
+  duration: 0.9, ease: 'power3.inOut'
+}, 6.0);
+tl.to(S, { c2Alpha: 0, duration: 0.3 }, 8.65);
+
+// ANGLE 4 (9.0s - 12.0s): LOW-ANGLE HERO ACTION SHOT (Cabut Regulator + Buka Jendela + Sign-Off)
+tl.to(S, {
+  camX: 2.15, camY: 1.85, camZ: 5.55,
+  lookX: 0.32, lookY: 1.82, lookZ: -1.35,
+  fov: 35,
+  cX: -0.18, cZ: -0.85, cRotY: 0.28, cKneel: 0, cArmL: -0.35, cArmR: -2.15,
+  regLift: 1, winOpen: 1, airOpacity: 1, gasOpacity: 0, c3Alpha: 1,
+  duration: 0.9, ease: 'power3.inOut'
+}, 9.0);
+
+tl.to({}, { duration: 0.01 }, DURATION);
+
+function updateHUD(t) {
+  const hookCard = $('#hook-card');
+  const tracker = $('#step-tracker');
+  const anglePill = $('#angle-pill');
+  const sub = $('#sub-card');
+  const seg1 = $('#seg1'), seg2 = $('#seg2'), seg3 = $('#seg3');
+
+  seg1.className = 'seg-item';
+  seg2.className = 'seg-item';
+  seg3.className = 'seg-item';
+
+  if (t < 3.0) {
+    hookCard.style.opacity = '1';
+    tracker.style.opacity = '0';
+    anglePill.innerHTML = 'ANGLE 1: <b>EYE-LEVEL MEDIUM</b>';
+    sub.innerHTML = 'Masuk dapur tiba-tiba cium <em>bau gas?</em>';
+  } else if (t < 6.0) {
+    hookCard.style.opacity = '0';
+    tracker.style.opacity = '1';
+    anglePill.innerHTML = 'ANGLE 2: <b>OTS MACRO CLOSE-UP</b>';
+    $('#tr-badge').textContent = 'POIN 01';
+    $('#tr-title').textContent = 'Percikan Saklar 1.000°C';
+    seg1.classList.add('active');
+    sub.innerHTML = 'Klik saklar memicu <em>percikan 1.000°C!</em>';
+  } else if (t < 9.0) {
+    hookCard.style.opacity = '0';
+    tracker.style.opacity = '1';
+    anglePill.innerHTML = 'ANGLE 3: <b>3/4 CUTAWAY OVERVIEW</b>';
+    $('#tr-badge').textContent = 'POIN 02';
+    $('#tr-title').textContent = 'Gas 2× Berat Mengendap';
+    seg1.classList.add('done'); seg1.textContent = '✓ BAHAYA';
+    seg2.classList.add('active');
+    sub.innerHTML = 'Gas elpiji <em>mengendap pekat</em> di lantai.';
+  } else {
+    hookCard.style.opacity = '0';
+    tracker.style.opacity = '1';
+    anglePill.innerHTML = 'ANGLE 4: <b>LOW-ANGLE HERO SHOT</b>';
+    $('#tr-badge').textContent = 'POIN 03';
+    $('#tr-title').textContent = 'Cabut & Buka Ventilasi';
+    seg1.classList.add('done'); seg1.textContent = '✓ BAHAYA';
+    seg2.classList.add('done'); seg2.textContent = '✓ SAINS GAS';
+    seg3.classList.add('done'); seg3.textContent = '✓ SOLUSI AMAN';
+    sub.innerHTML = 'Cabut regulator &amp; <em>jangan panik dulu.</em>';
+  }
+}
+
+function render(t) {
+  updateHUD(t);
+
+  camera.fov = S.fov;
+  camera.updateProjectionMatrix();
+  camera.position.set(S.camX, S.camY, S.camZ);
+  camera.lookAt(S.lookX, S.lookY, S.lookZ);
+
+  const kn = S.cKneel;
+  const breath = Math.sin(t * 2.5) * 0.015;
+  MASCOTS.forEach(m => {
+    m.root.position.set(S.cX, S.cY + breath, S.cZ);
+    m.root.rotation.y = S.cRotY;
+    m.bodyPivot.position.y = 0.72 - kn * 0.22;
+    m.armL.rotation.x = S.cArmL;
+    m.armR.rotation.x = S.cArmR + (t >= 9.0 ? Math.sin(t * 7.0) * 0.18 : 0);
+  });
+
+  sparkBurst.visible = S.sparkScale > 0.01;
+  sparkBurst.scale.setScalar(Math.max(0.001, S.sparkScale * (0.9 + 0.2 * Math.sin(t * 18))));
+  sparkBurst.rotation.z = t * 3.5;
+
+  gasVolumeGroup.visible = S.gasOpacity > 0.01;
+  gasSlabMat.opacity = S.gasOpacity;
+  gasEdges.material.opacity = Math.min(1, S.gasOpacity * 1.8);
+
+  regulatorGroup.position.y = 0.80 + S.regLift * 0.48;
+  regSwitch.rotation.z = S.regLift * (Math.PI * 0.5);
+  winSashPivot.rotation.y = -S.winOpen * 1.05;
+
+  airflowGroup.visible = S.airOpacity > 0.01;
+  airArrows.forEach((ar, i) => {
+    const p = (t * 0.75 + i * 0.25) % 1;
+    ar.position.x = -2.25 + p * 2.4;
+    ar.position.y = 1.95 - p * 0.55 + (i % 2) * 0.20;
+    ar.scale.setScalar(Math.max(0.001, Math.sin(p * Math.PI) * S.airOpacity));
+  });
+
+  setCalloutLine('#line-c1', '#dot-c1', $('#call1'), new THREE.Vector3(1.52, 1.92, -2.55), -145, -185, S.c1Alpha);
+  setCalloutLine('#line-c2', '#dot-c2', $('#call2'), new THREE.Vector3(-0.15, 0.65, 0.55), 55, -140, S.c2Alpha);
+  setCalloutLine('#line-c3', '#dot-c3', $('#call3'), new THREE.Vector3(1.25, 1.48, -1.85), -180, -165, S.c3Alpha);
+
+  renderer.render(scene, camera);
+}
+
+/* ============ 5. STAGE SCALE & INTERACTIVE CONTROLS ============ */
+const stage = $('#stage');
+const fit = () => {
+  const s = Math.min(innerWidth / W, innerHeight / H);
+  stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+};
+addEventListener('resize', fit);
+fit();
+
+let autoPlay = true;
+(function frame() {
+  const t = tl.time();
+  render(t);
+  requestAnimationFrame(frame);
+})();
+
+$('#btn-p1').onclick = () => setPersona(0);
+$('#btn-p2').onclick = () => setPersona(1);
+$('#btn-p3').onclick = () => setPersona(2);
+
+function jumpAngle(t, btnId) {
+  autoPlay = false;
+  tl.pause(t);
+  render(t);
+  ['#btn-a0', '#btn-a1', '#btn-a2', '#btn-a3', '#btn-a4'].forEach(sel => $(sel).classList.toggle('active', sel === btnId));
+}
+$('#btn-a0').onclick = () => {
+  autoPlay = true;
+  tl.play(0);
+  ['#btn-a0', '#btn-a1', '#btn-a2', '#btn-a3', '#btn-a4'].forEach(sel => $(sel).classList.toggle('active', sel === '#btn-a0'));
+};
+$('#btn-a1').onclick = () => jumpAngle(1.4, '#btn-a1');
+$('#btn-a2').onclick = () => jumpAngle(4.5, '#btn-a2');
+$('#btn-a3').onclick = () => jumpAngle(7.4, '#btn-a3');
+$('#btn-a4').onclick = () => jumpAngle(10.4, '#btn-a4');
+
+tl.eventCallback('onComplete', () => { if (autoPlay) tl.play(0); });
+
+const seek = (t, personaIdx = null) => {
+  if (personaIdx !== null) setPersona(personaIdx);
+  tl.pause();
+  tl.time(t, false);
+  if (gsap.ticker.tick) gsap.ticker.tick();
+  render(t);
+};
+
+window.OPENER = {
+  tl,
+  DURATION,
+  W,
+  H,
+  seek,
+  setPersona,
+  ready: false
+};
+
+document.fonts.ready.then(() => {
+  window.OPENER.ready = true;
+  if (!Q.has('clean')) tl.play(0);
+});
+</script>
+</body>
+</html>

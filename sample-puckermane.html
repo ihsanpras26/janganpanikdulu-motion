@@ -1,0 +1,1078 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Jangan Panik Dulu — Gaya @puckermanefacts (3D Isometric Cutaway Explainer)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+}}
+</script>
+<style>
+:root{
+  --yellow:#FACC15;
+  --yellow-warm:#F7C942;
+  --dark:#1E2228;
+  --green:#197A56;
+  --green-check:#22A06B;
+  --red:#E5483B;
+  --blue:#2563EB;
+  --white:#FFFFFF;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  width:100%;height:100%;background:#121519;overflow:hidden;
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Kanvas Vertikal 9:16 (1080x1920) Standar Reels/Shorts @puckermanefacts */
+#stage{
+  position:fixed;left:50%;top:50%;width:1080px;height:1920px;
+  transform:translate(-50%,-50%) scale(1);overflow:hidden;
+  background:linear-gradient(180deg,#6DBBFA 0%,#B2DFFE 38%,#E4F3FF 100%);
+}
+#gl{position:absolute;inset:0;width:1080px;height:1920px;display:block;z-index:1}
+
+/* Layer SVG untuk garis penunjuk (leader lines) callout 3D */
+#OverlaySVG{
+  position:absolute;inset:0;width:1080px;height:1920px;
+  pointer-events:none;z-index:4;
+}
+
+/* Layer UI @puckermanefacts: Bersih, Konsisten, Retensi Tinggi */
+#hud{position:absolute;inset:0;pointer-events:none;z-index:6}
+
+/* 1. Brand Badge Kiri Atas (Adaptasi "pf" -> "jp" @janganpanikdulu) */
+.brand-badge{
+  position:absolute;left:46px;top:52px;width:96px;height:96px;
+  border-radius:50%;background:#FFFFFF;
+  border:7px solid var(--green);
+  box-shadow:0 8px 24px rgba(0,0,0,.16);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:44px;letter-spacing:-.04em;color:var(--green);
+}
+
+/* 2A. Hook Title (Detik 0.0s - 3.0s) */
+#hook-header{
+  position:absolute;left:50%;top:196px;transform:translateX(-50%);
+  width:980px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;
+}
+.hook-line1{
+  font-size:76px;font-weight:800;letter-spacing:-.02em;color:#FFFFFF;
+  text-transform:uppercase;line-height:1.05;
+  -webkit-text-stroke:15px var(--dark);
+  paint-order:stroke fill;
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.22));
+}
+.hook-line2{
+  display:inline-block;background:var(--yellow-warm);
+  color:var(--dark);font-size:50px;font-weight:800;letter-spacing:-.015em;
+  text-transform:uppercase;padding:14px 36px;border-radius:18px;
+  transform:rotate(-1.4deg);
+  box-shadow:0 10px 26px rgba(0,0,0,.18);
+}
+
+/* 2B. Top Step Pill + Progress Dots (Detik 3.0s - 15.0s) */
+#step-header{
+  position:absolute;left:50%;top:124px;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:18px;
+  opacity:0;
+}
+.step-pill{
+  display:inline-flex;align-items:center;gap:16px;
+  background:#FFFFFF;padding:13px 34px 13px 16px;border-radius:999px;
+  box-shadow:0 10px 28px rgba(0,0,0,.16);
+  border:3px solid rgba(30,34,40,.08);
+  white-space:nowrap;
+}
+.step-num{
+  width:52px;height:52px;border-radius:50%;background:var(--green);
+  color:#FFFFFF;font-size:31px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.step-title{
+  font-size:38px;font-weight:800;color:var(--dark);letter-spacing:-.015em;
+  white-space:nowrap;
+}
+
+/* Deretan Indikator Progress Bulat (O -> Checkmark Hijau) */
+.dots-row{
+  display:flex;align-items:center;gap:20px;
+}
+.p-dot{
+  width:42px;height:42px;border-radius:50%;
+  background:#FFFFFF;box-shadow:0 4px 12px rgba(0,0,0,.20);
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;font-weight:800;color:#FFFFFF;
+}
+.p-dot.done{
+  background:var(--green-check);
+}
+.p-dot.active{
+  transform:scale(1.16);
+  border:4px solid var(--yellow-warm);
+}
+
+/* 3. Callout Labels yang Menempel pada Objek 3D */
+.callout{
+  position:absolute;left:0;top:0;transform:translate(-50%,-50%);
+  background:#FFFFFF;padding:10px 24px;border-radius:14px;
+  font-size:31px;font-weight:800;letter-spacing:-.01em;
+  box-shadow:0 8px 22px rgba(0,0,0,.18);
+  white-space:nowrap;opacity:0;
+}
+.callout.red{color:var(--red);border:3.5px solid var(--red)}
+.callout.solid-red{background:var(--red);color:#FFFFFF;border:3px solid #FFFFFF}
+.callout.solid-green{background:var(--green-check);color:#FFFFFF;border:3px solid #FFFFFF}
+.callout.green{color:var(--green);border:3.5px solid var(--green-check)}
+
+/* Badge Angka Bulat di Dunia 3D (seperti nomor anak tangga @puckermanefacts) */
+.num-badge{
+  position:absolute;left:0;top:0;transform:translate(-50%,-50%);
+  width:64px;height:64px;border-radius:50%;
+  background:var(--green-check);color:#FFFFFF;
+  border:4px solid #FFFFFF;
+  font-size:34px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 20px rgba(0,0,0,.22);
+  opacity:0;
+}
+.num-badge.warn{background:var(--red)}
+
+/* 4. Bottom Subtitle Pill (Khas @puckermanefacts: 1 Baris Padat + Kata Kunci Kuning) */
+#sub-wrap{
+  position:absolute;left:50%;bottom:136px;transform:translateX(-50%);
+  width:980px;display:flex;justify-content:center;
+}
+.sub-pill{
+  background:rgba(28,32,38,.92);
+  padding:18px 36px;border-radius:18px;
+  box-shadow:0 12px 30px rgba(0,0,0,.26);
+  font-size:43px;font-weight:800;color:#FFFFFF;
+  letter-spacing:-.015em;text-align:center;line-height:1.18;
+  white-space:nowrap;
+}
+.sub-pill em{
+  font-style:normal;color:var(--yellow);
+}
+
+/* Panel Kontrol Developer (Tekan H atau ?debug=1) */
+#ui{
+  position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+  display:none;align-items:center;gap:12px;padding:10px 16px;border-radius:14px;
+  background:rgba(20,24,30,.92);border:1px solid rgba(255,255,255,.15);
+  font-size:13px;color:#E2E8F0;z-index:60;
+}
+#ui.on{display:flex}
+#ui button{
+  background:#334155;color:#fff;border:none;padding:7px 14px;
+  border-radius:8px;font:inherit;cursor:pointer;
+}
+#scrub{width:280px;accent-color:var(--yellow)}
+#clock{font-variant-numeric:tabular-nums;min-width:5ch;text-align:right}
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <canvas id="gl"></canvas>
+
+  <!-- Garis Penunjuk Callout 3D -->
+  <svg id="OverlaySVG" viewBox="0 0 1080 1920">
+    <line id="line-c1" x1="0" y1="0" x2="0" y2="0" stroke="#E5483B" stroke-width="4.5" opacity="0"/>
+    <circle id="dot-c1" cx="0" cy="0" r="9" fill="#E5483B" opacity="0"/>
+
+    <line id="line-c2" x1="0" y1="0" x2="0" y2="0" stroke="#E5483B" stroke-width="4.5" opacity="0"/>
+    <circle id="dot-c2" cx="0" cy="0" r="9" fill="#E5483B" opacity="0"/>
+
+    <line id="line-c3" x1="0" y1="0" x2="0" y2="0" stroke="#22A06B" stroke-width="4.5" opacity="0"/>
+    <circle id="dot-c3" cx="0" cy="0" r="9" fill="#22A06B" opacity="0"/>
+
+    <line id="line-c4" x1="0" y1="0" x2="0" y2="0" stroke="#22A06B" stroke-width="4.5" opacity="0"/>
+    <circle id="dot-c4" cx="0" cy="0" r="9" fill="#22A06B" opacity="0"/>
+  </svg>
+
+  <div id="hud">
+    <!-- Brand Badge Kiri Atas -->
+    <div class="brand-badge">jp</div>
+
+    <!-- State A: Hook Header (0.0s - 3.0s) -->
+    <div id="hook-header">
+      <div class="hook-line1">BAU GAS DI DAPUR</div>
+      <div class="hook-line2">JANGAN SENTUH SAKLAR?</div>
+    </div>
+
+    <!-- State B: Step Pill + Progress Dots (3.0s - 15.0s) -->
+    <div id="step-header">
+      <div class="step-pill">
+        <div class="step-num" id="step-num">3</div>
+        <div class="step-title" id="step-title">Hal wajib kamu tahu</div>
+      </div>
+      <div class="dots-row" id="dots-row">
+        <div class="p-dot" id="dot1"></div>
+        <div class="p-dot" id="dot2"></div>
+        <div class="p-dot" id="dot3"></div>
+      </div>
+    </div>
+
+    <!-- Callouts 3D -->
+    <div class="callout red" id="call1">percikan 1.000°C</div>
+    <div class="callout solid-red" id="call2">Gas 2× lebih berat: mengendap</div>
+    <div class="callout solid-green" id="call3">2. Buka jendela: gas keluar</div>
+    <div class="callout green" id="call4">1. Cabut regulator</div>
+
+    <!-- Numbered 3D Badges -->
+    <div class="num-badge warn" id="nb-switch">!</div>
+    <div class="num-badge" id="nb-step1">1</div>
+    <div class="num-badge" id="nb-step2">2</div>
+
+    <!-- Bottom Subtitle Pill -->
+    <div id="sub-wrap">
+      <div class="sub-pill" id="sub-pill">Masuk dapur tiba-tiba cium <em>bau gas?</em></div>
+    </div>
+  </div>
+</div>
+
+<div id="ui">
+  <button id="btn-play">Pause</button>
+  <button id="btn-restart">Restart</button>
+  <input id="scrub" type="range" min="0" max="1000" value="0">
+  <span id="clock">0.00s</span>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+const $ = s => document.querySelector(s);
+
+/* ============ 1. SETUP RENDERER & ISOMETRIC CAMERA (@puckermanefacts STYLE) ============ */
+const W = 1080, H = 1920;
+const renderer = new THREE.WebGLRenderer({ canvas: $('#gl'), antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setSize(W, H, false);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.08;
+
+const scene = new THREE.Scene();
+
+// Narrow FOV (22 deg) menciptakan proyeksi Isometric Cutaway khas @puckermanefacts!
+const camera = new THREE.PerspectiveCamera(22, W / H, 0.5, 180);
+
+// Pencahayaan Siang Hari Arsitektural Bersih
+const hemi = new THREE.HemisphereLight(0xFFFFFF, 0xD8E2EB, 1.55);
+hemi.position.set(0, 20, 0);
+scene.add(hemi);
+
+const sun = new THREE.DirectionalLight(0xFFFDF8, 2.35);
+sun.position.set(8.5, 15.0, 9.5);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 2;
+sun.shadow.camera.far = 38;
+const sd = 7.5;
+sun.shadow.camera.left = -sd;
+sun.shadow.camera.right = sd;
+sun.shadow.camera.top = sd;
+sun.shadow.camera.bottom = -sd;
+sun.shadow.bias = -0.0005;
+scene.add(sun);
+
+const fill = new THREE.DirectionalLight(0xB8E1FF, 0.65);
+fill.position.set(-8, 6, -6);
+scene.add(fill);
+
+const mat = (hex, rough = 0.52, metal = 0.02) =>
+  new THREE.MeshStandardMaterial({ color: hex, roughness: rough, metalness: metal });
+
+const outlineMat = new THREE.MeshBasicMaterial({ color: 0x1A1E24, side: THREE.BackSide });
+function withOutline(mesh, scale = 1.06) {
+  const out = new THREE.Mesh(mesh.geometry, outlineMat);
+  out.scale.setScalar(scale);
+  mesh.add(out);
+  return mesh;
+}
+
+/* ============ 2. PROSEDURAL TEKSTUR LANTAI UBIN PUTIH & PARKET KAYU ============ */
+function makeTileTexture() {
+  const cv = document.createElement('canvas');
+  cv.width = 512; cv.height = 512;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#F3F5F8';
+  ctx.fillRect(0, 0, 512, 512);
+  ctx.strokeStyle = '#D5DCE4';
+  ctx.lineWidth = 6;
+  const step = 64;
+  for (let i = 0; i <= 512; i += step) {
+    ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 512); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(512, i); ctx.stroke();
+  }
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(2, 2);
+  return tex;
+}
+
+function makeWoodTexture() {
+  const cv = document.createElement('canvas');
+  cv.width = 512; cv.height = 512;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#DFB689';
+  ctx.fillRect(0, 0, 512, 512);
+  const planks = 8;
+  const h = 512 / planks;
+  for (let i = 0; i < planks; i++) {
+    ctx.fillStyle = i % 2 === 0 ? '#DFB689' : '#D6AC7D';
+    ctx.fillRect(0, i * h, 512, h);
+    ctx.strokeStyle = '#C39666';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(0, i * h, 512, h);
+  }
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+/* ============ 3. BANGUNAN CUTAWAY ISOMETRIK (@puckermanefacts ARCHITECTURAL BLOCK) ============ */
+const world = new THREE.Group();
+scene.add(world);
+
+// A. Lapisan Tanah Cokelat, Rumput Hijau, & Pondasi Beton (Persis p3_f1.png @puckermanefacts)
+const soilDeep = new THREE.Mesh(new THREE.BoxGeometry(7.2, 0.55, 7.2), mat(0x7C5335, 0.8));
+soilDeep.position.y = -0.78;
+world.add(soilDeep);
+
+const soilMid = new THREE.Mesh(new THREE.BoxGeometry(7.2, 0.45, 7.2), mat(0xB67D4B, 0.75));
+soilMid.position.y = -0.28;
+world.add(soilMid);
+
+const grassTop = new THREE.Mesh(new THREE.BoxGeometry(7.2, 0.16, 7.2), mat(0x4C9E3E, 0.65));
+grassTop.position.y = 0.02;
+grassTop.receiveShadow = true;
+world.add(grassTop);
+
+[
+  [-2.85, 0.25, 2.75, 0.36],
+  [2.75, 0.25, 2.85, 0.40],
+  [2.95, 0.22, -1.65, 0.32]
+].forEach(([x, y, z, r]) => {
+  const bush = new THREE.Mesh(new RoundedBoxGeometry(r * 1.6, r * 1.2, r * 1.4, 4, 0.12), mat(0x3B8732, 0.6));
+  bush.position.set(x, y, z);
+  bush.castShadow = true;
+  world.add(bush);
+});
+
+// Slab Lantai Rumah Ubin Putih + Teras Depan
+const floorSlab = new THREE.Mesh(
+  new THREE.BoxGeometry(5.5, 0.24, 5.5),
+  new THREE.MeshStandardMaterial({ map: makeTileTexture(), roughness: 0.45 })
+);
+floorSlab.position.set(-0.15, 0.22, -0.15);
+floorSlab.receiveShadow = true;
+world.add(floorSlab);
+
+const step1 = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.14, 0.40), mat(0xEEF2F6, 0.45));
+step1.position.set(-0.6, 0.16, 2.78);
+step1.receiveShadow = true;
+world.add(step1);
+
+// B. Dinding Cutaway Putih Bersih (Kiri & Belakang)
+const wallBack = new THREE.Mesh(new THREE.BoxGeometry(5.5, 3.5, 0.26), mat(0xF6F8FB, 0.48));
+wallBack.position.set(-0.15, 1.98, -2.82);
+wallBack.castShadow = true;
+wallBack.receiveShadow = true;
+world.add(wallBack);
+
+const wallLeft = new THREE.Mesh(new THREE.BoxGeometry(0.26, 3.5, 5.5), mat(0xEEF2F7, 0.48));
+wallLeft.position.set(-2.82, 1.98, -0.15);
+wallLeft.castShadow = true;
+wallLeft.receiveShadow = true;
+world.add(wallLeft);
+
+// C. Jendela Dapur Berbingkai Charcoal di Dinding Kiri (Mengayun Buka di Poin 3)
+const winFrameGroup = new THREE.Group();
+winFrameGroup.position.set(-2.68, 2.15, -0.35);
+world.add(winFrameGroup);
+
+const winOuter = new THREE.Mesh(new THREE.BoxGeometry(0.10, 1.32, 1.58), mat(0x262B31, 0.35));
+winFrameGroup.add(winOuter);
+
+const winSky = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.16, 1.42), new THREE.MeshBasicMaterial({ color: 0x8CD3FF }));
+winSky.position.x = 0.04;
+winFrameGroup.add(winSky);
+
+const winSashPivot = new THREE.Group();
+winSashPivot.position.set(0.07, 0, -0.70);
+winFrameGroup.add(winSashPivot);
+
+const winSash = new THREE.Mesh(
+  new THREE.BoxGeometry(0.07, 1.14, 1.38),
+  new THREE.MeshStandardMaterial({ color: 0xD8F1FF, transparent: true, opacity: 0.65, roughness: 0.15 })
+);
+winSash.position.set(0, 0, 0.70);
+winSashPivot.add(winSash);
+
+const winSashBorder = new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(0.08, 1.14, 1.38)),
+  new THREE.LineBasicMaterial({ color: 0x1E2228 })
+);
+winSashBorder.position.set(0, 0, 0.70);
+winSashPivot.add(winSashBorder);
+
+// D. Kitchen Set Kayu Hangat & Kompor Modern
+const kitchenGroup = new THREE.Group();
+kitchenGroup.position.set(-0.72, 0.34, -2.18);
+world.add(kitchenGroup);
+
+const baseCab = new THREE.Mesh(
+  new RoundedBoxGeometry(2.65, 0.90, 0.92, 4, 0.03),
+  new THREE.MeshStandardMaterial({ map: makeWoodTexture(), roughness: 0.48 })
+);
+baseCab.position.y = 0.45;
+baseCab.castShadow = true;
+baseCab.receiveShadow = true;
+kitchenGroup.add(baseCab);
+
+const counterTop = new THREE.Mesh(new RoundedBoxGeometry(2.72, 0.10, 0.98, 4, 0.02), mat(0xF8FAFC, 0.3));
+counterTop.position.y = 0.93;
+counterTop.castShadow = true;
+kitchenGroup.add(counterTop);
+
+const cooktop = new THREE.Mesh(new RoundedBoxGeometry(1.10, 0.06, 0.64, 3, 0.02), mat(0x22262C, 0.25));
+cooktop.position.set(-0.25, 0.99, 0);
+kitchenGroup.add(cooktop);
+
+[-0.52, 0.02].forEach(bx => {
+  const burner = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.04, 24), mat(0x475569, 0.35));
+  burner.position.set(bx, 1.03, 0);
+  kitchenGroup.add(burner);
+});
+
+const cookingPot = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.18, 0.25, 24), mat(0xEF5343, 0.32)),
+  1.06
+);
+cookingPot.position.set(-0.52, 1.16, 0);
+cookingPot.castShadow = true;
+kitchenGroup.add(cookingPot);
+
+const upperCab = new THREE.Mesh(
+  new RoundedBoxGeometry(2.65, 0.74, 0.54, 4, 0.03),
+  new THREE.MeshStandardMaterial({ map: makeWoodTexture(), roughness: 0.48 })
+);
+upperCab.position.set(0, 2.32, -0.18);
+upperCab.castShadow = true;
+kitchenGroup.add(upperCab);
+
+const hood = new THREE.Mesh(new RoundedBoxGeometry(1.00, 0.15, 0.60, 3, 0.02), mat(0x22262C, 0.3));
+hood.position.set(-0.25, 1.90, -0.14);
+kitchenGroup.add(hood);
+
+const fridge = new THREE.Mesh(new RoundedBoxGeometry(0.92, 2.10, 0.92, 4, 0.04), mat(0x262B32, 0.32));
+fridge.position.set(-1.82, 1.05, -0.02);
+fridge.castShadow = true;
+kitchenGroup.add(fridge);
+
+// E. Tabung LPG 3kg ("Gas Melon" Hijau Outlined) + Regulator Bersendi + Selang Oranye
+// Ditempatkan di (1.28, 0.34, -1.85) di sebelah kanan kabinet dapur agar 100% terlihat jelas di setiap shot!
+const lpgGroup = new THREE.Group();
+lpgGroup.position.set(1.28, 0.34, -1.85);
+world.add(lpgGroup);
+
+const lpgBody = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.48, 32), mat(0x64C76B, 0.36)),
+  1.06
+);
+lpgBody.position.y = 0.28;
+lpgBody.castShadow = true;
+lpgGroup.add(lpgBody);
+
+const lpgDome = new THREE.Mesh(
+  new THREE.SphereGeometry(0.36, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.5),
+  mat(0x64C76B, 0.36)
+);
+lpgDome.scale.y = 0.55;
+lpgDome.position.y = 0.52;
+lpgGroup.add(lpgDome);
+
+const lpgRedStripe = new THREE.Mesh(new THREE.CylinderGeometry(0.365, 0.365, 0.08, 32), mat(0xE5483B, 0.35));
+lpgRedStripe.position.y = 0.47;
+lpgGroup.add(lpgRedStripe);
+
+const lpgCollar = withOutline(
+  new THREE.Mesh(new THREE.TorusGeometry(0.20, 0.035, 12, 28), mat(0x52B359, 0.38)),
+  1.08
+);
+lpgCollar.rotation.x = Math.PI / 2;
+lpgCollar.position.y = 0.78;
+lpgGroup.add(lpgCollar);
+
+const brassValve = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.068, 0.14, 18), mat(0xF59E0B, 0.28, 0.3));
+brassValve.position.y = 0.70;
+lpgGroup.add(brassValve);
+
+// Regulator Bersendi (Terangkat lepas saat Poin 3)
+const regulatorGroup = new THREE.Group();
+regulatorGroup.position.set(0, 0.80, 0);
+lpgGroup.add(regulatorGroup);
+
+const regMesh = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.16, 24), mat(0x64748B, 0.3, 0.2)),
+  1.08
+);
+regulatorGroup.add(regMesh);
+
+const regSwitch = new THREE.Mesh(new RoundedBoxGeometry(0.05, 0.08, 0.22, 3, 0.01), mat(0x1E2228, 0.3));
+regSwitch.position.set(0, 0.02, 0.13);
+regulatorGroup.add(regSwitch);
+
+// Selang oranye dari regulator ke kabinet kompor
+const hoseCurve = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(1.14, 1.12, -1.85),
+  new THREE.Vector3(0.88, 0.85, -2.02),
+  new THREE.Vector3(0.55, 1.18, -2.15)
+]);
+const hoseMesh = new THREE.Mesh(
+  new THREE.TubeGeometry(hoseCurve, 20, 0.032, 10, false),
+  mat(0xFF7A45, 0.4)
+);
+world.add(hoseMesh);
+
+// F. Saklar Lampu Dinding + Percikan Bunga Api 1.000°C
+// Dipasang menghadap langsung ke depan (+Z) pada dinding belakang di sebelah kanan kabinet (x=1.55, y=1.95, z=-2.66) agar 100% terlihat jelas!
+const switchGroup = new THREE.Group();
+switchGroup.position.set(1.55, 1.95, -2.66);
+world.add(switchGroup);
+
+const switchPlate = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(0.44, 0.56, 0.07, 4, 0.02), mat(0xFFFFFF, 0.25)),
+  1.07
+);
+switchGroup.add(switchPlate);
+
+const switchRocker = new THREE.Mesh(new RoundedBoxGeometry(0.20, 0.28, 0.07, 3, 0.015), mat(0xE2E8F0, 0.3));
+switchRocker.position.z = 0.04;
+switchGroup.add(switchRocker);
+
+// Bintang Percikan Listrik 1.000°C di Saklar
+function makeSparkGeo(R = 0.34, r = 0.11, depth = 0.08) {
+  const s = new THREE.Shape();
+  for (let i = 0; i < 12; i++) {
+    const a = (i * Math.PI) / 6 - Math.PI / 2;
+    const rad = i % 2 === 0 ? R : r;
+    const x = Math.cos(a) * rad, y = -Math.sin(a) * rad;
+    if (i === 0) s.moveTo(x, y);
+    else s.lineTo(x, y);
+  }
+  s.closePath();
+  const g = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2 });
+  g.center();
+  return g;
+}
+const sparkBurst = new THREE.Mesh(
+  makeSparkGeo(0.36, 0.12, 0.08),
+  new THREE.MeshBasicMaterial({ color: 0xFACC15 })
+);
+const sparkOuter = new THREE.Mesh(
+  makeSparkGeo(0.52, 0.18, 0.05),
+  new THREE.MeshBasicMaterial({ color: 0xEF4444 })
+);
+sparkBurst.add(sparkOuter);
+sparkBurst.position.set(0, 0, 0.14);
+switchGroup.add(sparkBurst);
+
+/* ============ 4. VOLUME 3D TRANSLUSEN KHAS @puckermanefacts (ZONA MERAH & HIJAU) ============ */
+const gasVolumeGroup = new THREE.Group();
+gasVolumeGroup.position.set(-0.12, 0.62, -0.12);
+world.add(gasVolumeGroup);
+
+const gasSlabMat = new THREE.MeshBasicMaterial({
+  color: 0xFF5238,
+  transparent: true,
+  opacity: 0.42,
+  depthWrite: false
+});
+const gasSlab = new THREE.Mesh(new THREE.BoxGeometry(5.15, 0.56, 4.95), gasSlabMat);
+gasVolumeGroup.add(gasSlab);
+
+const gasEdges = new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(5.15, 0.56, 4.95)),
+  new THREE.LineBasicMaterial({ color: 0xE53924, transparent: true, opacity: 0.85 })
+);
+gasVolumeGroup.add(gasEdges);
+
+// Panah Aliran Udara Hijau Segar dari Jendela (Poin 3)
+const airflowGroup = new THREE.Group();
+world.add(airflowGroup);
+const airArrows = Array.from({ length: 4 }, (_, i) => {
+  const g = new THREE.Group();
+  const body = new THREE.Mesh(
+    new RoundedBoxGeometry(1.15, 0.11, 0.24, 3, 0.03),
+    new THREE.MeshBasicMaterial({ color: 0x22C55E, transparent: true, opacity: 0.82 })
+  );
+  g.add(body);
+  g.position.set(-1.6 + i * 0.85, 1.55 - i * 0.18, -0.35 + (i % 2) * 0.45);
+  airflowGroup.add(g);
+  return g;
+});
+
+/* ============ 5. KARAKTER CHIBI 3D BER-OUTLINE KHAS @puckermanefacts ============ */
+function createPuckermaneCharacter() {
+  const root = new THREE.Group();
+  root.scale.setScalar(0.92);
+
+  const bodyPivot = new THREE.Group();
+  bodyPivot.position.y = 0.72;
+  root.add(bodyPivot);
+
+  const torso = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.68, 0.78, 0.44, 6, 0.12), mat(0xFF8A2B, 0.38)),
+    1.07
+  );
+  torso.position.y = 0.39;
+  torso.castShadow = true;
+  bodyPivot.add(torso);
+
+  const vestStripe = new THREE.Mesh(new RoundedBoxGeometry(0.70, 0.12, 0.46, 3, 0.02), mat(0xFACC15, 0.35));
+  vestStripe.position.y = 0.28;
+  bodyPivot.add(vestStripe);
+
+  const headPivot = new THREE.Group();
+  headPivot.position.y = 0.84;
+  bodyPivot.add(headPivot);
+
+  const head = withOutline(
+    new THREE.Mesh(new THREE.SphereGeometry(0.42, 28, 24), mat(0xF2C29B, 0.38)),
+    1.06
+  );
+  head.position.y = 0.34;
+  head.castShadow = true;
+  headPivot.add(head);
+
+  const helmet = withOutline(
+    new THREE.Mesh(new THREE.SphereGeometry(0.47, 28, 20, 0, Math.PI * 2, 0, Math.PI * 0.56), mat(0xFFFFFF, 0.25)),
+    1.06
+  );
+  helmet.position.y = 0.38;
+  helmet.rotation.x = -0.08;
+  helmet.castShadow = true;
+  headPivot.add(helmet);
+
+  const visor = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.76, 0.08, 0.34, 4, 0.03), mat(0xFFFFFF, 0.25)),
+    1.06
+  );
+  visor.position.set(0, 0.34, 0.32);
+  headPivot.add(visor);
+
+  function makeArm(side) {
+    const p = new THREE.Group();
+    p.position.set(side * 0.46, 0.68, 0);
+    const arm = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.62, 0.26, 5, 0.08), mat(0x2563EB, 0.4)),
+      1.08
+    );
+    arm.position.y = -0.24;
+    arm.castShadow = true;
+    p.add(arm);
+
+    const hand = withOutline(
+      new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 16), mat(0xF2C29B, 0.38)),
+      1.08
+    );
+    hand.position.y = -0.56;
+    p.add(hand);
+    bodyPivot.add(p);
+    return p;
+  }
+  const armL = makeArm(-1);
+  const armR = makeArm(1);
+
+  function makeLeg(side) {
+    const p = new THREE.Group();
+    p.position.set(side * 0.19, 0.72, 0);
+    const leg = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.28, 0.62, 0.32, 5, 0.08), mat(0x1E3A8A, 0.45)),
+      1.08
+    );
+    leg.position.y = -0.31;
+    leg.castShadow = true;
+    p.add(leg);
+
+    const shoe = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.30, 0.18, 0.40, 4, 0.05), mat(0x9A5B25, 0.4)),
+      1.08
+    );
+    shoe.position.set(0, -0.62, 0.05);
+    p.add(shoe);
+    root.add(p);
+    return p;
+  }
+  const legL = makeLeg(-1);
+  const legR = makeLeg(1);
+
+  world.add(root);
+  return { root, bodyPivot, headPivot, armL, armR, legL, legR };
+}
+
+const char = createPuckermaneCharacter();
+
+/* ============ 6. STATE & PROYEKSI 3D KE LAYAR 2D ============ */
+const S = {
+  // Kamera Isometrik (Menampilkan utuh blok tanah/rumput + interior dapur)
+  camX: 10.5, camY: 12.2, camZ: 14.2,
+  lookX: -0.05, lookY: 1.05, lookZ: -0.35,
+  fov: 22,
+
+  // Karakter ditempatkan di sebelah kanan tabung LPG agar tabung LPG, saklar, dan jendela tidak tertutup!
+  cX: 1.82, cY: 0.34, cZ: -1.25, cRotY: 3.14,
+  cArmL: -1.35, cArmR: 0.1,
+  cKneel: 0,
+
+  // Komponen Naratif
+  sparkScale: 0,
+  gasOpacity: 0.42,
+  gasHeight: 0.35,
+  regLift: 0,
+  winOpen: 0,
+  airOpacity: 0,
+
+  // Opacity Callouts
+  c1Alpha: 0,
+  c2Alpha: 0,
+  c3Alpha: 0,
+  c4Alpha: 0,
+  nbSwitch: 0,
+  nbStep1: 0,
+  nbStep2: 0
+};
+
+function projectToScreen(vec3) {
+  const v = vec3.clone().project(camera);
+  return {
+    x: (v.x * 0.5 + 0.5) * W,
+    y: (-v.y * 0.5 + 0.5) * H
+  };
+}
+
+function setCalloutLine(lineId, dotId, callEl, worldTarget, offsetX, offsetY, alpha) {
+  const line = $(lineId), dot = $(dotId);
+  if (alpha <= 0.01) {
+    callEl.style.opacity = '0';
+    line.setAttribute('opacity', '0');
+    dot.setAttribute('opacity', '0');
+    return;
+  }
+  const p = projectToScreen(worldTarget);
+  const cx = p.x + offsetX;
+  const cy = p.y + offsetY;
+  callEl.style.left = `${cx}px`;
+  callEl.style.top = `${cy}px`;
+  callEl.style.opacity = alpha.toFixed(2);
+
+  line.setAttribute('x1', p.x.toFixed(1));
+  line.setAttribute('y1', p.y.toFixed(1));
+  line.setAttribute('x2', cx.toFixed(1));
+  line.setAttribute('y2', cy.toFixed(1));
+  line.setAttribute('opacity', alpha.toFixed(2));
+
+  dot.setAttribute('cx', p.x.toFixed(1));
+  dot.setAttribute('cy', p.y.toFixed(1));
+  dot.setAttribute('opacity', alpha.toFixed(2));
+}
+
+function placeBadge(el, worldPos, alpha) {
+  if (alpha <= 0.01) {
+    el.style.opacity = '0';
+    return;
+  }
+  const p = projectToScreen(worldPos);
+  el.style.left = `${p.x}px`;
+  el.style.top = `${p.y}px`;
+  el.style.opacity = alpha.toFixed(2);
+  el.style.transform = `translate(-50%,-50%) scale(${0.7 + 0.3 * alpha})`;
+}
+
+/* ============ 7. TIMELINE SCRIPTING & UI (@puckermanefacts x @janganpanikdulu) ============ */
+const DURATION = 15.0;
+const tl = gsap.timeline({ paused: true });
+
+function updateHUD(t) {
+  const hookEl = $('#hook-header');
+  const stepEl = $('#step-header');
+  const stepNum = $('#step-num');
+  const stepTitle = $('#step-title');
+  const dot1 = $('#dot1'), dot2 = $('#dot2'), dot3 = $('#dot3');
+  const sub = $('#sub-pill');
+
+  if (t < 2.8) {
+    hookEl.style.opacity = '1';
+    stepEl.style.opacity = '0';
+  } else {
+    hookEl.style.opacity = '0';
+    stepEl.style.opacity = '1';
+  }
+
+  dot1.className = 'p-dot'; dot1.textContent = '';
+  dot2.className = 'p-dot'; dot2.textContent = '';
+  dot3.className = 'p-dot'; dot3.textContent = '';
+
+  if (t >= 2.8 && t < 4.2) {
+    stepNum.textContent = '3';
+    stepTitle.textContent = 'Hal wajib kamu tahu';
+    dot1.classList.add('active');
+  } else if (t >= 4.2 && t < 7.8) {
+    stepNum.textContent = '1';
+    stepTitle.textContent = 'Kenapa saklar bahaya?';
+    dot1.classList.add('active');
+  } else if (t >= 7.8 && t < 11.4) {
+    stepNum.textContent = '2';
+    stepTitle.textContent = 'Sifat gas elpiji';
+    dot1.classList.add('done'); dot1.textContent = '✓';
+    dot2.classList.add('active');
+  } else if (t >= 11.4) {
+    stepNum.textContent = '3';
+    stepTitle.textContent = 'Cabut & buka ventilasi';
+    dot1.classList.add('done'); dot1.textContent = '✓';
+    dot2.classList.add('done'); dot2.textContent = '✓';
+    if (t >= 13.4) {
+      dot3.classList.add('done'); dot3.textContent = '✓';
+    } else {
+      dot3.classList.add('active');
+    }
+  }
+
+  if (t < 1.6) {
+    sub.innerHTML = 'Masuk dapur tiba-tiba cium <em>bau gas?</em>';
+  } else if (t < 3.0) {
+    sub.innerHTML = 'Tahan tanganmu, jangan sentuh <em>saklar!</em>';
+  } else if (t < 4.2) {
+    sub.innerHTML = 'Ada <em>3 hal penting</em> yang wajib kamu tahu.';
+  } else if (t < 6.0) {
+    sub.innerHTML = 'Pertama, kenapa <em>saklar lampu</em> berbahaya?';
+  } else if (t < 7.8) {
+    sub.innerHTML = 'Klik kecil memicu percikan <em>1.000°C.</em>';
+  } else if (t < 9.6) {
+    sub.innerHTML = 'Kedua, gas elpiji <em>2× lebih berat</em> dari udara.';
+  } else if (t < 11.4) {
+    sub.innerHTML = 'Gas tidak naik, tapi <em>mengendap</em> di lantai.';
+  } else if (t < 13.4) {
+    sub.innerHTML = 'Ketiga, cabut <em>regulator</em> & buka jendela.';
+  } else {
+    sub.innerHTML = 'Udara segar masuk, <em>jangan panik dulu.</em>';
+  }
+}
+
+// Beat 1: Hook (0.0s - 3.0s)
+tl.fromTo(S,
+  {
+    camX: 11.2, camY: 12.8, camZ: 15.0,
+    lookX: -0.1, lookY: 1.05, lookZ: -0.35,
+    fov: 22,
+    cX: 0.48, cZ: -0.15, cRotY: 2.65, cArmL: 0.1, cArmR: -1.15, cKneel: 0,
+    sparkScale: 0, gasOpacity: 0.32, gasHeight: 0.45,
+    regLift: 0, winOpen: 0, airOpacity: 0,
+    c1Alpha: 0, c2Alpha: 0, c3Alpha: 0, c4Alpha: 0,
+    nbSwitch: 1, nbStep1: 0, nbStep2: 0
+  },
+  {
+    camX: 10.4, camY: 12.0, camZ: 14.0,
+    cArmR: -1.48,
+    gasOpacity: 0.44,
+    duration: 3.0, ease: 'sine.inOut', immediateRender: false
+  }, 0
+);
+
+// Beat 2: Intro 3 Hal + Poin 1 — Saklar & Percikan 1.000°C (3.0s - 7.8s)
+tl.to(S, {
+  camX: 8.2, camY: 9.4, camZ: 11.0,
+  lookX: 0.55, lookY: 1.48, lookZ: -1.55,
+  fov: 20,
+  cX: 0.52, cZ: -0.45, cRotY: 2.55, cArmR: -1.52,
+  nbSwitch: 0,
+  duration: 1.4, ease: 'power2.inOut'
+}, 3.0);
+
+tl.to(S, { sparkScale: 1, c1Alpha: 1, duration: 0.45, ease: 'back.out(2)' }, 4.5);
+tl.to(S, { cArmR: -0.45, duration: 0.6, ease: 'power2.out' }, 5.1);
+tl.to(S, { sparkScale: 0, c1Alpha: 0, duration: 0.35 }, 7.4);
+
+// Beat 3: Poin 2 — Gas 2x Lebih Berat Mengendap di Lantai (7.8s - 11.4s)
+tl.to(S, {
+  camX: 10.6, camY: 12.6, camZ: 14.2,
+  lookX: -0.1, lookY: 0.92, lookZ: -0.25,
+  fov: 22,
+  cX: 0.55, cZ: 0.15, cRotY: -0.55, cArmL: 0.15, cArmR: -0.15,
+  gasOpacity: 0.56, gasHeight: 1.0,
+  c2Alpha: 1,
+  duration: 1.1, ease: 'power2.inOut'
+}, 7.8);
+
+tl.to(S, { c2Alpha: 0, duration: 0.35 }, 11.0);
+
+// Beat 4: Poin 3 — Cabut Regulator & Buka Jendela + Payoff (11.4s - 15.0s)
+tl.to(S, {
+  camX: 10.8, camY: 12.2, camZ: 14.4,
+  lookX: -0.15, lookY: 1.05, lookZ: -0.40,
+  fov: 22,
+  cX: 0.35, cZ: -0.55, cRotY: 2.35, cKneel: 0.55, cArmR: -1.25,
+  nbStep1: 1, nbStep2: 1,
+  duration: 0.9, ease: 'power2.inOut'
+}, 11.4);
+
+tl.to(S, { regLift: 1, c4Alpha: 1, duration: 0.6, ease: 'back.out(1.8)' }, 12.0);
+tl.to(S, { winOpen: 1, airOpacity: 1, c3Alpha: 1, duration: 0.7, ease: 'power2.out' }, 12.2);
+tl.to(S, { gasOpacity: 0, duration: 1.1, ease: 'power2.inOut' }, 12.3);
+
+tl.to({}, { duration: 0.01 }, DURATION);
+
+/* ============ 8. FUNGSI RENDER DETERMINISTIK ============ */
+function render(t) {
+  updateHUD(t);
+
+  camera.fov = S.fov;
+  camera.updateProjectionMatrix();
+  camera.position.set(S.camX, S.camY, S.camZ);
+  camera.lookAt(S.lookX, S.lookY, S.lookZ);
+
+  const kn = S.cKneel;
+  char.root.position.set(S.cX, S.cY, S.cZ);
+  char.root.rotation.y = S.cRotY;
+  char.bodyPivot.position.y = 0.72 - kn * 0.22;
+  char.bodyPivot.rotation.x = kn * 0.22;
+  char.armL.rotation.x = S.cArmL;
+  char.armR.rotation.x = S.cArmR;
+
+  // Percikan Saklar 1.000°C
+  sparkBurst.visible = S.sparkScale > 0.01;
+  const spPulse = S.sparkScale * (0.90 + 0.22 * Math.sin(t * 20));
+  sparkBurst.scale.setScalar(Math.max(0.001, spPulse));
+  sparkBurst.rotation.z = t * 4.0;
+
+  // Volume Gas Merah di Lantai
+  gasVolumeGroup.visible = S.gasOpacity > 0.01;
+  gasSlabMat.opacity = S.gasOpacity;
+  gasEdges.material.opacity = Math.min(1, S.gasOpacity * 1.8);
+  gasVolumeGroup.scale.y = 0.65 + 0.45 * S.gasHeight + 0.04 * Math.sin(t * 3.5);
+
+  // Regulator & Jendela
+  regulatorGroup.position.y = 0.80 + S.regLift * 0.50;
+  regSwitch.rotation.z = S.regLift * (Math.PI * 0.5);
+  winSashPivot.rotation.y = -S.winOpen * 1.05;
+
+  // Aliran Udara Hijau Segar
+  airflowGroup.visible = S.airOpacity > 0.01;
+  airArrows.forEach((ar, i) => {
+    const p = (t * 0.75 + i * 0.25) % 1;
+    ar.position.x = -2.25 + p * 2.6;
+    ar.position.y = 1.95 - p * 0.65 + (i % 2) * 0.22;
+    ar.scale.setScalar(Math.max(0.001, Math.sin(p * Math.PI) * S.airOpacity));
+  });
+
+  // Update Posisi Callout 3D ke Layar 2D
+  setCalloutLine(
+    '#line-c1', '#dot-c1', $('#call1'),
+    new THREE.Vector3(1.55, 1.95, -2.52),
+    -240, -145, S.c1Alpha
+  );
+  setCalloutLine(
+    '#line-c2', '#dot-c2', $('#call2'),
+    new THREE.Vector3(-0.55, 0.65, 0.55),
+    0, -145, S.c2Alpha
+  );
+  setCalloutLine(
+    '#line-c3', '#dot-c3', $('#call3'),
+    new THREE.Vector3(-2.35, 2.15, -0.35),
+    235, -135, S.c3Alpha
+  );
+  setCalloutLine(
+    '#line-c4', '#dot-c4', $('#call4'),
+    new THREE.Vector3(1.28, 1.55, -1.85),
+    -230, -120, S.c4Alpha
+  );
+
+  placeBadge($('#nb-switch'), new THREE.Vector3(1.55, 2.52, -2.62), S.nbSwitch);
+  placeBadge($('#nb-step1'), new THREE.Vector3(1.28, 2.12, -1.85), S.nbStep1);
+  placeBadge($('#nb-step2'), new THREE.Vector3(-2.35, 2.98, -0.35), S.nbStep2);
+
+  renderer.render(scene, camera);
+}
+
+/* ============ 9. STAGE SCALE & PLAYER CONTROL ============ */
+const stage = $('#stage');
+const fit = () => {
+  const s = Math.min(innerWidth / W, innerHeight / H);
+  stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+};
+addEventListener('resize', fit);
+fit();
+
+const Q = new URLSearchParams(location.search);
+const clock = $('#clock'), scrub = $('#scrub'), btn = $('#btn-play');
+let scrubbing = false;
+
+(function frame() {
+  const t = tl.time();
+  render(t);
+  clock.textContent = t.toFixed(2) + 's';
+  if (!scrubbing) scrub.value = String((t / DURATION) * 1000);
+  requestAnimationFrame(frame);
+})();
+
+const toggle = () => {
+  if (tl.paused() || tl.progress() >= 1) {
+    if (tl.progress() >= 1) tl.progress(0);
+    tl.play();
+    btn.textContent = 'Pause';
+  } else {
+    tl.pause();
+    btn.textContent = 'Play';
+  }
+};
+btn.onclick = toggle;
+$('#btn-restart').onclick = () => { tl.pause(0); tl.play(); btn.textContent = 'Pause'; };
+scrub.addEventListener('pointerdown', () => { scrubbing = true; tl.pause(); btn.textContent = 'Play'; });
+addEventListener('pointerup', () => { scrubbing = false; });
+scrub.addEventListener('input', () => { tl.pause(); tl.time((scrub.value / 1000) * DURATION); });
+addEventListener('keydown', e => {
+  if (e.code === 'Space') { e.preventDefault(); toggle(); }
+  if (/^[rR]$/.test(e.key)) { tl.pause(0); tl.play(); }
+  if (/^[hH]$/.test(e.key)) $('#ui').classList.toggle('on');
+});
+if (Q.has('debug')) $('#ui').classList.add('on');
+tl.eventCallback('onComplete', () => { tl.play(0); });
+
+const seek = t => {
+  tl.pause();
+  tl.time(t, false);
+  if (gsap.ticker.tick) gsap.ticker.tick();
+  render(t);
+};
+window.OPENER = {
+  tl,
+  DURATION,
+  W,
+  H,
+  seek,
+  ready: false,
+  clipsReady: () => true,
+  seekFrame: async t => { seek(t); }
+};
+
+document.fonts.ready.then(() => {
+  window.OPENER.ready = true;
+  if (!Q.has('clean')) tl.play(0);
+});
+</script>
+</body>
+</html>
