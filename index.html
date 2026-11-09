@@ -65,17 +65,25 @@ html,body{
   background:linear-gradient(0deg,rgba(var(--scrim-rgb),.18) 0%,rgba(var(--scrim-rgb),.06) 50%,rgba(var(--scrim-rgb),0) 100%);
 }
 
-/* ZONA 1: Transparent Brand Watermark di Kiri Atas */
+/* ZONA 1: Frosted Glass Translucent Brand Watermark di Kiri Atas */
 .account-card{
   position:absolute;left:44px;top:46px;
-  display:inline-flex;align-items:center;
-  background:transparent;
-  padding:0;
-  border:none;
-  box-shadow:none;
-  font-size:22px;font-weight:700;letter-spacing:-.01em;
-  color:rgba(255,255,255,.72);
-  text-shadow:0 2px 10px rgba(20,14,54,.32);
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.70);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  padding:8px 20px 9px 14px;
+  border-radius:999px;
+  border:1.5px solid rgba(255,255,255,.85);
+  box-shadow:0 10px 24px rgba(20,14,54,.12), inset 0 1px 0 rgba(255,255,255,.95);
+  font-size:21px;font-weight:800;letter-spacing:-.015em;
+  color:var(--brand-blue);
+}
+.account-dot{
+  width:9px;height:9px;border-radius:50%;
+  background:var(--brand-orange);
+  display:inline-block;
+  box-shadow:0 0 8px rgba(239,95,24,.5);
 }
 
 /* ZONA 2A: HOOK LOCKUP (Hanya muncul SEKALI di awal 0.00s - 3.46s!) */
@@ -219,7 +227,7 @@ body.clean-snap #switcher{display:none !important}
     <div class="scrim-bottom"></div>
 
     <!-- ZONA 1: Clean Brand Card di Kiri Atas -->
-    <div class="account-card">@janganpanikdulu</div>
+    <div class="account-card"><span class="account-dot"></span>@janganpanikdulu</div>
 
     <!-- ZONA 2A: Hook Lockup (Hanya muncul SEKALI di awal 0.00s - 3.46s) -->
     <div id="hook-card">
