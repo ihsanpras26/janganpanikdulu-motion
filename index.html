@@ -57,35 +57,25 @@ html,body{
 
 /* Subtle Contrast Scrims */
 .scrim-top{
-  position:absolute;left:0;right:0;top:0;height:360px;
-  background:linear-gradient(180deg,rgba(var(--scrim-rgb),.46) 0%,rgba(var(--scrim-rgb),.16) 52%,rgba(var(--scrim-rgb),0) 100%);
-  backdrop-filter:blur(3px);
-  -webkit-backdrop-filter:blur(3px);
-  mask-image:linear-gradient(180deg,#000 0%,#000 32%,transparent 100%);
-  -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 32%,transparent 100%);
+  position:absolute;left:0;right:0;top:0;height:260px;
+  background:linear-gradient(180deg,rgba(var(--scrim-rgb),.32) 0%,rgba(var(--scrim-rgb),.10) 52%,rgba(var(--scrim-rgb),0) 100%);
 }
 .scrim-bottom{
-  position:absolute;left:0;right:0;bottom:0;height:360px;
-  background:linear-gradient(0deg,rgba(var(--scrim-rgb),.50) 0%,rgba(var(--scrim-rgb),.18) 50%,rgba(var(--scrim-rgb),0) 100%);
-  backdrop-filter:blur(3px);
-  -webkit-backdrop-filter:blur(3px);
-  mask-image:linear-gradient(0deg,#000 0%,#000 34%,transparent 100%);
-  -webkit-mask-image:linear-gradient(0deg,#000 0%,#000 34%,transparent 100%);
+  position:absolute;left:0;right:0;bottom:0;height:280px;
+  background:linear-gradient(0deg,rgba(var(--scrim-rgb),.18) 0%,rgba(var(--scrim-rgb),.06) 50%,rgba(var(--scrim-rgb),0) 100%);
 }
 
-/* ZONA 1: Clean Brand Card di Kiri Atas (Posisi & Ukuran Proporsional ala @puckermanefacts, Tanpa Inisial) */
+/* ZONA 1: Transparent Brand Watermark di Kiri Atas */
 .account-card{
-  position:absolute;left:42px;top:44px;
+  position:absolute;left:44px;top:46px;
   display:inline-flex;align-items:center;
-  background:rgba(255,255,255,.88);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-  padding:8px 20px 9px;
-  border-radius:999px;
-  border:2px solid rgba(38,26,102,.20);
-  box-shadow:0 6px 18px rgba(20,14,54,.12);
-  font-size:20px;font-weight:700;letter-spacing:-.01em;
-  color:var(--brand-blue);
+  background:transparent;
+  padding:0;
+  border:none;
+  box-shadow:none;
+  font-size:22px;font-weight:700;letter-spacing:-.01em;
+  color:rgba(255,255,255,.72);
+  text-shadow:0 2px 10px rgba(20,14,54,.32);
 }
 
 /* ZONA 2A: HOOK LOCKUP (Hanya muncul SEKALI di awal 0.00s - 3.46s!) */
@@ -108,7 +98,7 @@ html,body{
   box-shadow:0 9px 0 var(--hook-pill-shadow), 0 16px 30px rgba(20,14,54,.28);
 }
 
-/* ZONA 2B: ULTRA-CLEAN SINGLE TOP PILL ala @puckermanefacts (Maksimal 1 Pill, Tanpa Sub-Pill Ganda!) */
+/* ZONA 2B: ULTRA-CLEAN SINGLE TOP PILL ala @puckermanefacts (Hanya untuk 3 Langkah Penting) */
 #step-tracker{
   position:absolute;left:0;right:0;top:132px;
   display:flex;flex-direction:column;align-items:center;gap:14px;
@@ -116,9 +106,12 @@ html,body{
 }
 .step-pill{
   display:inline-flex;align-items:center;gap:14px;
-  background:var(--step-pill-bg);padding:10px 30px 10px 12px;border-radius:999px;
-  border:3px solid var(--step-pill-border);
-  box-shadow:0 10px 24px rgba(20,14,54,.18);
+  background:rgba(255,255,255,.82);
+  backdrop-filter:blur(16px) saturate(150%);
+  -webkit-backdrop-filter:blur(16px) saturate(150%);
+  padding:10px 30px 10px 12px;border-radius:999px;
+  border:2px solid rgba(255,255,255,.88);
+  box-shadow:0 12px 28px rgba(20,14,54,.16);
 }
 .step-pill.text-only{
   padding:11px 32px 12px;
@@ -136,7 +129,7 @@ html,body{
 }
 .progress{display:flex;gap:14px;align-items:center}
 .progress i{
-  width:22px;height:22px;border-radius:50%;background:#FFFFFF;
+  width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.75);
   border:2.5px solid rgba(38,26,102,.25);
   display:block;box-shadow:0 3px 8px rgba(20,14,54,.15);
 }
@@ -148,7 +141,10 @@ html,body{
 /* ZONA 3: COMPACT 3D CALLOUT LABELS ala @puckermanefacts (Kecil, Clean, Tanpa Ikon Ramai) */
 .callout{
   position:absolute;left:0;top:0;
-  background:#FFFFFF;padding:8px 18px 9px;border-radius:12px;
+  background:rgba(255,255,255,.88);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  padding:8px 18px 9px;border-radius:12px;
   font-size:25px;font-weight:800;letter-spacing:-.015em;white-space:nowrap;opacity:0;
   box-shadow:0 8px 20px rgba(12,10,36,.18);
   display:inline-flex;align-items:center;
@@ -157,16 +153,20 @@ html,body{
 .callout.danger{color:var(--danger);border:2.5px solid var(--danger)}
 .callout.safe{color:var(--safe);border:2.5px solid var(--safe)}
 
-/* ZONA 4: NATURAL WORD-SPACING SUBTITLE BAR ala @puckermanefacts */
+/* ZONA 4: ELEGANT TRANSLUCENT BLUR SUBTITLE BAR */
 #sub-wrap{
   position:absolute;left:42px;right:42px;bottom:140px;display:flex;justify-content:center;
 }
 .sub-card{
-  background:var(--sub-bg);color:var(--sub-ink);
-  padding:15px 30px 17px;border-radius:18px;
+  background:rgba(255,255,255,.68);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  color:var(--sub-ink);
+  padding:15px 32px 17px;border-radius:20px;
   font-size:38px;font-weight:800;letter-spacing:-.015em;line-height:1.25;
-  white-space:nowrap;box-shadow:0 12px 28px rgba(20,14,54,.24);
-  border:3px solid var(--sub-border);
+  white-space:nowrap;
+  box-shadow:0 14px 34px rgba(20,14,54,.16), inset 0 1px 0 rgba(255,255,255,.85);
+  border:1.5px solid rgba(255,255,255,.78);
   display:inline-block;text-align:center;
   will-change:transform,opacity;
 }
@@ -1353,18 +1353,11 @@ CAPTION_CHUNKS.forEach(ch => {
 
 // ULTRA-CLEAN @puckermanefacts TOP HEADER SCHEDULE:
 // 1. Hook Title hanya muncul SEKALI di awal (0.00s - 3.60s).
-// 2. Scene 02-03 (3.60s - 12.40s): KOSONG di atas (penonton fokus ke visual dapur & skenario).
-// 3. Scene 04-05 (12.42s - 21.35s): 1 Single Pill "Kenapa bisa?" (persis seperti DfdsHjqzRxf @puckermanefacts!).
-// 4. Scene 06-07 (21.40s - 30.86s): 1 Single Pill "Sifat gas elpiji".
-// 5. Scene 08 (30.90s - 36.58s): KOSONG di atas (fokus ke percikan menyambar gas).
-// 6. Scene 09 (36.62s - 39.60s): 1 Single Pill "3 langkah aman".
-// 7. Scene 10-12 (39.65s - 52.78s): 1 Single Step Pill + 3 Progress Dots (1 Jangan sentuh saklar / 2 Lepas regulator / 3 Buka pintu & jendela).
-// 8. Scene 13-14 (52.83s - 59.56s): KOSONG di atas (clean sign-off).
+// 2. Scene 02-09 (3.60s - 39.60s): KOSONG di atas (tanpa pill filler seperti "Kenapa bisa?", fokus penuh ke visual 3D & callout).
+// 3. Scene 10-12 (39.65s - 52.78s): 1 Single Step Pill + 3 Progress Dots untuk 3 langkah penyelamatan penting (1 Jangan sentuh saklar / 2 Lepas regulator gas / 3 Buka pintu & jendela).
+// 4. Scene 13-14 (52.83s - 59.56s): KOSONG di atas (clean sign-off).
 const TOP_SEGMENTS = [
   { s: 0.00, e: 3.60, type: 'hook', hTitle: 'BAU GAS BOCOR?', hPill: 'JANGAN SENTUH SAKLAR!' },
-  { s: 12.42, e: 21.35, type: 'step', badge: null, title: 'Kenapa bisa?', showDots: false, prog: 0 },
-  { s: 21.40, e: 30.86, type: 'step', badge: null, title: 'Sifat gas elpiji', showDots: false, prog: 0 },
-  { s: 36.62, e: 39.60, type: 'step', badge: null, title: '3 langkah aman', showDots: true, prog: 0 },
   { s: 39.65, e: 43.58, type: 'step', badge: '1', title: 'Jangan sentuh saklar', showDots: true, prog: 1 },
   { s: 43.63, e: 47.42, type: 'step', badge: '2', title: 'Lepas regulator gas', showDots: true, prog: 2 },
   { s: 47.46, e: 52.78, type: 'step', badge: '3', title: 'Buka pintu & jendela', showDots: true, prog: 3 }

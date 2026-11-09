@@ -30,17 +30,36 @@ if (process.platform === 'win32') {
   chromeBin = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 }
 
-const chrome = spawn(chromeBin, [
-  `--remote-debugging-port=${PORT}`,
-  `--user-data-dir=${USER_DATA}`,
-  '--headless=new',
-  '--window-size=1080,1920',
-  '--force-device-scale-factor=1',
-  '--hide-scrollbars',
-  '--mute-audio',
-  '--disable-gpu-vsync',
-  'http://localhost:8765/index.html?clean=1'
-], { stdio: 'ignore' });
+const MIME = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+  '.mjs': 'text/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.mp3': 'audio/mpeg',
+  '.wav': 'audio/wav',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg'
+};
+
+function ensureLocalServer(port = 8765) {
+  return new Promise((resolve) => {
+    const srv = http.createServer((req, res) => {
+      const urlPath = decodeURIComponent((req.url || '/').split('?')[0]);
+      const rel = urlPath === '/' ? '/index.html' : urlPath;
+      const fp = path.join(ROOT, rel);
+      if (!fp.startsWith(ROOT) || !fs.existsSync(fp) || fs.statSync(fp).isDirectory()) {
+        res.writeHead(404);
+        res.end('Not found');
+        return;
+      }
+      const ext = path.extname(fp).toLowerCase();
+      res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
+      fs.createReadStream(fp).pipe(res);
+    });
+    srv.on('error', () => resolve(null));
+    srv.listen(port, '127.0.0.1', () => resolve(srv));
+  });
+}
 
 function getJson(url) {
   return new Promise((resolve, reject) => {
@@ -55,6 +74,24 @@ function getJson(url) {
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 (async () => {
+  await ensureLocalServer(8765);
+  const chrome = spawn(chromeBin, [
+    `--remote-debugging-port=${PORT}`,
+    `--user-data-dir=${USER_DATA}`,
+    '--headless=new',
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--enable-unsafe-swiftshader',
+    '--ignore-certificate-errors',
+    '--proxy-bypass-list=<-loopback>',
+    '--window-size=1080,1920',
+    '--force-device-scale-factor=1',
+    '--hide-scrollbars',
+    '--mute-audio',
+    '--disable-gpu-vsync',
+    'http://127.0.0.1:8765/index.html?clean=1'
+  ], { stdio: 'ignore' });
   let targets = null;
   for (let i = 0; i < 30; i++) {
     try {

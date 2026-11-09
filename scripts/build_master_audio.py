@@ -152,7 +152,6 @@ add_stereo(sfx, 8.85, make_gas_hiss(2.4), gain_db=-25.0, pan=-0.12)
 add_stereo(sfx, 11.30, make_switch_click(), gain_db=-16.5, pan=0.20)
 
 add_stereo(sfx, 12.12, puck_air_whoosh, gain_db=-16.8)
-add_stereo(sfx, 12.44, puck_step_pop, gain_db=-18.5)
 add_stereo(sfx, 13.05, make_ui_tick(680.0), gain_db=-19.5, pan=-0.12)
 
 add_stereo(sfx, 15.68, puck_mech_snap, gain_db=-17.5)
@@ -160,7 +159,6 @@ add_stereo(sfx, 17.20, make_switch_click(), gain_db=-17.5, pan=0.15)
 add_stereo(sfx, 17.78, make_electric_spark(0.75), gain_db=-17.8, pan=0.15)
 
 add_stereo(sfx, 21.02, puck_whoosh_thump, gain_db=-16.8)
-add_stereo(sfx, 21.42, puck_step_pop, gain_db=-18.5)
 add_stereo(sfx, 22.05, make_ui_tick(580.0), gain_db=-20.0)
 
 add_stereo(sfx, 24.86, puck_air_whoosh, gain_db=-17.2)
@@ -174,7 +172,6 @@ add_stereo(sfx, 33.35, make_electric_spark(0.58), gain_db=-18.2, pan=0.15)
 add_stereo(sfx, 34.50, puck_heavy_thud, gain_db=-18.0)
 
 add_stereo(sfx, 36.30, puck_whoosh_thump, gain_db=-16.8)
-add_stereo(sfx, 36.64, puck_step_pop, gain_db=-18.0)
 
 add_stereo(sfx, 39.32, puck_air_whoosh, gain_db=-17.0)
 add_stereo(sfx, 39.66, puck_step_pop, gain_db=-18.0)
