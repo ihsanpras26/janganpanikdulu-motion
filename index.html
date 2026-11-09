@@ -161,36 +161,94 @@ html,body{
 .callout.danger{color:var(--danger);border:2.5px solid var(--danger)}
 .callout.safe{color:var(--safe);border:2.5px solid var(--safe)}
 
-/* ZONA 4: ELEGANT TRANSLUCENT BLUR SUBTITLE BAR */
+/* ZONA 4: 3 STUDIO CAPTION OPTIONS (Pure Natural Spacing, Zero Word-Box Padding, Translucent Blur) */
 #sub-wrap{
-  position:absolute;left:42px;right:42px;bottom:140px;display:flex;justify-content:center;
+  position:absolute;left:44px;right:44px;bottom:136px;display:flex;justify-content:center;
 }
 .sub-card{
-  background:rgba(255,255,255,.68);
-  backdrop-filter:blur(18px) saturate(160%);
-  -webkit-backdrop-filter:blur(18px) saturate(160%);
-  color:var(--sub-ink);
-  padding:15px 32px 17px;border-radius:20px;
-  font-size:38px;font-weight:800;letter-spacing:-.015em;line-height:1.25;
-  white-space:nowrap;
-  box-shadow:0 14px 34px rgba(20,14,54,.16), inset 0 1px 0 rgba(255,255,255,.85);
-  border:1.5px solid rgba(255,255,255,.78);
-  display:inline-block;text-align:center;
+  max-width:980px;
+  padding:16px 34px 18px;
+  border-radius:20px;
+  font-size:36px;font-weight:800;letter-spacing:-.016em;line-height:1.30;
+  text-align:center;
+  display:inline-block;
   will-change:transform,opacity;
 }
 .sub-card .w{
   display:inline-block;
-  padding:1px 3px 2px;
-  margin:0 -3px;
-  border-radius:8px;
-  color:var(--sub-ink);
+  padding:0;
+  margin:0;
+  background:transparent;
+  position:relative;
+  transition:color .08s ease, opacity .08s ease, transform .10s ease;
 }
-.sub-card .w.active{
-  background:var(--sub-hl-bg);
-  color:var(--sub-hl-ink);
-  padding:1px 8px 2px;
-  margin:0 -1px;
-  box-shadow:0 4px 10px rgba(239,95,24,.26);
+
+/* OPSI 1 (Default): Frosted Daylight Glass + Editorial Signal Color Flow */
+body.cap-opt-1 .sub-card,
+body:not(.cap-opt-2):not(.cap-opt-3) .sub-card{
+  background:rgba(255,255,255,.70);
+  backdrop-filter:blur(20px) saturate(170%);
+  -webkit-backdrop-filter:blur(20px) saturate(170%);
+  border:1.5px solid rgba(255,255,255,.88);
+  box-shadow:0 14px 34px rgba(20,14,54,.14), inset 0 1px 0 rgba(255,255,255,.92);
+}
+body.cap-opt-1 .sub-card .w.past,
+body:not(.cap-opt-2):not(.cap-opt-3) .sub-card .w.past{
+  color:#261A66;opacity:1;
+}
+body.cap-opt-1 .sub-card .w.active,
+body:not(.cap-opt-2):not(.cap-opt-3) .sub-card .w.active{
+  color:#EF5F18;opacity:1;
+  transform:translateY(-1.5px);
+}
+body.cap-opt-1 .sub-card .w.future,
+body:not(.cap-opt-2):not(.cap-opt-3) .sub-card .w.future{
+  color:rgba(38,26,102,.38);
+}
+
+/* OPSI 2: Smoked Deep-Indigo Cinema Glass + Crisp White & Amber-Orange Pop */
+body.cap-opt-2 .sub-card{
+  background:rgba(24,18,62,.66);
+  backdrop-filter:blur(22px) saturate(175%);
+  -webkit-backdrop-filter:blur(22px) saturate(175%);
+  border:1.5px solid rgba(255,255,255,.22);
+  box-shadow:0 16px 38px rgba(10,8,32,.26), inset 0 1px 0 rgba(255,255,255,.20);
+}
+body.cap-opt-2 .sub-card .w.past{
+  color:#FFFFFF;opacity:1;
+}
+body.cap-opt-2 .sub-card .w.active{
+  color:#FF742E;opacity:1;
+  transform:translateY(-1.5px);
+}
+body.cap-opt-2 .sub-card .w.future{
+  color:rgba(255,255,255,.40);
+}
+
+/* OPSI 3: Clear Frosted Pill Capsule + Precision Underline Indicator */
+body.cap-opt-3 .sub-card{
+  background:rgba(255,255,255,.62);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border:1.5px solid rgba(255,255,255,.86);
+  border-radius:999px;
+  padding:15px 40px 20px;
+  box-shadow:0 14px 34px rgba(20,14,54,.14), inset 0 1px 0 rgba(255,255,255,.94);
+}
+body.cap-opt-3 .sub-card .w.past{
+  color:#261A66;opacity:1;
+}
+body.cap-opt-3 .sub-card .w.active{
+  color:#EF5F18;opacity:1;
+}
+body.cap-opt-3 .sub-card .w.active::after{
+  content:"";
+  position:absolute;left:0;right:0;bottom:-4px;height:4px;
+  border-radius:99px;
+  background:#EF5F18;
+}
+body.cap-opt-3 .sub-card .w.future{
+  color:rgba(38,26,102,.42);
 }
 
 /* Interactive Preview Toolbar (disembunyikan saat capture MP4) */
@@ -278,6 +336,10 @@ body.clean-snap #switcher{display:none !important}
   <button data-t="45.4">Langkah 2</button>
   <button data-t="50.0">Langkah 3</button>
   <button data-t="58.6">Sign-Off</button>
+  <div class="sw-label">Caption:</div>
+  <button data-cap="1" class="active">Opsi 1</button>
+  <button data-cap="2">Opsi 2</button>
+  <button data-cap="3">Opsi 3</button>
 </div>
 
 <script type="module">
@@ -296,7 +358,7 @@ const renderer = new THREE.WebGLRenderer({
   alpha: true,
   preserveDrawingBuffer: true
 });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.setPixelRatio(Q.has('clean') ? 1.5 : Math.min(window.devicePixelRatio || 1, 2));
 renderer.setSize(W, H, false);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -327,7 +389,7 @@ rim.position.set(-7, 6, -5);
 scene.add(rim);
 
 const sparkLight = new THREE.PointLight(0xFF7B00, 0, 5.0);
-sparkLight.position.set(1.48, 1.95, -2.30);
+sparkLight.position.set(1.72, 1.94, -2.30);
 scene.add(sparkLight);
 
 const mat = (hex, rough = 0.45, metal = 0.03, emissive = 0x000000, emInt = 0) =>
@@ -420,15 +482,47 @@ function makeGasMelonTexture() {
   return tex;
 }
 
-// Lapisan Tanah & Rumput Cutaway (@puckermanefacts Cross-Section Base)
-const soil = new THREE.Mesh(new THREE.BoxGeometry(7.2, 0.85, 7.2), mat(0x9C6B43, 0.75));
-soil.position.y = -0.45;
+// Lapisan Tanah & Rumput Cutaway (@puckermanefacts Architectural Diorama Base)
+const soil = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(8.2, 0.86, 8.2, 4, 0.06), mat(0x9C6B43, 0.75)),
+  1.015
+);
+soil.position.set(-0.20, -0.46, -0.05);
 world.add(soil);
 
-const grass = new THREE.Mesh(new THREE.BoxGeometry(7.2, 0.16, 7.2), mat(0x52B788, 0.65));
-grass.position.y = 0.02;
+const grass = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(8.2, 0.18, 8.2, 4, 0.04), mat(0x52B788, 0.65)),
+  1.015
+);
+grass.position.set(-0.20, 0.02, -0.05);
 grass.receiveShadow = true;
 world.add(grass);
+
+// Teras Batu Luar & Tanaman Halaman di Depan Pintu Dapur (Outdoor Patio & Shrub)
+const patioStep = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(1.42, 0.12, 1.68, 3, 0.03), mat(0xDBD5CA, 0.52)),
+  1.03
+);
+patioStep.position.set(-3.52, 0.14, 1.05);
+patioStep.receiveShadow = true;
+world.add(patioStep);
+
+const planterPot = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.19, 0.34, 20), mat(0xC86D44, 0.55)),
+  1.05
+);
+planterPot.position.set(-3.52, 0.28, 2.22);
+planterPot.castShadow = true;
+world.add(planterPot);
+
+const planterBush = withOutline(
+  new THREE.Mesh(new THREE.SphereGeometry(0.32, 20, 16), mat(0x3DA36D, 0.55)),
+  1.05
+);
+planterBush.position.set(-3.52, 0.62, 2.22);
+planterBush.scale.set(1.0, 1.12, 1.0);
+planterBush.castShadow = true;
+world.add(planterBush);
 
 const floorSlab = new THREE.Mesh(
   new THREE.BoxGeometry(5.8, 0.24, 5.8),
@@ -438,18 +532,37 @@ floorSlab.position.set(-0.05, 0.22, -0.05);
 floorSlab.receiveShadow = true;
 world.add(floorSlab);
 
-// Dinding Belakang & Kiri (Dengan Detail Arsitektural Backsplash, Lis Kayu, & Plint Lantai)
-const wallBack = new THREE.Mesh(new THREE.BoxGeometry(5.8, 3.85, 0.28), mat(0xF8F5EE, 0.48));
+// Dinding Belakang + Cutaway Cross-Section Cap khas @puckermanefacts
+const wallBack = new THREE.Mesh(new THREE.BoxGeometry(5.8, 3.84, 0.28), mat(0xF8F5EE, 0.48));
 wallBack.position.set(-0.05, 2.14, -2.85);
 wallBack.castShadow = true;
 wallBack.receiveShadow = true;
 world.add(wallBack);
 
-const wallLeft = new THREE.Mesh(new THREE.BoxGeometry(0.28, 3.85, 5.8), mat(0xF1ECE2, 0.48));
-wallLeft.position.set(-2.85, 2.14, -0.05);
-wallLeft.castShadow = true;
-wallLeft.receiveShadow = true;
-world.add(wallLeft);
+const wallCapBack = new THREE.Mesh(new THREE.BoxGeometry(5.84, 0.07, 0.31), mat(0x22272E, 0.35));
+wallCapBack.position.set(-0.05, 4.08, -2.85);
+world.add(wallCapBack);
+
+// Dinding Kiri Segmented dengan Lubang Asli untuk JENDELA (z=-1.75..-0.25) & PINTU DAPUR (z=0.45..1.65)
+const wallLeftMat = mat(0xF1ECE2, 0.48);
+function addLeftWallSeg(y0, y1, z0, z1) {
+  const h = y1 - y0, d = z1 - z0;
+  const m = new THREE.Mesh(new THREE.BoxGeometry(0.28, h, d), wallLeftMat);
+  m.position.set(-2.85, (y0 + y1) * 0.5, (z0 + z1) * 0.5);
+  m.castShadow = true;
+  m.receiveShadow = true;
+  world.add(m);
+}
+addLeftWallSeg(0.22, 4.06, -2.99, -1.75); // Pilar belakang jendela
+addLeftWallSeg(0.22, 1.38, -1.75, -0.25); // Dinding bawah jendela
+addLeftWallSeg(2.78, 4.06, -1.75, -0.25); // Dinding atas jendela
+addLeftWallSeg(0.22, 4.06, -0.25,  0.45); // Pilar tengah antara jendela & pintu
+addLeftWallSeg(2.78, 4.06,  0.45,  1.65); // Dinding atas pintu (lintel)
+addLeftWallSeg(0.22, 4.06,  1.65,  2.85); // Pilar depan pintu
+
+const wallCapLeft = new THREE.Mesh(new THREE.BoxGeometry(0.31, 0.07, 5.84), mat(0x22272E, 0.35));
+wallCapLeft.position.set(-2.85, 4.08, -0.07);
+world.add(wallCapLeft);
 
 const backsplash = new THREE.Mesh(
   new THREE.BoxGeometry(5.48, 1.05, 0.03),
@@ -477,33 +590,98 @@ const baseboardBack = new THREE.Mesh(new THREE.BoxGeometry(5.52, 0.14, 0.05), ma
 baseboardBack.position.set(-0.05, 0.41, -2.69);
 world.add(baseboardBack);
 
-// Jendela Dapur di Dinding Kiri
+// ============ JENDELA DUA DAUN TEMBUS PANDANG (z = -1.00) ============
 const winGroup = new THREE.Group();
-winGroup.position.set(-2.68, 2.18, -0.35);
+winGroup.position.set(-2.85, 2.08, -1.00);
 world.add(winGroup);
-const winFrame = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.42, 1.66), mat(0x22272E, 0.35));
-winGroup.add(winFrame);
-const winSky = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.24, 1.48), new THREE.MeshBasicMaterial({ color: 0x90E0EF }));
-winSky.position.x = 0.04;
-winGroup.add(winSky);
 
-const winSashPivot = new THREE.Group();
-winSashPivot.position.set(0.07, 0, -0.74);
-winGroup.add(winSashPivot);
-const winSash = new THREE.Mesh(
-  new THREE.BoxGeometry(0.07, 1.22, 1.44),
-  new THREE.MeshStandardMaterial({ color: 0xCAF0F8, transparent: true, opacity: 0.65, roughness: 0.15 })
+const frameMat = mat(0x22272E, 0.35);
+const winTopBar = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.08, 1.54), frameMat);
+winTopBar.position.y = 0.68;
+winGroup.add(winTopBar);
+const winBotSill = new THREE.Mesh(new RoundedBoxGeometry(0.38, 0.09, 1.60, 3, 0.02), frameMat);
+winBotSill.position.y = -0.68;
+winGroup.add(winBotSill);
+[-0.73, 0.73].forEach(zf => {
+  const jamb = new THREE.Mesh(new THREE.BoxGeometry(0.32, 1.40, 0.08), frameMat);
+  jamb.position.z = zf;
+  winGroup.add(jamb);
+});
+
+const glassPaneMat = new THREE.MeshStandardMaterial({
+  color: 0xBEE9F7, transparent: true, opacity: 0.55, roughness: 0.12, metalness: 0.1
+});
+const winSashLPivot = new THREE.Group();
+winSashLPivot.position.set(-0.10, 0, -0.69);
+winGroup.add(winSashLPivot);
+const sashLFrame = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.06, 1.28, 0.68, 2, 0.015), mat(0xFFFFFF, 0.3)), 1.04);
+sashLFrame.position.set(0, 0, 0.34);
+winSashLPivot.add(sashLFrame);
+const sashLGlass = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.08, 0.52), glassPaneMat);
+sashLGlass.position.set(0, 0, 0.34);
+winSashLPivot.add(sashLGlass);
+
+const winSashRPivot = new THREE.Group();
+winSashRPivot.position.set(-0.10, 0, 0.69);
+winGroup.add(winSashRPivot);
+const sashRFrame = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.06, 1.28, 0.68, 2, 0.015), mat(0xFFFFFF, 0.3)), 1.04);
+sashRFrame.position.set(0, 0, -0.34);
+winSashRPivot.add(sashRFrame);
+const sashRGlass = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.08, 0.52), glassPaneMat);
+sashRGlass.position.set(0, 0, -0.34);
+winSashRPivot.add(sashRGlass);
+
+// ============ PINTU DAPUR ARSITEKTURAL 3D (z = 1.05, Membuka Lebar ke Teras Luar) ============
+const doorGroup = new THREE.Group();
+doorGroup.position.set(-2.85, 0.34, 1.05);
+world.add(doorGroup);
+
+const doorLintel = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.09, 1.28), frameMat);
+doorLintel.position.y = 2.42;
+doorGroup.add(doorLintel);
+[-0.60, 0.60].forEach(zf => {
+  const dJamb = new THREE.Mesh(new THREE.BoxGeometry(0.34, 2.46, 0.08), frameMat);
+  dJamb.position.set(0, 1.21, zf);
+  doorGroup.add(dJamb);
+});
+
+const doorPivot = new THREE.Group();
+doorPivot.position.set(0.11, 0, -0.56);
+doorGroup.add(doorPivot);
+
+const doorLeaf = withOutline(
+  new THREE.Mesh(
+    new RoundedBoxGeometry(0.09, 2.36, 1.12, 3, 0.02),
+    new THREE.MeshStandardMaterial({ map: makeWoodTexture(), roughness: 0.42 })
+  ),
+  1.03
 );
-winSash.position.set(0, 0, 0.74);
-winSashPivot.add(winSash);
+doorLeaf.position.set(0, 1.18, 0.56);
+doorLeaf.castShadow = true;
+doorPivot.add(doorLeaf);
 
-// Kitchen Set Kayu Hangat + Kompor 2 Tungku + Panci
+// Kaca Atas Pintu & Gagang Hitam Modern
+const doorGlassLite = new THREE.Mesh(new RoundedBoxGeometry(0.11, 0.72, 0.74, 2, 0.015), glassPaneMat);
+doorGlassLite.position.set(0, 1.72, 0.56);
+doorPivot.add(doorGlassLite);
+
+const doorLowerInset = new THREE.Mesh(new RoundedBoxGeometry(0.105, 0.82, 0.78, 2, 0.015), mat(0xC99864, 0.48));
+doorLowerInset.position.set(0, 0.72, 0.56);
+doorPivot.add(doorLowerInset);
+
+[-0.065, 0.065].forEach(hx => {
+  const dHandle = new THREE.Mesh(new RoundedBoxGeometry(0.04, 0.045, 0.18, 2, 0.01), frameMat);
+  dHandle.position.set(hx, 1.15, 0.96);
+  doorPivot.add(dHandle);
+});
+
+// ============ KITCHEN SET KAYU HANGAT + KOMPOR 2 TUNGKU + PANCI (Tanpa Kulkas Penghalang!) ============
 const kitchenGroup = new THREE.Group();
-kitchenGroup.position.set(-0.82, 0.34, -2.18);
+kitchenGroup.position.set(-0.58, 0.34, -2.18);
 world.add(kitchenGroup);
 
 const baseCab = new THREE.Mesh(
-  new RoundedBoxGeometry(2.58, 0.90, 0.92, 4, 0.03),
+  new RoundedBoxGeometry(2.52, 0.90, 0.92, 4, 0.03),
   new THREE.MeshStandardMaterial({ map: makeWoodTexture(), roughness: 0.48 })
 );
 baseCab.position.y = 0.45;
@@ -511,8 +689,8 @@ baseCab.castShadow = true;
 baseCab.receiveShadow = true;
 kitchenGroup.add(baseCab);
 
-[-0.82, 0, 0.82].forEach(dx => {
-  const door = new THREE.Mesh(new RoundedBoxGeometry(0.76, 0.74, 0.03, 3, 0.01), mat(0xD5A774, 0.45));
+[-0.80, 0, 0.80].forEach(dx => {
+  const door = new THREE.Mesh(new RoundedBoxGeometry(0.74, 0.74, 0.03, 3, 0.01), mat(0xD5A774, 0.45));
   door.position.set(dx, 0.44, 0.465);
   kitchenGroup.add(door);
   const handle = new THREE.Mesh(new RoundedBoxGeometry(0.18, 0.035, 0.04, 2, 0.01), mat(0x1E242B, 0.3));
@@ -520,7 +698,7 @@ kitchenGroup.add(baseCab);
   kitchenGroup.add(handle);
 });
 
-const counterTop = new THREE.Mesh(new RoundedBoxGeometry(2.68, 0.10, 0.98, 4, 0.02), mat(0xFFFFFF, 0.28));
+const counterTop = new THREE.Mesh(new RoundedBoxGeometry(2.62, 0.10, 0.98, 4, 0.02), mat(0xFFFFFF, 0.28));
 counterTop.position.y = 0.93;
 counterTop.castShadow = true;
 kitchenGroup.add(counterTop);
@@ -529,10 +707,10 @@ const cooktop = withOutline(
   new THREE.Mesh(new RoundedBoxGeometry(1.12, 0.07, 0.64, 3, 0.02), mat(0x1E242B, 0.25)),
   1.04
 );
-cooktop.position.set(0.28, 1.00, 0);
+cooktop.position.set(0.32, 1.00, 0);
 kitchenGroup.add(cooktop);
 
-[0.02, 0.54].forEach(bx => {
+[0.06, 0.58].forEach(bx => {
   const burner = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.022, 10, 24), mat(0x475569, 0.35, 0.5));
   burner.rotation.x = Math.PI / 2;
   burner.position.set(bx, 1.05, 0);
@@ -547,34 +725,25 @@ const cookingPot = withOutline(
   new THREE.Mesh(new THREE.CylinderGeometry(0.20, 0.17, 0.24, 24), mat(0xFF5A36, 0.32)),
   1.06
 );
-cookingPot.position.set(0.02, 1.18, 0);
+cookingPot.position.set(0.06, 1.18, 0);
 cookingPot.castShadow = true;
 kitchenGroup.add(cookingPot);
 
 const upperCab = new THREE.Mesh(
-  new RoundedBoxGeometry(2.58, 0.74, 0.54, 4, 0.03),
+  new RoundedBoxGeometry(2.52, 0.74, 0.54, 4, 0.03),
   new THREE.MeshStandardMaterial({ map: makeWoodTexture(), roughness: 0.48 })
 );
 upperCab.position.set(0, 2.42, -0.18);
 upperCab.castShadow = true;
 kitchenGroup.add(upperCab);
 
-const fridge = withOutline(
-  new THREE.Mesh(new RoundedBoxGeometry(0.92, 2.14, 0.92, 4, 0.04), mat(0x2B333C, 0.32)),
-  1.03
-);
-fridge.position.set(-1.82, 1.07, -0.02);
-fridge.castShadow = true;
-kitchenGroup.add(fridge);
-
-/* ============ TABUNG GAS 3KG ("GAS MELON") INDONESIA CLEAN (TANPA TULISAN) + SELANG KE KOMPOR ============ */
+/* ============ TABUNG GAS 3KG ("GAS MELON") INDONESIA CLEAN + SELANG KE KOMPOR ============ */
 const lpgGroup = new THREE.Group();
-lpgGroup.position.set(1.12, 0.34, -1.92);
+lpgGroup.position.set(1.24, 0.34, -1.92);
 world.add(lpgGroup);
 
 const melonDarkGreenMat = mat(0x4CA975, 0.38, 0.10);
 
-// 1. Cincin Kaki Bawah (Foot Ring)
 const footRing = withOutline(
   new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.27, 0.09, 28), melonDarkGreenMat),
   1.06
@@ -583,75 +752,76 @@ footRing.position.y = 0.045;
 footRing.castShadow = true;
 lpgGroup.add(footRing);
 
-// 2. Bodi Utama Bulat Gemuk ("Melon") Hijau + Lingkar Merah di Bahu Atas (Tanpa Teks)
-const melonBodyGeo = new THREE.SphereGeometry(0.38, 36, 28);
-melonBodyGeo.scale(1.0, 0.88, 1.0);
 const melonBodyMat = new THREE.MeshStandardMaterial({
   map: makeGasMelonTexture(),
-  roughness: 0.34,
-  metalness: 0.06
+  roughness: 0.32,
+  metalness: 0.08
 });
-const lpgBody = withOutline(new THREE.Mesh(melonBodyGeo, melonBodyMat), 1.055);
-lpgBody.position.y = 0.38;
-lpgBody.castShadow = true;
-lpgBody.receiveShadow = true;
-lpgGroup.add(lpgBody);
-
-// 3. Sabuk Las Melingkar di Tengah Perut Tabung
-const weldBelt = withOutline(
-  new THREE.Mesh(new THREE.TorusGeometry(0.378, 0.022, 12, 36), melonDarkGreenMat),
-  1.05
+const melonBody = withOutline(
+  new THREE.Mesh(new THREE.SphereGeometry(0.38, 36, 28), melonBodyMat),
+  1.045
 );
-weldBelt.rotation.x = Math.PI / 2;
-weldBelt.position.y = 0.38;
-lpgGroup.add(weldBelt);
+melonBody.scale.set(1.0, 0.90, 1.0);
+melonBody.position.y = 0.39;
+melonBody.rotation.y = -0.55;
+melonBody.castShadow = true;
+melonBody.receiveShadow = true;
+lpgGroup.add(melonBody);
 
-// 4. Kerudung Besi Pelindung Katup (Shroud Collar Berlubang Pegangan)
-const shroudGroup = new THREE.Group();
-shroudGroup.position.y = 0.74;
-lpgGroup.add(shroudGroup);
+const weldSeam = new THREE.Mesh(
+  new THREE.TorusGeometry(0.382, 0.016, 12, 36),
+  melonDarkGreenMat
+);
+weldSeam.rotation.x = Math.PI / 2;
+weldSeam.position.y = 0.39;
+lpgGroup.add(weldSeam);
 
-[-1, 1].forEach(side => {
-  const plateGeo = new THREE.CylinderGeometry(0.185, 0.205, 0.19, 16, 1, true, side > 0 ? -0.95 : Math.PI - 0.95, 1.9);
-  const plate = new THREE.Mesh(plateGeo, new THREE.MeshStandardMaterial({
-    color: 0x57B580, roughness: 0.36, metalness: 0.1, side: THREE.DoubleSide
-  }));
-  shroudGroup.add(plate);
+const shroudGeo = new THREE.CylinderGeometry(0.185, 0.205, 0.18, 28, 1, true);
+const shroudMat = new THREE.MeshStandardMaterial({
+  color: 0x56B881, roughness: 0.36, metalness: 0.12, side: THREE.DoubleSide
 });
-const topLip = withOutline(
-  new THREE.Mesh(new THREE.TorusGeometry(0.185, 0.024, 12, 32), melonDarkGreenMat),
+const shroud = new THREE.Mesh(shroudGeo, shroudMat);
+shroud.position.y = 0.77;
+shroud.castShadow = true;
+lpgGroup.add(shroud);
+
+const shroudLip = withOutline(
+  new THREE.Mesh(new THREE.TorusGeometry(0.185, 0.020, 12, 28), melonDarkGreenMat),
   1.08
 );
-topLip.rotation.x = Math.PI / 2;
-topLip.position.y = 0.095;
-shroudGroup.add(topLip);
+shroudLip.rotation.x = Math.PI / 2;
+shroudLip.position.y = 0.86;
+lpgGroup.add(shroudLip);
 
-// 5. Katup Kuningan + Karet Sil Merah
-const brassValve = new THREE.Mesh(new THREE.CylinderGeometry(0.056, 0.065, 0.13, 20), mat(0xEAB308, 0.26, 0.65));
-brassValve.position.y = 0.72;
+[0, 2.1, 4.2].forEach(ang => {
+  const slot = new THREE.Mesh(
+    new RoundedBoxGeometry(0.10, 0.048, 0.05, 2, 0.01),
+    mat(0x1E293B, 0.8)
+  );
+  slot.position.set(Math.sin(ang) * 0.19, 0.78, Math.cos(ang) * 0.19);
+  slot.rotation.y = ang;
+  lpgGroup.add(slot);
+});
+
+const brassValve = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.062, 0.11, 18), mat(0xEAB308, 0.28, 0.65));
+brassValve.position.y = 0.76;
 lpgGroup.add(brassValve);
 
-const redSealRing = new THREE.Mesh(new THREE.TorusGeometry(0.052, 0.012, 10, 20), mat(0xDC2626, 0.4));
-redSealRing.rotation.x = Math.PI / 2;
-redSealRing.position.y = 0.785;
-lpgGroup.add(redSealRing);
-
-// 6. Regulator Gas + Manometer + Pengunci Merah + Pipa Nozzle
 const regulatorGroup = new THREE.Group();
 regulatorGroup.position.set(0, 0.83, 0);
 lpgGroup.add(regulatorGroup);
 
 const regBody = withOutline(
-  new THREE.Mesh(new THREE.CylinderGeometry(0.135, 0.145, 0.14, 24), mat(0x64748B, 0.30, 0.35)),
-  1.07
+  new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.125, 0.12, 22), mat(0x3B4958, 0.34, 0.25)),
+  1.06
 );
 regulatorGroup.add(regBody);
 
-const regCap = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.12, 0.04, 20), mat(0x475569, 0.32, 0.35));
-regCap.position.y = 0.08;
-regulatorGroup.add(regCap);
+const regTopCap = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.115, 0.035, 20), mat(0x252F3A, 0.35));
+regTopCap.position.y = 0.07;
+regulatorGroup.add(regTopCap);
 
-const gaugeCyl = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.09, 18), mat(0xF8FAFC, 0.25));
+const gaugeCyl = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, 0.06, 16), mat(0xF8FAFC, 0.25));
 gaugeCyl.rotation.z = Math.PI / 2;
 gaugeCyl.position.set(0.15, 0.01, 0.04);
 regulatorGroup.add(gaugeCyl);
@@ -669,11 +839,11 @@ regNozzle.position.set(-0.16, 0.0, 0);
 regulatorGroup.add(regNozzle);
 
 const hoseCurve = new THREE.CatmullRomCurve3([
-  new THREE.Vector3(0.92, 1.16, -1.92),
-  new THREE.Vector3(0.62, 0.92, -1.95),
-  new THREE.Vector3(0.32, 0.56, -2.02),
-  new THREE.Vector3(-0.08, 0.78, -2.08),
-  new THREE.Vector3(-0.42, 1.24, -2.12)
+  new THREE.Vector3(1.04, 1.16, -1.92),
+  new THREE.Vector3(0.76, 0.90, -1.95),
+  new THREE.Vector3(0.45, 0.56, -2.02),
+  new THREE.Vector3(0.12, 0.80, -2.08),
+  new THREE.Vector3(-0.18, 1.24, -2.12)
 ]);
 const gasHose = withOutline(
   new THREE.Mesh(new THREE.TubeGeometry(hoseCurve, 32, 0.034, 12, false), mat(0x272E36, 0.55)),
@@ -684,7 +854,7 @@ world.add(gasHose);
 
 /* ============ SAKLAR DINDING ARSITEKTURAL + SLIDE-OPEN CUTAWAY 2 LEMPENG TEMBAGA ============ */
 const switchGroup = new THREE.Group();
-switchGroup.position.set(1.48, 1.96, -2.66);
+switchGroup.position.set(1.72, 1.94, -2.66);
 world.add(switchGroup);
 
 const conduitPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.95, 12), mat(0xCBD5E1, 0.4));
@@ -715,7 +885,7 @@ const copperMat = new THREE.MeshStandardMaterial({
   roughness: 0.20,
   metalness: 0.78,
   emissive: 0xD97706,
-  emissiveIntensity: 0.42
+  emissiveIntensity: 0.18
 });
 
 const terminalTop = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.04, 16), copperMat);
@@ -745,20 +915,16 @@ const switchPlateMat = new THREE.MeshStandardMaterial({
   roughness: 0.24
 });
 const switchPlate = withOutline(
-  new THREE.Mesh(new RoundedBoxGeometry(0.52, 0.64, 0.06, 4, 0.02), switchPlateMat),
+  new THREE.Mesh(new RoundedBoxGeometry(0.54, 0.66, 0.07, 4, 0.025), switchPlateMat),
   1.05
 );
 switchCoverGroup.add(switchPlate);
 
-const switchRockerMat = new THREE.MeshStandardMaterial({
-  color: 0xF1F5F9,
-  roughness: 0.26
-});
 const switchRocker = withOutline(
-  new THREE.Mesh(new RoundedBoxGeometry(0.22, 0.30, 0.065, 3, 0.015), switchRockerMat),
+  new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.34, 0.08, 3, 0.02), mat(0xF1F5F9, 0.22)),
   1.05
 );
-switchRocker.position.z = 0.042;
+switchRocker.position.z = 0.045;
 switchCoverGroup.add(switchRocker);
 
 const switchRingMat = new THREE.MeshBasicMaterial({
@@ -776,9 +942,8 @@ function makeSparkGeo(R = 0.36, r = 0.12, depth = 0.08) {
   for (let i = 0; i < 12; i++) {
     const a = (i * Math.PI) / 6 - Math.PI / 2;
     const rad = i % 2 === 0 ? R : r;
-    const x = Math.cos(a) * rad, y = -Math.sin(a) * rad;
-    if (i === 0) s.moveTo(x, y);
-    else s.lineTo(x, y);
+    const x = Math.cos(a) * rad, y = Math.sin(a) * rad;
+    if (i === 0) s.moveTo(x, y); else s.lineTo(x, y);
   }
   s.closePath();
   const g = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2 });
@@ -815,8 +980,8 @@ const gasRiseMat = new THREE.MeshStandardMaterial({
   opacity: 0.0,
   depthWrite: false
 });
-const gasRiseSlab = new THREE.Mesh(new RoundedBoxGeometry(3.3, 1.48, 2.7, 8, 0.25), gasRiseMat);
-gasRiseSlab.position.set(0.82, 0.72, -1.35);
+const gasRiseSlab = new THREE.Mesh(new RoundedBoxGeometry(3.2, 1.48, 2.7, 8, 0.25), gasRiseMat);
+gasRiseSlab.position.set(0.92, 0.72, -1.35);
 gasVolumeGroup.add(gasRiseSlab);
 
 const leakPuffs = Array.from({ length: 4 }, () => {
@@ -828,16 +993,33 @@ const leakPuffs = Array.from({ length: 4 }, () => {
   return m;
 });
 
+// 6 Aliran Udara Segar Cross-Ventilation (3 masuk lewat JENDELA + 3 masuk lewat PINTU DAPUR!)
 const airflowGroup = new THREE.Group();
 world.add(airflowGroup);
-const airArrows = Array.from({ length: 3 }, (_, i) => {
+const airSpecs = [
+  // Masuk dari Jendela (z = -1.00)
+  { z: -1.32, y: 2.15, phase: 0.00 },
+  { z: -1.00, y: 1.92, phase: 0.33 },
+  { z: -0.68, y: 1.72, phase: 0.66 },
+  // Masuk dari Pintu Dapur (z = 1.05) menyapu lantai
+  { z:  0.72, y: 1.45, phase: 0.15 },
+  { z:  1.05, y: 1.08, phase: 0.48 },
+  { z:  1.38, y: 0.74, phase: 0.81 }
+];
+const airArrows = airSpecs.map((sp) => {
   const g = new THREE.Group();
-  const body = new THREE.Mesh(
-    new RoundedBoxGeometry(0.92, 0.10, 0.16, 4, 0.04),
-    new THREE.MeshBasicMaterial({ color: 0x0FA968, transparent: true, opacity: 0.88 })
+  const shaft = new THREE.Mesh(
+    new RoundedBoxGeometry(1.36, 0.12, 0.17, 3, 0.05),
+    new THREE.MeshBasicMaterial({ color: 0x10B981, transparent: true, opacity: 0.90 })
   );
-  g.add(body);
-  g.position.set(-2.1 + i * 0.45, 2.25 - i * 0.18, -1.75);
+  const tip = new THREE.Mesh(
+    new THREE.ConeGeometry(0.21, 0.36, 14),
+    new THREE.MeshBasicMaterial({ color: 0x10B981, transparent: true, opacity: 0.95 })
+  );
+  tip.rotation.z = -Math.PI / 2;
+  tip.position.x = 0.78;
+  g.add(shaft, tip);
+  g.userData = sp;
   airflowGroup.add(g);
   return g;
 });
@@ -1059,14 +1241,14 @@ function buildMasRaka() {
 const RAKA = buildMasRaka();
 world.add(RAKA.root);
 
-/* ============ 4. KOREOGRAFI KAMERA 3/4 ARSITEKTURAL (@puckermanefacts NARROW-FOV 22°-25°) ============ */
+/* ============ 4. PRO-DIRECTOR @puckermanefacts ISOMETRIC DIORAMA CAMERA CHOREOGRAPHY ============ */
 const DURATION = 59.56;
 const S = {
-  camX: 3.10, camY: 3.05, camZ: 7.45,
-  lookX: 0.32, lookY: 1.72, lookZ: -1.45,
-  fov: 25,
+  camX: 14.2, camY: 15.6, camZ: 18.8,
+  lookX: -0.20, lookY: 1.25, lookZ: -0.15,
+  fov: 27,
 
-  cX: 0.12, cY: 0.34, cZ: -0.78, cRotY: 0.32,
+  cX: 0.05, cY: 0.34, cZ: -0.25, cRotY: 0.38,
   cArmL: -1.20, cArmR: -0.25, cKneel: 0,
 
   darkMode: 0,
@@ -1079,8 +1261,10 @@ const S = {
 
   gasOpacity: 0.30,
   gasRise: 0,
+  gasFlushX: 0,
   regLift: 0,
   winOpen: 0,
+  doorOpen: 0,
   airOpacity: 0,
 
   c1Alpha: 0,
@@ -1090,34 +1274,34 @@ const S = {
 
 const tl = gsap.timeline({ paused: true });
 
-// SCENE 01 (0.00s - 3.46s): Hook Question — Clean 3/4 Architectural Medium-Wide Framing
+// SCENE 01 (0.00s - 3.60s): Hook — Signature @puckermanefacts Elevated Isometric Cutaway Diorama
 tl.fromTo(S,
   {
-    camX: 3.15, camY: 3.08, camZ: 7.55,
-    lookX: 0.28, lookY: 1.72, lookZ: -1.48,
-    fov: 25,
-    cX: 0.08, cZ: -0.82, cRotY: 0.32, cArmL: -1.25, cArmR: -0.25, cKneel: 0,
+    camX: 14.4, camY: 15.8, camZ: 19.0,
+    lookX: -0.22, lookY: 1.25, lookZ: -0.15,
+    fov: 27,
+    cX: -0.15, cZ: -0.18, cRotY: 0.42, cArmL: -1.25, cArmR: -0.25, cKneel: 0,
     darkMode: 0, cutawayAlpha: 0, copperClose: 0, rockerTilt: 0,
     sparkScale: 0, ringScale: 0.8, ringAlpha: 0,
-    gasOpacity: 0.28, gasRise: 0, regLift: 0, winOpen: 0, airOpacity: 0,
+    gasOpacity: 0.34, gasRise: 0, gasFlushX: 0, regLift: 0, winOpen: 0, doorOpen: 0, airOpacity: 0,
     c1Alpha: 0, c2Alpha: 0, c3Alpha: 0
   },
   {
-    camX: 2.82, camY: 2.92, camZ: 6.95,
-    lookX: 0.35, lookY: 1.75, lookZ: -1.55,
-    cArmL: -1.48,
-    duration: 3.46, ease: 'sine.inOut'
+    camX: 12.8, camY: 14.0, camZ: 17.0,
+    lookX: -0.10, lookY: 1.30, lookZ: -0.25,
+    cArmL: -1.46,
+    duration: 3.55, ease: 'sine.inOut'
   }, 0
 );
 
-// SCENE 02 (3.46s - 7.55s): "Karena satu klik saklar, bisa langsung memicu ledakan." (Tanpa Judul Kedua — Fokus Visual!)
+// SCENE 02 (3.60s - 7.55s): "Karena satu klik saklar, bisa langsung memicu ledakan." — Elevated Isometric Medium-Push
 tl.to(S, {
-  camX: 2.15, camY: 2.62, camZ: 5.35,
-  lookX: 0.92, lookY: 1.82, lookZ: -2.10,
-  fov: 24,
-  cX: 0.05, cRotY: 0.45, cArmL: -0.35, cArmR: -1.35,
-  duration: 1.75, ease: 'power2.inOut'
-}, 3.46);
+  camX: 9.2, camY: 9.8, camZ: 12.4,
+  lookX: 0.38, lookY: 1.42, lookZ: -1.05,
+  fov: 25,
+  cX: -0.10, cZ: -0.55, cRotY: 0.52, cArmL: -0.30, cArmR: -1.38,
+  duration: 1.65, ease: 'power2.inOut'
+}, 3.60);
 tl.to(S, {
   sparkScale: 1.15, ringScale: 1.55, ringAlpha: 0.9, c1Alpha: 1,
   duration: 0.38, ease: 'back.out(2)'
@@ -1127,39 +1311,40 @@ tl.to(S, {
   duration: 0.38, ease: 'power2.in'
 }, 7.05);
 
-// SCENE 03 (7.55s - 12.42s): "Misalnya dapur gelap, tercium bau gas, lalu tangan refleks menekan saklar." (Tanpa Pill Atas — Clean!)
+// SCENE 03 (7.55s - 12.42s): Dark Kitchen Gas Leak Scenario — High Top-Front Isometric Angle (Zero Wall Occlusion!)
 tl.to(S, {
-  camX: -0.95, camY: 2.68, camZ: 6.25,
-  lookX: 0.65, lookY: 1.72, lookZ: -1.95,
-  fov: 25,
-  darkMode: 0.90, gasOpacity: 0.65,
-  cX: 0.28, cZ: -1.35, cRotY: 0.58, cArmL: -0.30, cArmR: -0.55,
+  camX: 6.4, camY: 12.6, camZ: 15.4,
+  lookX: 0.15, lookY: 1.25, lookZ: -0.75,
+  fov: 26,
+  darkMode: 0.88, gasOpacity: 0.72,
+  cX: -0.45, cZ: -0.25, cRotY: 0.65, cArmL: -0.30, cArmR: -0.55,
   duration: 1.15, ease: 'power2.inOut'
 }, 7.55);
 tl.to(S, {
-  camX: -0.55, camY: 2.48, camZ: 4.85,
-  lookX: 0.95, lookY: 1.84, lookZ: -2.25,
-  cX: 0.65, cZ: -1.62, cRotY: 0.52, cArmR: -1.58, rockerTilt: 1,
+  camX: 5.4, camY: 10.2, camZ: 12.6,
+  lookX: 0.52, lookY: 1.40, lookZ: -1.25,
+  cX: 0.88, cZ: -1.55, cRotY: 0.52, cArmR: -1.58, rockerTilt: 1,
   duration: 1.15, ease: 'power2.out'
 }, 9.95);
-tl.to(S, { sparkScale: 0.92, duration: 0.22 }, 11.30);
-tl.to(S, { sparkScale: 0, darkMode: 0.12, duration: 0.35 }, 12.02);
+tl.to(S, { sparkScale: 0.98, duration: 0.22 }, 11.28);
+tl.to(S, { sparkScale: 0, darkMode: 0.10, duration: 0.35 }, 12.02);
 
-// SCENE 04 (12.42s - 16.03s): "Di dalam saklar, ada dua lempeng tembaga penyambung listrik."
+// SCENE 04 (12.42s - 16.03s): Intentional Detail Shot 1 — Architectural Cutaway 2 Copper Plates
 tl.to(S, {
-  camX: 0.28, camY: 2.24, camZ: 1.15,
-  lookX: 1.44, lookY: 2.02, lookZ: -2.62,
-  fov: 22,
-  cX: -0.65, cZ: -0.65, cRotY: 0.45, cArmR: -0.35,
+  camX: 0.82, camY: 2.22, camZ: 0.28,
+  lookX: 1.72, lookY: 1.94, lookZ: -2.63,
+  fov: 20,
+  cX: -1.45, cZ: -0.15, cRotY: 0.35, cArmR: -0.30,
   cutawayAlpha: 1, copperClose: 0, c1Alpha: 1,
   duration: 0.95, ease: 'power3.inOut'
 }, 12.42);
+tl.to(S, { c1Alpha: 0, duration: 0.28, ease: 'power2.in' }, 15.65);
 
-// SCENE 05 (16.03s - 21.40s): "Saat ditekan, tembaga ini beradu dan memercikkan api kecil bersuhu seribu derajat."
+// SCENE 05 (16.03s - 21.40s): Intentional Detail Shot 2 — Copper Collision & 1.000°C Spark Burst (Clean Unclipped Ring!)
 tl.to(S, {
-  camX: 0.45, camY: 2.18, camZ: 0.95,
-  lookX: 1.46, lookY: 2.00, lookZ: -2.64,
-  copperClose: 1, sparkScale: 0.52, ringScale: 0.72, ringAlpha: 0.85,
+  camX: 0.90, camY: 2.16, camZ: 0.14,
+  lookX: 1.72, lookY: 1.93, lookZ: -2.64,
+  copperClose: 1, sparkScale: 0.54, ringScale: 0.54, ringAlpha: 0.88, c1Alpha: 1,
   duration: 0.42, ease: 'back.out(2)'
 }, 17.15);
 tl.to(S, {
@@ -1167,106 +1352,114 @@ tl.to(S, {
   duration: 0.42, ease: 'power2.in'
 }, 20.88);
 
-// SCENE 06 (21.40s - 25.20s): "Masalahnya, gas elpiji dua kali lebih berat dari udara."
+// SCENE 06 (21.40s - 25.20s): High Bird's-Eye Isometric Diorama — Gas Elpiji 2x Lebih Berat Mengendap di Lantai
 tl.to(S, {
-  camX: 7.45, camY: 7.85, camZ: 9.85,
-  lookX: 0.08, lookY: 1.12, lookZ: -0.85,
-  fov: 22,
-  cX: -0.58, cZ: -0.65, cKneel: 0, cRotY: 0.35, cArmL: 0.15, cArmR: -0.25,
-  gasOpacity: 0.72, gasRise: 0.08, c2Alpha: 1,
+  camX: 15.2, camY: 18.4, camZ: 19.6,
+  lookX: -0.20, lookY: 1.05, lookZ: -0.15,
+  fov: 27,
+  cX: -0.75, cZ: -0.15, cKneel: 0, cRotY: 0.42, cArmL: 0.15, cArmR: -0.25,
+  gasOpacity: 0.78, gasRise: 0.08, c2Alpha: 1,
   duration: 1.0, ease: 'power3.inOut'
 }, 21.40);
+tl.to(S, { c2Alpha: 0, duration: 0.28, ease: 'power2.in' }, 24.80);
 
-// SCENE 07 (25.20s - 30.90s): "Saat bocor, gas tidak naik ke atas, tapi mengendap di lantai, lalu naik sampai setinggi saklar."
+// SCENE 07 (25.20s - 30.90s): Elevated Isometric Crane — Gas Mengendap Lalu Naik Setinggi Saklar
 tl.to(S, {
-  camX: 5.55, camY: 5.15, camZ: 7.85,
-  lookX: 0.32, lookY: 1.32, lookZ: -1.35,
-  fov: 24,
-  gasOpacity: 0.84, gasRise: 1.0,
-  duration: 3.2, ease: 'power2.inOut'
-}, 25.50);
+  camX: 11.4, camY: 11.8, camZ: 15.0,
+  lookX: 0.12, lookY: 1.32, lookZ: -0.65,
+  fov: 26,
+  gasOpacity: 0.86, gasRise: 1.0,
+  duration: 3.1, ease: 'power2.inOut'
+}, 25.45);
+tl.to(S, { c2Alpha: 1, duration: 0.38, ease: 'back.out(2)' }, 27.60);
+tl.to(S, { c2Alpha: 0, duration: 0.28, ease: 'power2.in' }, 30.45);
 
-// SCENE 08 (30.90s - 36.62s): "Mau saklar dinyalakan atau dimatikan, percikan apinya tetap keluar dan langsung menyambar gas."
+// SCENE 08 (30.90s - 36.62s): Elevated 3/4 Detail — Saklar ON/OFF Menyambar Gas
 tl.to(S, {
-  camX: -0.15, camY: 2.38, camZ: 3.15,
-  lookX: 1.22, lookY: 1.92, lookZ: -2.42,
-  fov: 24,
-  c2Alpha: 0, c1Alpha: 1, cutawayAlpha: 0.85,
+  camX: 4.5, camY: 5.1, camZ: 6.2,
+  lookX: 1.28, lookY: 1.62, lookZ: -2.02,
+  fov: 23,
+  cX: -1.35, cZ: -0.15,
+  c1Alpha: 1, cutawayAlpha: 0.85,
   duration: 0.85, ease: 'power3.inOut'
 }, 30.90);
 tl.to(S, { rockerTilt: 0, sparkScale: 1.05, ringAlpha: 0.9, duration: 0.25 }, 31.65);
 tl.to(S, { rockerTilt: 1, sparkScale: 1.28, ringScale: 1.65, duration: 0.25 }, 32.55);
 tl.to(S, { sparkScale: 0, cutawayAlpha: 0, ringAlpha: 0, c1Alpha: 0, gasRise: 0.22, duration: 0.42, ease: 'power2.in' }, 36.15);
 
-// SCENE 09 (36.62s - 39.65s): "Kalau mencium bau gas, lakukan tiga langkah ini."
+// SCENE 09 (36.62s - 39.65s): Elevated Isometric Room Reset — "Lakukan 3 Langkah Ini"
 tl.to(S, {
-  camX: 2.75, camY: 2.85, camZ: 6.75,
-  lookX: 0.28, lookY: 1.75, lookZ: -1.45,
-  fov: 25,
-  cX: 0.12, cZ: -0.78, cRotY: 0.28, cArmL: -1.35, cArmR: -1.35,
-  gasOpacity: 0.38,
+  camX: 13.4, camY: 14.6, camZ: 17.6,
+  lookX: -0.18, lookY: 1.28, lookZ: -0.18,
+  fov: 27,
+  cX: -0.05, cZ: -0.25, cRotY: 0.36, cArmL: -1.32, cArmR: -1.32,
+  gasOpacity: 0.44,
   duration: 0.85, ease: 'power3.inOut'
 }, 36.62);
 
-// SCENE 10 (39.65s - 43.63s): "Pertama, jangan sentuh saklar lampu atau alat elektronik apa pun."
+// SCENE 10 (39.65s - 43.63s): Langkah 1 — Elevated Isometric Medium (Utuh, Mas Raka + Gas + Saklar Seimbang!)
 tl.to(S, {
-  camX: 1.45, camY: 2.52, camZ: 4.85,
-  lookX: 0.82, lookY: 1.84, lookZ: -2.05,
-  fov: 24,
-  cX: 0.22, cZ: -1.05, cRotY: 0.38, cArmL: -1.52, cArmR: -0.35,
+  camX: 9.0, camY: 9.6, camZ: 12.0,
+  lookX: 0.35, lookY: 1.42, lookZ: -1.05,
+  fov: 25,
+  cX: -0.08, cZ: -0.78, cRotY: 0.45, cArmL: -1.52, cArmR: -0.30,
   ringScale: 1.25, ringAlpha: 0.88, c3Alpha: 1,
   duration: 0.85, ease: 'power3.inOut'
 }, 39.65);
 tl.to(S, { ringAlpha: 0, c3Alpha: 0, duration: 0.32, ease: 'power2.in' }, 43.25);
 
-// SCENE 11 (43.63s - 47.46s): "Kedua, putar pengunci regulator, dan lepas dari tabung gas."
+// SCENE 11 (43.63s - 47.46s): Langkah 2 — Elevated 3/4 Detail Shot Lepas Regulator Gas Melon (Zero Cropped Head!)
 tl.to(S, {
-  camX: 2.45, camY: 2.58, camZ: 5.75,
-  lookX: 0.55, lookY: 1.38, lookZ: -1.75,
-  fov: 24,
-  cX: 0.08, cZ: -1.48, cRotY: -0.45, cKneel: 0.32, cArmR: -1.42, cArmL: -0.35,
+  camX: 6.4, camY: 6.9, camZ: 8.6,
+  lookX: 0.68, lookY: 1.18, lookZ: -1.55,
+  fov: 23,
+  cX: 0.22, cZ: -1.45, cRotY: -0.48, cKneel: 0.32, cArmR: -1.42, cArmL: -0.35,
   duration: 0.82, ease: 'power3.inOut'
 }, 43.63);
 tl.to(S, {
-  regLift: 1, gasOpacity: 0.14, c3Alpha: 1,
+  regLift: 1, gasOpacity: 0.28, c3Alpha: 1,
   duration: 0.65, ease: 'back.out(1.7)'
 }, 44.85);
 tl.to(S, { c3Alpha: 0, duration: 0.28, ease: 'power2.in' }, 47.15);
 
-// SCENE 12 (47.46s - 52.83s): "Ketiga, buka pintu dan jendela lebar-lebar, supaya udara luar mendorong gas keluar."
+// SCENE 12 (47.46s - 52.83s): Langkah 3 — HIGH ARCHITECTURAL ISOMETRIC DIORAMA WIDE (Pintu 3D + Jendela Terbuka Lebar & Udara Mendorong Gas Keluar!)
 tl.to(S, {
-  camX: 3.25, camY: 2.95, camZ: 7.15,
-  lookX: -0.45, lookY: 1.78, lookZ: -1.25,
-  fov: 25,
-  cX: 0.18, cZ: -0.78, cKneel: 0, cRotY: 0.35, cArmL: -1.52, cArmR: -0.35,
-  winOpen: 1, airOpacity: 1, gasOpacity: 0, gasRise: 0, c3Alpha: 1,
+  camX: 16.4, camY: 18.8, camZ: 21.2,
+  lookX: -0.25, lookY: 1.18, lookZ: -0.05,
+  fov: 28,
+  cX: 0.42, cZ: -0.15, cKneel: 0, cRotY: 0.42, cArmL: -1.45, cArmR: -0.30,
+  winOpen: 1, doorOpen: 1, airOpacity: 1, c3Alpha: 1,
   duration: 0.95, ease: 'power3.inOut'
 }, 47.46);
+tl.to(S, {
+  gasFlushX: 2.35, gasOpacity: 0, gasRise: 0,
+  duration: 2.6, ease: 'power2.out'
+}, 48.10);
 tl.to(S, { c3Alpha: 0, duration: 0.32, ease: 'power2.in' }, 52.45);
 
-// SCENE 13 (52.83s - 57.38s): "Jadi yang memicu ledakan bukan tabungnya, tapi percikan listrik saat kita panik."
+// SCENE 13 (52.83s - 57.38s): Summary Takeaway — Elevated Isometric Diorama Wide
 tl.to(S, {
-  camX: 2.85, camY: 2.85, camZ: 6.75,
-  lookX: 0.32, lookY: 1.75, lookZ: -1.45,
-  fov: 25,
-  cX: 0.15, cZ: -0.78, cRotY: 0.28, cArmL: -0.35, cArmR: -0.35,
-  airOpacity: 0.32,
+  camX: 13.0, camY: 14.0, camZ: 17.2,
+  lookX: -0.15, lookY: 1.28, lookZ: -0.15,
+  fov: 27,
+  cX: 0.05, cZ: -0.25, cRotY: 0.36, cArmL: -0.32, cArmR: -0.32,
+  airOpacity: 0.28,
   duration: 1.05, ease: 'power2.inOut'
 }, 52.83);
 
-// SCENE 14 (57.38s - 59.56s): "Jadi... jangan panik dulu." (Clean Hero Framing Tanpa Overlay Atas)
+// SCENE 14 (57.38s - 59.56s): Clean Hero Isometric Push-In — "Jadi... jangan panik dulu."
 tl.to(S, {
-  camX: 2.55, camY: 2.78, camZ: 6.25,
-  lookX: 0.25, lookY: 1.78, lookZ: -1.35,
-  fov: 24,
-  cX: 0.15, cZ: -0.78, cRotY: 0.28, cArmL: -1.48, cArmR: -0.25,
+  camX: 10.2, camY: 10.8, camZ: 13.8,
+  lookX: -0.02, lookY: 1.35, lookZ: -0.28,
+  fov: 25,
+  cX: 0.05, cZ: -0.25, cRotY: 0.36, cArmL: -1.48, cArmR: -0.25,
   airOpacity: 0,
-  duration: 0.75, ease: 'power3.out'
+  duration: 0.80, ease: 'power3.out'
 }, 57.38);
 
 tl.to({}, { duration: 0.01 }, DURATION);
 
-/* ============ 5. SMOOTH EASE-IN / EASE-OUT HELPER & @puckermanefacts SPARSE OVERLAY SCHEDULE ============ */
+/* ============ 5. SMOOTH EASE-IN / EASE-OUT & 100% VERBATIM SUBTITLE SCHEDULE ============ */
 function easeOutBack(x) {
   const c1 = 1.70158;
   const c3 = c1 + 1;
@@ -1302,54 +1495,88 @@ function getWindowMotion(t, tIn, tOut, enterDur = 0.36, exitDur = 0.26) {
   return { alpha: 1, y: 0, scale: 1 };
 }
 
-// Natural Word-Spacing Karaoke Caption Chunks
+// 100% VERBATIM ACOUSTIC-ALIGNED CAPTION CHUNKS (Every single spoken word included!)
 const CAPTION_CHUNKS = [
-  // S01 (0.00s - 3.46s)
-  { s: 0.04, e: 1.68, words: ['Kenapa', 'saat', 'dapur', 'bau', 'gas,'] },
-  { s: 1.70, e: 3.46, words: ['nggak', 'boleh', 'nyentuh', 'saklar', 'lampu?'] },
-  // S02 (4.02s - 7.03s)
-  { s: 4.00, e: 5.42, words: ['Karena', 'satu', 'klik', 'saklar,'] },
-  { s: 5.44, e: 7.12, words: ['bisa', 'langsung', 'memicu', 'ledakan.'] },
-  // S03 (7.55s - 12.02s)
-  { s: 7.52, e: 9.88, words: ['Misalnya', 'dapur', 'gelap,', 'bau', 'gas,'] },
-  { s: 9.92, e: 12.10, words: ['lalu', 'refleks', 'menekan', 'saklar.'] },
-  // S04 (12.42s - 15.49s)
-  { s: 12.40, e: 13.82, words: ['Di', 'dalam', 'saklar,', 'ada', 'dua'] },
-  { s: 13.84, e: 15.58, words: ['lempeng', 'tembaga', 'penyambung', 'listrik.'] },
-  // S05 (16.03s - 20.88s)
-  { s: 16.00, e: 18.28, words: ['Saat', 'ditekan,', 'tembaga', 'ini', 'beradu'] },
-  { s: 18.30, e: 20.95, words: ['memercikkan', 'api', '1.000', 'derajat.'] },
-  // S06 (21.40s - 24.69s)
-  { s: 21.38, e: 23.02, words: ['Masalahnya,', 'gas', 'elpiji', 'itu'] },
-  { s: 23.04, e: 24.78, words: ['2×', 'lebih', 'berat', 'dari', 'udara.'] },
-  // S07 (25.20s - 30.40s)
-  { s: 25.18, e: 27.92, words: ['Gas', 'mengendap', 'di', 'lantai,'] },
-  { s: 27.94, e: 30.48, words: ['lalu', 'naik', 'setinggi', 'saklar.'] },
-  // S08 (30.90s - 36.19s)
-  { s: 30.88, e: 33.48, words: ['Saklar', 'dinyalakan', 'atau', 'dimatikan,'] },
-  { s: 33.50, e: 36.25, words: ['apinya', 'langsung', 'menyambar', 'gas.'] },
-  // S09 (36.62s - 39.20s)
-  { s: 36.60, e: 39.28, words: ['Kalau', 'bau', 'gas,', 'lakukan', '3', 'langkah:'] },
-  // S10 (39.65s - 43.19s)
-  { s: 39.62, e: 41.42, words: ['Pertama,', 'jangan', 'sentuh', 'saklar'] },
-  { s: 41.44, e: 43.28, words: ['atau', 'alat', 'elektronik', 'apa', 'pun.'] },
-  // S11 (43.63s - 47.06s)
-  { s: 43.60, e: 45.32, words: ['Kedua,', 'putar', 'pengunci', 'regulator,'] },
-  { s: 45.34, e: 47.15, words: ['dan', 'lepas', 'dari', 'tabung', 'gas.'] },
-  // S12 (47.46s - 52.35s)
-  { s: 47.44, e: 49.85, words: ['Ketiga,', 'buka', 'pintu', 'dan', 'jendela,'] },
-  { s: 49.87, e: 52.42, words: ['agar', 'udara', 'mendorong', 'gas', 'keluar.'] },
-  // S13 (52.83s - 56.92s)
-  { s: 52.80, e: 54.82, words: ['Pemicunya', 'bukan', 'tabung', 'gasnya,'] },
-  { s: 54.84, e: 57.00, words: ['tapi', 'percikan', 'saat', 'kita', 'panik.'] },
-  // S14 (57.38s - 59.56s)
-  { s: 57.34, e: 59.56, words: ['Jadi...', 'jangan', 'panik', 'dulu.'] }
+  // S01 (0.09s - 3.43s): "Kenapa saat dapur bau gas, kamu nggak boleh nyentuh saklar lampu?"
+  { s: 0.06, e: 1.78, words: ['Kenapa', 'saat', 'dapur', 'bau', 'gas,'] },
+  { s: 1.82, e: 3.52, words: ['kamu', 'nggak', 'boleh', 'nyentuh', 'saklar', 'lampu?'] },
+
+  // S02 (4.01s - 7.03s): "Karena satu klik saklar, bisa langsung memicu ledakan."
+  { s: 3.98, e: 5.42, words: ['Karena', 'satu', 'klik', 'saklar,'] },
+  { s: 5.46, e: 7.12, words: ['bisa', 'langsung', 'memicu', 'ledakan.'] },
+
+  // S03 (7.55s - 11.98s): "Misalnya dapur gelap, tercium bau gas, lalu tangan refleks menekan saklar."
+  { s: 7.52, e: 8.82, words: ['Misalnya', 'dapur', 'gelap,'] },
+  { s: 8.95, e: 10.04, words: ['tercium', 'bau', 'gas,'] },
+  { s: 10.12, e: 12.08, words: ['lalu', 'tangan', 'refleks', 'menekan', 'saklar.'] },
+
+  // S04 (12.42s - 15.49s): "Di dalam saklar, ada dua lempeng tembaga penyambung listrik."
+  { s: 12.40, e: 13.72, words: ['Di', 'dalam', 'saklar,', 'ada', 'dua'] },
+  { s: 13.75, e: 15.58, words: ['lempeng', 'tembaga', 'penyambung', 'listrik.'] },
+
+  // S05 (16.05s - 20.88s): "Saat ditekan, tembaga ini beradu dan memercikkan api kecil bersuhu 1.000 derajat."
+  { s: 16.03, e: 18.18, words: ['Saat', 'ditekan,', 'tembaga', 'ini', 'beradu'] },
+  { s: 18.21, e: 19.50, words: ['dan', 'memercikkan', 'api', 'kecil'] },
+  { s: 19.53, e: 20.96, words: ['bersuhu', '1.000', 'derajat.'] },
+
+  // S06 (21.39s - 24.70s): "Masalahnya, gas elpiji dua kali lebih berat dari udara."
+  { s: 21.36, e: 22.62, words: ['Masalahnya,', 'gas', 'elpiji'] },
+  { s: 22.65, e: 24.78, words: ['dua', 'kali', 'lebih', 'berat', 'dari', 'udara.'] },
+
+  // S07 (25.21s - 30.39s): "Saat bocor, gas tidak naik ke atas, tapi mengendap di lantai, lalu naik sampai setinggi saklar."
+  { s: 25.19, e: 26.94, words: ['Saat', 'bocor,', 'gas', 'tidak', 'naik', 'ke', 'atas,'] },
+  { s: 26.98, e: 28.54, words: ['tapi', 'mengendap', 'di', 'lantai,'] },
+  { s: 28.57, e: 30.48, words: ['lalu', 'naik', 'sampai', 'setinggi', 'saklar.'] },
+
+  // S08 (30.90s - 36.13s): "Mau saklar dinyalakan atau dimatikan, percikan apinya tetap keluar dan langsung menyambar gas."
+  { s: 30.88, e: 33.00, words: ['Mau', 'saklar', 'dinyalakan', 'atau', 'dimatikan,'] },
+  { s: 33.05, e: 34.60, words: ['percikan', 'apinya', 'tetap', 'keluar'] },
+  { s: 34.64, e: 36.22, words: ['dan', 'langsung', 'menyambar', 'gas.'] },
+
+  // S09 (36.62s - 39.16s): "Kalau mencium bau gas, lakukan 3 langkah ini."
+  { s: 36.60, e: 37.80, words: ['Kalau', 'mencium', 'bau', 'gas,'] },
+  { s: 37.85, e: 39.24, words: ['lakukan', '3', 'langkah', 'ini.'] },
+
+  // S10 (39.64s - 43.18s): "Pertama, jangan sentuh saklar lampu atau alat elektronik apa pun."
+  { s: 39.62, e: 41.50, words: ['Pertama,', 'jangan', 'sentuh', 'saklar', 'lampu'] },
+  { s: 41.54, e: 43.24, words: ['atau', 'alat', 'elektronik', 'apa', 'pun.'] },
+
+  // S11 (43.63s - 47.03s): "Kedua, putar pengunci regulator, dan lepas dari tabung gas."
+  { s: 43.61, e: 45.94, words: ['Kedua,', 'putar', 'pengunci', 'regulator,'] },
+  { s: 46.00, e: 47.12, words: ['dan', 'lepas', 'dari', 'tabung', 'gas.'] },
+
+  // S12 (47.46s - 52.35s): "Ketiga, buka pintu dan jendela lebar-lebar, supaya udara luar mendorong gas keluar."
+  { s: 47.44, e: 48.48, words: ['Ketiga,', 'buka', 'pintu'] },
+  { s: 48.51, e: 50.14, words: ['dan', 'jendela', 'lebar-lebar,'] },
+  { s: 50.22, e: 52.42, words: ['supaya', 'udara', 'luar', 'mendorong', 'gas', 'keluar.'] },
+
+  // S13 (52.83s - 56.93s): "Jadi yang memicu ledakan bukan tabungnya, tapi percikan listrik saat kita panik."
+  { s: 52.81, e: 53.96, words: ['Jadi', 'yang', 'memicu', 'ledakan'] },
+  { s: 53.99, e: 55.06, words: ['bukan', 'tabungnya,'] },
+  { s: 55.16, e: 57.00, words: ['tapi', 'percikan', 'listrik', 'saat', 'kita', 'panik.'] },
+
+  // S14 (57.38s - 59.50s): "Jadi... jangan panik dulu." (Custom pause-aware timestamps)
+  {
+    s: 57.35, e: 59.56,
+    words: ['Jadi...', 'jangan', 'panik', 'dulu.'],
+    customTimes: [
+      { word: 'Jadi...', ws: 57.36, we: 58.22 },
+      { word: 'jangan',  ws: 58.26, we: 58.66 },
+      { word: 'panik',   ws: 58.66, we: 59.04 },
+      { word: 'dulu.',   ws: 59.04, we: 59.56 }
+    ]
+  }
 ];
 
+const SPOKEN_WEIGHT_OVERRIDES = { '1.000': 6, '3': 4 };
 CAPTION_CHUNKS.forEach(ch => {
-  const weights = ch.words.map(w => Math.max(2, w.replace(/[^a-zA-Z0-9]/g, '').length));
+  if (ch.customTimes) {
+    ch.wordTimes = ch.customTimes;
+    return;
+  }
+  const weights = ch.words.map(w => SPOKEN_WEIGHT_OVERRIDES[w] || Math.max(2, w.replace(/[^a-zA-Z0-9]/g, '').length));
   const totalW = weights.reduce((a, b) => a + b, 0);
-  const span = (ch.e - ch.s) * 0.92;
+  const span = (ch.e - ch.s) * 0.94;
   let cursor = ch.s + 0.02;
   ch.wordTimes = ch.words.map((w, idx) => {
     const dur = (weights[idx] / totalW) * span;
@@ -1359,11 +1586,18 @@ CAPTION_CHUNKS.forEach(ch => {
   });
 });
 
-// ULTRA-CLEAN @puckermanefacts TOP HEADER SCHEDULE:
-// 1. Hook Title hanya muncul SEKALI di awal (0.00s - 3.60s).
-// 2. Scene 02-09 (3.60s - 39.60s): KOSONG di atas (tanpa pill filler seperti "Kenapa bisa?", fokus penuh ke visual 3D & callout).
-// 3. Scene 10-12 (39.65s - 52.78s): 1 Single Step Pill + 3 Progress Dots untuk 3 langkah penyelamatan penting (1 Jangan sentuh saklar / 2 Lepas regulator gas / 3 Buka pintu & jendela).
-// 4. Scene 13-14 (52.83s - 59.56s): KOSONG di atas (clean sign-off).
+// Apply ?caption=1 | 2 | 3 option from URL query & interactive switcher
+const capOpt = Q.get('caption') || '1';
+document.body.classList.add(`cap-opt-${capOpt}`);
+document.querySelectorAll('#switcher button[data-cap]').forEach(btn => {
+  btn.classList.toggle('active', btn.dataset.cap === capOpt);
+  btn.onclick = () => {
+    document.body.classList.remove('cap-opt-1', 'cap-opt-2', 'cap-opt-3');
+    document.body.classList.add(`cap-opt-${btn.dataset.cap}`);
+    document.querySelectorAll('#switcher button[data-cap]').forEach(b => b.classList.toggle('active', b === btn));
+  };
+});
+
 const TOP_SEGMENTS = [
   { s: 0.00, e: 3.60, type: 'hook', hTitle: 'BAU GAS BOCOR?', hPill: 'JANGAN SENTUH SAKLAR!' },
   { s: 39.65, e: 43.58, type: 'step', badge: '1', title: 'Jangan sentuh saklar', showDots: true, prog: 1 },
@@ -1383,7 +1617,7 @@ function setCalloutLine(lineId, dotId, callEl, worldTarget, offsetX, offsetY, al
   const px = (v.x * 0.5 + 0.5) * W;
   const py = (-v.y * 0.5 + 0.5) * H;
   const cx = Math.max(210, Math.min(870, px + offsetX));
-  const cy = Math.max(400, Math.min(1520, py + offsetY));
+  const cy = Math.max(380, Math.min(1520, py + offsetY));
 
   const lineProg = easeOutCubic(Math.min(1, alpha * 1.35));
   const badgeProg = easeOutBack(Math.max(0, Math.min(1, (alpha - 0.18) / 0.82)));
@@ -1418,7 +1652,7 @@ function updateHUD(t) {
   const progWrap = $('#prog-wrap');
   const segs = [$('#seg1'), $('#seg2'), $('#seg3')];
 
-  // 1. Update Sparse Top Header Segment (Only when active; empty otherwise!)
+  // 1. Update Sparse Top Header Segment
   const seg = TOP_SEGMENTS.find(x => t >= x.s && t <= x.e);
   if (!seg) {
     hook.style.opacity = '0';
@@ -1467,25 +1701,30 @@ function updateHUD(t) {
   } else if (t < 47.46) {
     $('#call3-text').textContent = 'lepas regulator';
   } else {
-    $('#call3-text').textContent = 'udara masuk';
+    $('#call3-text').textContent = 'pintu & jendela dibuka';
   }
 
-  // 3. Update Natural-Spacing Word-by-Word Subtitle Bar
+  // 3. Update Verbatim Word-by-Word Subtitle Bar (Pure Natural Typography, Zero Box Padding)
   let activeChunk = CAPTION_CHUNKS.find(c => t >= c.s && t <= c.e);
+  let gapAlpha = 1;
   if (!activeChunk) {
     activeChunk = CAPTION_CHUNKS.reduce((best, cur) => {
       const dist = Math.min(Math.abs(t - cur.s), Math.abs(t - cur.e));
       const bestDist = Math.min(Math.abs(t - best.s), Math.abs(t - best.e));
       return dist < bestDist ? cur : best;
     }, CAPTION_CHUNKS[0]);
+    const minDist = Math.min(Math.abs(t - activeChunk.s), Math.abs(t - activeChunk.e));
+    if (minDist > 0.14) {
+      gapAlpha = Math.max(0, 1 - (minDist - 0.14) / 0.18);
+    }
   }
 
   const dtChunk = Math.max(0, t - activeChunk.s);
-  const popProg = Math.min(1, dtChunk / 0.20);
+  const popProg = Math.min(1, dtChunk / 0.18);
   const popEase = easeOutBack(popProg);
-  const subScale = 0.96 + 0.04 * popEase;
-  const subY = (1 - popEase) * 10;
-  subCard.style.opacity = '1';
+  const subScale = 0.97 + 0.03 * popEase;
+  const subY = (1 - popEase) * 8 + (1 - gapAlpha) * 8;
+  subCard.style.opacity = gapAlpha.toFixed(3);
   subCard.style.transform = `translate3d(0, ${subY.toFixed(1)}px, 0) scale(${subScale.toFixed(3)})`;
 
   let activeIdx = 0;
@@ -1493,10 +1732,9 @@ function updateHUD(t) {
     if (t >= activeChunk.wordTimes[i].ws) activeIdx = i;
   }
 
-  // Join with normal space ' ' so word spacing is 100% natural typography
   subCard.innerHTML = activeChunk.wordTimes.map((wt, idx) => {
-    const cls = idx === activeIdx ? 'w active' : 'w';
-    return `<span class="${cls}">${wt.word}</span>`;
+    const stateCls = idx < activeIdx ? 'w past' : (idx === activeIdx ? 'w active' : 'w future');
+    return `<span class="${stateCls}">${wt.word}</span>`;
   }).join(' ');
 }
 
@@ -1546,6 +1784,7 @@ function render(t) {
   switchRingMat.opacity = S.ringAlpha;
 
   gasVolumeGroup.visible = S.gasOpacity > 0.01;
+  gasVolumeGroup.position.x = -0.05 + S.gasFlushX;
   gasSlabMat.opacity = S.gasOpacity * 0.60;
   gasRiseSlab.visible = S.gasRise > 0.01;
   gasRiseMat.opacity = S.gasRise * 0.46;
@@ -1558,7 +1797,7 @@ function render(t) {
     if (showLeak) {
       const lp = (t * 0.55 + i * 0.25) % 1;
       pf.position.set(
-        1.12 - lp * 0.35 + Math.sin(lp * 6 + i) * 0.08,
+        1.24 - lp * 0.35 + Math.sin(lp * 6 + i) * 0.08,
         1.15 - lp * 0.62,
         -1.88 + lp * 0.45
       );
@@ -1569,30 +1808,34 @@ function render(t) {
 
   regulatorGroup.position.y = 0.83 + S.regLift * 0.46;
   regSwitch.rotation.y = S.regLift * (Math.PI * 0.5);
-  winSashPivot.rotation.y = -S.winOpen * 1.08;
+  winSashLPivot.rotation.y = S.winOpen * 1.18;
+  winSashRPivot.rotation.y = -S.winOpen * 1.18;
+  doorPivot.rotation.y = S.doorOpen * 1.18;
 
   airflowGroup.visible = S.airOpacity > 0.01;
-  airArrows.forEach((ar, i) => {
-    const p = (t * 0.75 + i * 0.33) % 1;
-    ar.position.x = -2.35 + p * 1.25;
-    ar.position.y = 2.28 - i * 0.20;
-    ar.position.z = -1.78;
-    ar.scale.setScalar(Math.max(0.001, Math.sin(p * Math.PI) * S.airOpacity));
+  airArrows.forEach((ar) => {
+    const sp = ar.userData;
+    const p = (t * 0.68 + sp.phase) % 1;
+    ar.position.x = -3.15 + p * 4.45;
+    ar.position.y = sp.y - p * 0.22;
+    ar.position.z = sp.z;
+    const sc = Math.sin(p * Math.PI) * S.airOpacity;
+    ar.scale.setScalar(Math.max(0.001, sc));
   });
 
   const c2Target = (t < 25.20)
-    ? new THREE.Vector3(0.95, 0.55, -0.75)
-    : new THREE.Vector3(1.15, 1.35, -1.65);
-  const c2OffX = (t < 25.20) ? -135 : -155;
-  const c2OffY = (t < 25.20) ? -150 : -160;
+    ? new THREE.Vector3(0.65, 0.55, -0.35)
+    : new THREE.Vector3(1.45, 1.55, -1.95);
+  const c2OffX = (t < 25.20) ? 115 : -145;
+  const c2OffY = (t < 25.20) ? -145 : -150;
 
   const c3Target = (t >= 39.5 && t < 43.6)
-    ? new THREE.Vector3(1.48, 1.96, -2.55)
-    : (t >= 47.4 ? new THREE.Vector3(-2.15, 2.15, -1.25) : new THREE.Vector3(1.12, 1.55, -1.92));
-  const c3OffX = (t >= 47.4) ? 160 : -155;
-  const c3OffY = (t >= 43.6 && t < 47.4) ? -175 : -160;
+    ? new THREE.Vector3(1.72, 1.94, -2.58)
+    : (t >= 47.4 ? new THREE.Vector3(-2.65, 1.85, 0.25) : new THREE.Vector3(1.24, 1.48, -1.92));
+  const c3OffX = (t >= 47.4) ? 145 : -135;
+  const c3OffY = (t >= 43.6 && t < 47.4) ? -165 : -165;
 
-  setCalloutLine('#line-c1', '#dot-c1', $('#call1'), new THREE.Vector3(1.44, 1.96, -2.58), -155, -190, S.c1Alpha);
+  setCalloutLine('#line-c1', '#dot-c1', $('#call1'), new THREE.Vector3(1.68, 1.94, -2.60), -145, -170, S.c1Alpha);
   setCalloutLine('#line-c2', '#dot-c2', $('#call2'), c2Target, c2OffX, c2OffY, S.c2Alpha);
   setCalloutLine('#line-c3', '#dot-c3', $('#call3'), c3Target, c3OffX, c3OffY, S.c3Alpha);
 

@@ -4,10 +4,16 @@
 # Chrome Sessions & Caches
 .chrome-ig-session/
 .temp_chrome/
+.render_tmp/
+.render_tmp_snap/
 chrome_*
 *.tmp
 *.pma
 *.log
+
+# Local heavy MP4 master builds (rendered on demand)
+EP01_Bau_Gas_Bocor_MASTER_1080p.mp4
+EP01_Bau_Gas_Bocor_PREVIEW.mp4
 
 # Operating System files
 .DS_Store

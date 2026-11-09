@@ -9,9 +9,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, '..');
 
-const PORT = 9239;
-const USER_DATA = path.join(os.tmpdir(), 'chrome_ep01_clip');
+// Isolate ALL temp files to Disk D: (project root)
+const RENDER_TMP = path.join(ROOT, '.render_tmp');
+fs.rmSync(RENDER_TMP, { recursive: true, force: true });
+fs.mkdirSync(RENDER_TMP, { recursive: true });
+const CHILD_ENV = { ...process.env, TEMP: RENDER_TMP, TMP: RENDER_TMP, TMPDIR: RENDER_TMP };
 
+const PORT = 9239;
+const USER_DATA = path.join(RENDER_TMP, 'chrome_ep01_clip');
+
+const CAP_OPT = process.argv[2] || '1';
 const FPS = 24;
 const CLIP_DUR = 21.4;
 const TOTAL_FRAMES = Math.ceil(CLIP_DUR * FPS);
@@ -75,14 +82,15 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 (async () => {
   await ensureLocalServer(8765);
-  const chrome = spawn(chromeBin, [
+  const chromeArgs = [
     `--remote-debugging-port=${PORT}`,
     `--user-data-dir=${USER_DATA}`,
     '--headless=new',
     '--no-sandbox',
     '--disable-setuid-sandbox',
     '--disable-dev-shm-usage',
-    '--enable-unsafe-swiftshader',
+    '--ignore-gpu-blocklist',
+    '--enable-gpu-rasterization',
     '--ignore-certificate-errors',
     '--proxy-bypass-list=<-loopback>',
     '--window-size=1080,1920',
@@ -90,8 +98,11 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     '--hide-scrollbars',
     '--mute-audio',
     '--disable-gpu-vsync',
-    'http://127.0.0.1:8765/index.html?clean=1'
-  ], { stdio: 'ignore' });
+    `http://127.0.0.1:8765/index.html?clean=1&caption=${CAP_OPT}`
+  ];
+  if (process.platform === 'linux') chromeArgs.splice(6, 0, '--enable-unsafe-swiftshader');
+
+  const chrome = spawn(chromeBin, chromeArgs, { stdio: 'ignore', env: CHILD_ENV });
   let targets = null;
   for (let i = 0; i < 30; i++) {
     try {
@@ -120,6 +131,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   });
 
   await send('Page.enable');
+  await send('Page.bringToFront');
   await send('Emulation.setDeviceMetricsOverride', {
     width: 1080, height: 1920, deviceScaleFactor: 1, mobile: false
   });
@@ -152,17 +164,21 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     '-bufsize', '30M',
     '-c:a', 'aac',
     '-b:a', '256k',
+    '-ar', '48000',
     '-shortest',
     OUT_MP4
-  ]);
+  ], { env: CHILD_ENV });
+
+  ff.stderr.on('data', () => {});
 
   for (let f = 0; f < TOTAL_FRAMES; f++) {
     const t = f / FPS;
     await send('Runtime.evaluate', {
-      expression: `window.OPENER.seek(${t});`,
+      expression: `new Promise(r => { window.OPENER.seek(${t.toFixed(6)}); requestAnimationFrame(() => r(true)); })`,
+      awaitPromise: true,
       returnByValue: true
     });
-    const snap = await send('Page.captureScreenshot', { format: 'jpeg', quality: 90 });
+    const snap = await send('Page.captureScreenshot', { format: 'jpeg', quality: 92 });
     const buf = Buffer.from(snap.result.data, 'base64');
     if (!ff.stdin.write(buf)) {
       await new Promise(r => ff.stdin.once('drain', r));
@@ -171,8 +187,10 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
   ff.stdin.end();
   await new Promise(resolve => ff.on('close', resolve));
-  try { await send('Browser.close'); } catch {}
+  try { ws.close(); } catch {}
   chrome.kill();
+  await sleep(400);
+  try { fs.rmSync(RENDER_TMP, { recursive: true, force: true }); } catch {}
 
   console.log('Preview clip complete:', OUT_MP4);
   process.exit(0);

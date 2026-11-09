@@ -9,19 +9,34 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, '..');
 
-const PORT = 9238;
-const USER_DATA = path.join(os.tmpdir(), 'chrome_ep01_render');
+// Keep ALL temporary browser profiles, caches, and buffers strictly on Disk D: (ROOT)
+// to avoid touching Disk C: when C: free space is low.
+const RENDER_TMP = path.join(ROOT, '.render_tmp');
+fs.rmSync(RENDER_TMP, { recursive: true, force: true });
+fs.mkdirSync(RENDER_TMP, { recursive: true });
 
-const MODE = process.argv[2] || 'preview';
-const FPS = MODE === 'master' ? 30 : 24;
+const CHILD_ENV = {
+  ...process.env,
+  TEMP: RENDER_TMP,
+  TMP: RENDER_TMP,
+  TMPDIR: RENDER_TMP
+};
+
+const BASE_PORT = 9260;
+
+const MODE = process.argv[2] || 'master';
+const CAP_OPT = process.argv[3] || '1';
+const FPS = MODE === 'preview' ? 24 : 30;
 const DURATION = 59.56;
 const TOTAL_FRAMES = Math.ceil(DURATION * FPS);
-const OUT_MP4 = MODE === 'master'
-  ? path.join(ROOT, 'EP01_Bau_Gas_Bocor_MASTER_1080p.mp4')
-  : path.join(ROOT, 'EP01_Bau_Gas_Bocor_PREVIEW.mp4');
+const OUT_MP4 = MODE === 'preview'
+  ? path.join(ROOT, 'EP01_Bau_Gas_Bocor_PREVIEW.mp4')
+  : path.join(ROOT, 'EP01_Bau_Gas_Bocor_MASTER_1080p.mp4');
 const AUDIO_WAV = path.join(ROOT, 'audio_ep01_master.wav');
 
-// Locate Chrome binary cross-platform
+// 2 independent foreground GPU Chrome processes (low memory footprint, fast throughput)
+const NUM_WORKERS = 2;
+
 let chromeBin = 'google-chrome';
 if (process.platform === 'win32') {
   const candidates = [
@@ -77,16 +92,28 @@ function getJson(url) {
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-(async () => {
-  await ensureLocalServer(8765);
-  const chrome = spawn(chromeBin, [
-    `--remote-debugging-port=${PORT}`,
-    `--user-data-dir=${USER_DATA}`,
+async function spawnWorkerBrowser(workerIdx, targetUrl) {
+  const port = BASE_PORT + workerIdx;
+  const userData = path.join(RENDER_TMP, `chrome_w${workerIdx}`);
+  const cacheDir = path.join(RENDER_TMP, `cache_w${workerIdx}`);
+  const crashDir = path.join(RENDER_TMP, `crash_w${workerIdx}`);
+  fs.mkdirSync(userData, { recursive: true });
+  fs.mkdirSync(cacheDir, { recursive: true });
+  fs.mkdirSync(crashDir, { recursive: true });
+
+  const chromeArgs = [
+    `--remote-debugging-port=${port}`,
+    `--user-data-dir=${userData}`,
+    `--disk-cache-dir=${cacheDir}`,
+    `--crash-dumps-dir=${crashDir}`,
+    '--disk-cache-size=1048576',
+    '--media-cache-size=1048576',
     '--headless=new',
     '--no-sandbox',
     '--disable-setuid-sandbox',
     '--disable-dev-shm-usage',
-    '--enable-unsafe-swiftshader',
+    '--ignore-gpu-blocklist',
+    '--enable-gpu-rasterization',
     '--ignore-certificate-errors',
     '--proxy-bypass-list=<-loopback>',
     '--window-size=1080,1920',
@@ -94,16 +121,31 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     '--hide-scrollbars',
     '--mute-audio',
     '--disable-gpu-vsync',
-    'http://127.0.0.1:8765/index.html?clean=1'
-  ], { stdio: 'ignore' });
-  let targets = null;
-  for (let i = 0; i < 30; i++) {
-    try {
-      targets = await getJson(`http://127.0.0.1:${PORT}/json`);
-      if (targets && targets.length) break;
-    } catch {}
-    await sleep(300);
+    '--disable-background-timer-throttling',
+    '--disable-backgrounding-occluded-windows',
+    '--disable-renderer-backgrounding',
+    targetUrl
+  ];
+
+  if (process.platform === 'linux') {
+    chromeArgs.splice(9, 0, '--enable-unsafe-swiftshader');
   }
+
+  const proc = spawn(chromeBin, chromeArgs, { stdio: 'ignore', env: CHILD_ENV });
+
+  let targets = null;
+  for (let i = 0; i < 40; i++) {
+    try {
+      targets = await getJson(`http://127.0.0.1:${port}/json`);
+      if (targets && targets.some(t => t.type === 'page')) break;
+    } catch {}
+    await sleep(250);
+  }
+
+  if (!targets || !targets.some(t => t.type === 'page')) {
+    throw new Error(`Worker ${workerIdx} failed to launch Chrome DevTools on port ${port}`);
+  }
+
   const page = targets.find(t => t.type === 'page');
   const ws = new WebSocket(page.webSocketDebuggerUrl);
   await new Promise(r => ws.addEventListener('open', r));
@@ -124,11 +166,12 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   });
 
   await send('Page.enable');
+  await send('Page.bringToFront');
   await send('Emulation.setDeviceMetricsOverride', {
     width: 1080, height: 1920, deviceScaleFactor: 1, mobile: false
   });
 
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < 50; i++) {
     const r = await send('Runtime.evaluate', {
       expression: 'Boolean(window.OPENER && window.OPENER.ready)',
       returnByValue: true
@@ -137,55 +180,109 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     await sleep(200);
   }
 
-  console.log(`Starting ${MODE} render: ${TOTAL_FRAMES} frames at ${FPS}fps -> ${OUT_MP4}`);
+  return { send, proc, ws };
+}
 
-  const ff = spawn('ffmpeg', [
-    '-y',
-    '-f', 'image2pipe',
-    '-vcodec', 'mjpeg',
-    '-framerate', String(FPS),
-    '-i', '-',
-    '-i', AUDIO_WAV,
-    '-c:v', 'libx264',
-    '-preset', MODE === 'master' ? 'slow' : 'veryfast',
-    '-profile:v', 'high',
-    '-level:v', '4.2',
-    '-pix_fmt', 'yuv420p',
-    '-crf', MODE === 'master' ? '16' : '18',
-    '-maxrate', '18M',
-    '-bufsize', '36M',
-    '-c:a', 'aac',
-    '-b:a', '256k',
-    '-shortest',
-    OUT_MP4
-  ]);
+function cleanupTmp() {
+  try {
+    fs.rmSync(RENDER_TMP, { recursive: true, force: true });
+  } catch {}
+}
 
-  ff.stderr.on('data', () => {});
+(async () => {
+  let workers = [];
+  try {
+    await ensureLocalServer(8765);
+    const targetUrl = `http://127.0.0.1:8765/index.html?clean=1&caption=${CAP_OPT}`;
 
-  const tStart = Date.now();
-  for (let f = 0; f < TOTAL_FRAMES; f++) {
-    const t = f / FPS;
-    await send('Runtime.evaluate', {
-      expression: `window.OPENER.seek(${t});`,
-      returnByValue: true
-    });
-    const snap = await send('Page.captureScreenshot', { format: 'jpeg', quality: 92 });
-    const buf = Buffer.from(snap.result.data, 'base64');
-    if (!ff.stdin.write(buf)) {
-      await new Promise(r => ff.stdin.once('drain', r));
+    console.log(`[Disk D: Mode] Temp dir isolated at: ${RENDER_TMP}`);
+    console.log(`Spawning ${NUM_WORKERS} GPU Chrome workers...`);
+    workers = await Promise.all(
+      Array.from({ length: NUM_WORKERS }, (_, idx) => spawnWorkerBrowser(idx, targetUrl))
+    );
+
+    console.log(`Starting ${MODE} studio render: ${TOTAL_FRAMES} frames at ${FPS}fps (1080x1920 High-Bitrate) -> ${OUT_MP4}`);
+
+    const ff = spawn('ffmpeg', [
+      '-y',
+      '-f', 'image2pipe',
+      '-vcodec', 'mjpeg',
+      '-framerate', String(FPS),
+      '-i', '-',
+      '-i', AUDIO_WAV,
+      '-c:v', 'libx264',
+      '-preset', MODE === 'preview' ? 'veryfast' : 'slow',
+      '-profile:v', 'high',
+      '-level:v', '4.2',
+      '-pix_fmt', 'yuv420p',
+      '-crf', MODE === 'preview' ? '18' : '14',
+      '-maxrate', '20M',
+      '-bufsize', '40M',
+      '-movflags', '+faststart',
+      '-c:a', 'aac',
+      '-b:a', '320k',
+      '-ar', '48000',
+      '-shortest',
+      OUT_MP4
+    ], { env: CHILD_ENV });
+
+    ff.stderr.on('data', () => {});
+
+    const tStart = Date.now();
+    for (let base = 0; base < TOTAL_FRAMES; base += NUM_WORKERS) {
+      const batchCount = Math.min(NUM_WORKERS, TOTAL_FRAMES - base);
+      const promises = [];
+      for (let w = 0; w < batchCount; w++) {
+        const f = base + w;
+        const t = f / FPS;
+        const worker = workers[w];
+        promises.push((async () => {
+          await worker.send('Runtime.evaluate', {
+            expression: `new Promise(r => { window.OPENER.seek(${t.toFixed(6)}); requestAnimationFrame(() => r(true)); })`,
+            awaitPromise: true,
+            returnByValue: true
+          });
+          const snap = await worker.send('Page.captureScreenshot', { format: 'jpeg', quality: 96 });
+          return Buffer.from(snap.result.data, 'base64');
+        })());
+      }
+
+      const buffers = await Promise.all(promises);
+      for (const buf of buffers) {
+        if (!ff.stdin.write(buf)) {
+          await new Promise(r => ff.stdin.once('drain', r));
+        }
+      }
+
+      const doneFrames = base + batchCount;
+      if (doneFrames === NUM_WORKERS || doneFrames % (FPS * 3) < NUM_WORKERS || doneFrames === TOTAL_FRAMES) {
+        const pct = (doneFrames / TOTAL_FRAMES * 100).toFixed(1);
+        const elapsedSec = (Date.now() - tStart) / 1000;
+        const fpsRate = (doneFrames / elapsedSec).toFixed(1);
+        const remSec = Math.round((TOTAL_FRAMES - doneFrames) / Math.max(0.1, doneFrames / elapsedSec));
+        console.log(`Progress: ${pct}% (${doneFrames}/${TOTAL_FRAMES}) | ${fpsRate} fps | elapsed: ${elapsedSec.toFixed(0)}s | ETA: ~${remSec}s`);
+      }
     }
-    if (f % (FPS * 5) === 0 || f === TOTAL_FRAMES - 1) {
-      const pct = ((f + 1) / TOTAL_FRAMES * 100).toFixed(1);
-      const elapsed = ((Date.now() - tStart) / 1000).toFixed(1);
-      console.log(`Render progress: ${pct}% (${f+1}/${TOTAL_FRAMES}) | elapsed: ${elapsed}s`);
+
+    ff.stdin.end();
+    await new Promise(resolve => ff.on('close', resolve));
+
+    for (const w of workers) {
+      try { w.ws.close(); } catch {}
+      try { w.proc.kill(); } catch {}
     }
+    await sleep(500);
+    cleanupTmp();
+
+    const stat = fs.statSync(OUT_MP4);
+    console.log(`Done! Exported Studio Master (${(stat.size / (1024 * 1024)).toFixed(2)} MB): ${OUT_MP4}`);
+    process.exit(0);
+  } catch (err) {
+    console.error('Render error:', err);
+    for (const w of workers) {
+      try { w.proc.kill(); } catch {}
+    }
+    cleanupTmp();
+    process.exit(1);
   }
-
-  ff.stdin.end();
-  await new Promise(resolve => ff.on('close', resolve));
-  try { await send('Browser.close'); } catch {}
-  chrome.kill();
-
-  console.log(`Done! Exported: ${OUT_MP4}`);
-  process.exit(0);
 })();
