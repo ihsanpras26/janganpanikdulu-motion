@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<title>Jangan Panik Dulu — EP01: Bau Gas Bocor? Jangan Sentuh Saklar!</title>
+<title>Jangan Panik Dulu — EP02: Wajan Kebakaran? Jangan Siram Air!</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
@@ -86,27 +86,27 @@ html,body{
   box-shadow:0 0 8px rgba(239,95,24,.5);
 }
 
-/* ZONA 2A: HOOK LOCKUP (Hanya muncul SEKALI di awal 0.00s - 3.46s!) */
+/* ZONA 2A: HOOK LOCKUP (Hanya muncul SEKALI di awal 0.00s - 4.08s) */
 #hook-card{
   position:absolute;left:46px;right:46px;top:148px;
   display:flex;flex-direction:column;align-items:center;gap:14px;
   will-change:transform,opacity;
 }
 .hook-title{
-  font-size:90px;font-weight:800;letter-spacing:-.035em;line-height:1;
+  font-size:84px;font-weight:800;letter-spacing:-.035em;line-height:1;
   color:#FFFFFF;text-align:center;
   -webkit-text-stroke:14px var(--hook-stroke);paint-order:stroke fill;
   text-shadow:0 10px 24px rgba(20,14,54,.28);
 }
 .hook-pill{
   background:var(--hook-pill-bg);color:var(--hook-pill-ink);
-  font-size:42px;font-weight:800;letter-spacing:-.02em;
-  padding:13px 36px;border-radius:16px;transform:rotate(-1.2deg);
+  font-size:44px;font-weight:800;letter-spacing:-.02em;
+  padding:13px 38px;border-radius:16px;transform:rotate(-1.2deg);
   border:3.5px solid #FFFFFF;
   box-shadow:0 9px 0 var(--hook-pill-shadow), 0 16px 30px rgba(20,14,54,.28);
 }
 
-/* ZONA 2B: ULTRA-CLEAN SINGLE TOP PILL ala @puckermanefacts (Hanya untuk 3 Langkah Penting) */
+/* ZONA 2B: ULTRA-CLEAN SINGLE TOP PILL ala @puckermanefacts */
 #step-tracker{
   position:absolute;left:0;right:0;top:132px;
   display:flex;flex-direction:column;align-items:center;gap:14px;
@@ -134,6 +134,7 @@ html,body{
 .step-title{
   font-size:34px;font-weight:800;letter-spacing:-.02em;
   color:var(--step-pill-ink);white-space:nowrap;
+  font-variant-numeric:tabular-nums;
 }
 .progress{display:flex;gap:14px;align-items:center}
 .progress i{
@@ -146,7 +147,7 @@ html,body{
   border-color:#FFFFFF;
 }
 
-/* ZONA 3: COMPACT 3D CALLOUT LABELS ala @puckermanefacts (Kecil, Clean, Tanpa Ikon Ramai) */
+/* ZONA 3: COMPACT 3D CALLOUT LABELS ala @puckermanefacts */
 .callout{
   position:absolute;left:0;top:0;
   background:rgba(255,255,255,.88);
@@ -156,12 +157,13 @@ html,body{
   font-size:25px;font-weight:800;letter-spacing:-.015em;white-space:nowrap;opacity:0;
   box-shadow:0 8px 20px rgba(12,10,36,.18);
   display:inline-flex;align-items:center;
+  font-variant-numeric:tabular-nums;
   will-change:transform,opacity;
 }
 .callout.danger{color:var(--danger);border:2.5px solid var(--danger)}
 .callout.safe{color:var(--safe);border:2.5px solid var(--safe)}
 
-/* ZONA 4: 3 STUDIO CAPTION OPTIONS (Pure Natural Spacing, Zero Word-Box Padding, Translucent Blur) */
+/* ZONA 4: 3 STUDIO CAPTION OPTIONS */
 #sub-wrap{
   position:absolute;left:44px;right:44px;bottom:136px;display:flex;justify-content:center;
 }
@@ -172,6 +174,7 @@ html,body{
   font-size:36px;font-weight:800;letter-spacing:-.016em;line-height:1.30;
   text-align:center;
   display:inline-block;
+  font-variant-numeric:tabular-nums;
   will-change:transform,opacity;
 }
 .sub-card .w{
@@ -287,30 +290,30 @@ body.clean-snap #switcher{display:none !important}
     <!-- ZONA 1: Clean Brand Card di Kiri Atas -->
     <div class="account-card"><span class="account-dot"></span>@janganpanikdulu</div>
 
-    <!-- ZONA 2A: Hook Lockup (Hanya muncul SEKALI di awal 0.00s - 3.46s) -->
+    <!-- ZONA 2A: Hook Lockup (Hanya muncul SEKALI di awal 0.00s - 4.08s) -->
     <div id="hook-card">
-      <h1 class="hook-title" id="hook-title">BAU GAS BOCOR?</h1>
-      <div class="hook-pill" id="hook-pill">JANGAN SENTUH SAKLAR!</div>
+      <h1 class="hook-title" id="hook-title">WAJAN KEBAKARAN?</h1>
+      <div class="hook-pill" id="hook-pill">JANGAN SIRAM AIR!</div>
     </div>
 
-    <!-- ZONA 2B: Single Clean Step Pill ala @puckermanefacts (Tanpa Sub-Pill Ganda) -->
+    <!-- ZONA 2B: Single Clean Step Pill ala @puckermanefacts -->
     <div id="step-tracker">
       <div class="step-pill" id="step-pill-box">
         <span class="step-num" id="tr-badge">1</span>
-        <span class="step-title" id="tr-title">Percikan di saklar</span>
+        <span class="step-title" id="tr-title">Suhu minyak: 300°C</span>
       </div>
       <div class="progress" id="prog-wrap"><i id="seg1" class="on"></i><i id="seg2"></i><i id="seg3"></i></div>
     </div>
 
     <!-- ZONA 3: Compact 3D Callout Labels ala @puckermanefacts -->
     <div class="callout danger" id="call1">
-      <span id="call1-text">percikan 1.000°C</span>
+      <span id="call1-text">minyak 300°C</span>
     </div>
     <div class="callout danger" id="call2">
-      <span id="call2-text">mengendap di lantai</span>
+      <span id="call2-text">mengembang 1.700×</span>
     </div>
     <div class="callout safe" id="call3">
-      <span id="call3-text">lepas regulator</span>
+      <span id="call3-text">matikan knop kompor</span>
     </div>
 
     <!-- ZONA 4: Natural Word-Spacing Karaoke Subtitle Bar -->
@@ -320,22 +323,23 @@ body.clean-snap #switcher{display:none !important}
   </div>
 </div>
 
-<audio id="vo-audio" src="audio_ep01_master.mp3" preload="auto"></audio>
+<audio id="vo-audio" src="audio_ep02_master.mp3" preload="auto"></audio>
 
 <div id="switcher">
   <button id="btn-play" class="active">▶ Play Master + Audio</button>
-  <span id="time-readout">00.0s / 59.6s</span>
+  <span id="time-readout">00.0s / 65.4s</span>
   <div class="sw-label">Scene:</div>
-  <button data-t="1.5">Hook</button>
-  <button data-t="9.5">Dapur Gelap</button>
-  <button data-t="14.2">X-Ray Tembaga</button>
-  <button data-t="18.2">Saklar 1.000°C</button>
-  <button data-t="23.0">Gas 2× Berat</button>
-  <button data-t="28.5">Naik ke Saklar</button>
-  <button data-t="41.0">Langkah 1</button>
-  <button data-t="45.4">Langkah 2</button>
-  <button data-t="50.0">Langkah 3</button>
-  <button data-t="58.6">Sign-Off</button>
+  <button data-t="1.8">Hook</button>
+  <button data-t="6.2">Ledakan Air</button>
+  <button data-t="16.8">X-Ray 300°C</button>
+  <button data-t="21.2">Air vs Minyak</button>
+  <button data-t="26.2">Tenggelam</button>
+  <button data-t="31.5">Uap 1.700×</button>
+  <button data-t="36.0">Lontaran Api</button>
+  <button data-t="43.5">Langkah 1</button>
+  <button data-t="48.0">Langkah 2</button>
+  <button data-t="53.5">Langkah 3</button>
+  <button data-t="64.0">Sign-Off</button>
   <div class="sw-label">Caption:</div>
   <button data-cap="1" class="active">Opsi 1</button>
   <button data-cap="2">Opsi 2</button>
@@ -388,9 +392,9 @@ const rim = new THREE.DirectionalLight(0x90E0EF, 0.88);
 rim.position.set(-7, 6, -5);
 scene.add(rim);
 
-const sparkLight = new THREE.PointLight(0xFF7B00, 0, 5.0);
-sparkLight.position.set(1.72, 1.94, -2.30);
-scene.add(sparkLight);
+const fireLight = new THREE.PointLight(0xFF6B00, 2.5, 6.5);
+fireLight.position.set(0.00, 1.85, -2.05);
+scene.add(fireLight);
 
 const mat = (hex, rough = 0.45, metal = 0.03, emissive = 0x000000, emInt = 0) =>
   new THREE.MeshStandardMaterial({ color: hex, roughness: rough, metalness: metal, emissive, emissiveIntensity: emInt });
@@ -403,7 +407,7 @@ function withOutline(mesh, scale = 1.06) {
   return mesh;
 }
 
-/* ============ 2. LINGKUNGAN DAPUR 3D (@puckermanefacts CUTAWAY + GAS MELON 3KG INDONESIA CLEAN) ============ */
+/* ============ 2. LINGKUNGAN DAPUR 3D (@puckermanefacts CUTAWAY DIORAMA) ============ */
 const world = new THREE.Group();
 scene.add(world);
 
@@ -467,22 +471,19 @@ function makeWoodTexture() {
 }
 
 function makeGasMelonTexture() {
-  // Clean Gas Melon 3kg tanpa teks (hanya warna hijau khas + lingkar merah di bahu atas)
   const cv = document.createElement('canvas');
   cv.width = 512; cv.height = 512;
   const ctx = cv.getContext('2d');
   ctx.fillStyle = '#62BF8A';
   ctx.fillRect(0, 0, 512, 512);
-
   ctx.fillStyle = '#E63946';
   ctx.fillRect(0, 52, 512, 50);
-
   const tex = new THREE.CanvasTexture(cv);
   tex.colorSpace = THREE.SRGBColorSpace;
   return tex;
 }
 
-// Lapisan Tanah & Rumput Cutaway (@puckermanefacts Architectural Diorama Base)
+// Lapisan Tanah & Rumput Cutaway
 const soil = withOutline(
   new THREE.Mesh(new RoundedBoxGeometry(8.2, 0.86, 8.2, 4, 0.06), mat(0x9C6B43, 0.75)),
   1.015
@@ -498,7 +499,6 @@ grass.position.set(-0.20, 0.02, -0.05);
 grass.receiveShadow = true;
 world.add(grass);
 
-// Teras Batu Luar & Tanaman Halaman di Depan Pintu Dapur (Outdoor Patio & Shrub)
 const patioStep = withOutline(
   new THREE.Mesh(new RoundedBoxGeometry(1.42, 0.12, 1.68, 3, 0.03), mat(0xDBD5CA, 0.52)),
   1.03
@@ -532,7 +532,7 @@ floorSlab.position.set(-0.05, 0.22, -0.05);
 floorSlab.receiveShadow = true;
 world.add(floorSlab);
 
-// Dinding Belakang + Cutaway Cross-Section Cap khas @puckermanefacts
+// Dinding Belakang + Cutaway Cross-Section Cap
 const wallBack = new THREE.Mesh(new THREE.BoxGeometry(5.8, 3.84, 0.28), mat(0xF8F5EE, 0.48));
 wallBack.position.set(-0.05, 2.14, -2.85);
 wallBack.castShadow = true;
@@ -543,7 +543,7 @@ const wallCapBack = new THREE.Mesh(new THREE.BoxGeometry(5.84, 0.07, 0.31), mat(
 wallCapBack.position.set(-0.05, 4.08, -2.85);
 world.add(wallCapBack);
 
-// Dinding Kiri Segmented dengan Lubang Asli untuk JENDELA (z=-1.75..-0.25) & PINTU DAPUR (z=0.45..1.65)
+// Dinding Kiri Segmented
 const wallLeftMat = mat(0xF1ECE2, 0.48);
 function addLeftWallSeg(y0, y1, z0, z1) {
   const h = y1 - y0, d = z1 - z0;
@@ -553,12 +553,12 @@ function addLeftWallSeg(y0, y1, z0, z1) {
   m.receiveShadow = true;
   world.add(m);
 }
-addLeftWallSeg(0.22, 4.06, -2.99, -1.75); // Pilar belakang jendela
-addLeftWallSeg(0.22, 1.38, -1.75, -0.25); // Dinding bawah jendela
-addLeftWallSeg(2.78, 4.06, -1.75, -0.25); // Dinding atas jendela
-addLeftWallSeg(0.22, 4.06, -0.25,  0.45); // Pilar tengah antara jendela & pintu
-addLeftWallSeg(2.78, 4.06,  0.45,  1.65); // Dinding atas pintu (lintel)
-addLeftWallSeg(0.22, 4.06,  1.65,  2.85); // Pilar depan pintu
+addLeftWallSeg(0.22, 4.06, -2.99, -1.75);
+addLeftWallSeg(0.22, 1.38, -1.75, -0.25);
+addLeftWallSeg(2.78, 4.06, -1.75, -0.25);
+addLeftWallSeg(0.22, 4.06, -0.25,  0.45);
+addLeftWallSeg(2.78, 4.06,  0.45,  1.65);
+addLeftWallSeg(0.22, 4.06,  1.65,  2.85);
 
 const wallCapLeft = new THREE.Mesh(new THREE.BoxGeometry(0.31, 0.07, 5.84), mat(0x22272E, 0.35));
 wallCapLeft.position.set(-2.85, 4.08, -0.07);
@@ -590,11 +590,10 @@ const baseboardBack = new THREE.Mesh(new THREE.BoxGeometry(5.52, 0.14, 0.05), ma
 baseboardBack.position.set(-0.05, 0.41, -2.69);
 world.add(baseboardBack);
 
-// ============ JENDELA DUA DAUN TEMBUS PANDANG (z = -1.00) ============
+// Jendela & Pintu Dapur
 const winGroup = new THREE.Group();
 winGroup.position.set(-2.85, 2.08, -1.00);
 world.add(winGroup);
-
 const frameMat = mat(0x22272E, 0.35);
 const winTopBar = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.08, 1.54), frameMat);
 winTopBar.position.y = 0.68;
@@ -607,35 +606,19 @@ winGroup.add(winBotSill);
   jamb.position.z = zf;
   winGroup.add(jamb);
 });
-
 const glassPaneMat = new THREE.MeshStandardMaterial({
   color: 0xBEE9F7, transparent: true, opacity: 0.55, roughness: 0.12, metalness: 0.1
 });
-const winSashLPivot = new THREE.Group();
-winSashLPivot.position.set(-0.10, 0, -0.69);
-winGroup.add(winSashLPivot);
 const sashLFrame = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.06, 1.28, 0.68, 2, 0.015), mat(0xFFFFFF, 0.3)), 1.04);
-sashLFrame.position.set(0, 0, 0.34);
-winSashLPivot.add(sashLFrame);
-const sashLGlass = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.08, 0.52), glassPaneMat);
-sashLGlass.position.set(0, 0, 0.34);
-winSashLPivot.add(sashLGlass);
-
-const winSashRPivot = new THREE.Group();
-winSashRPivot.position.set(-0.10, 0, 0.69);
-winGroup.add(winSashRPivot);
+sashLFrame.position.set(-0.10, 0, -0.35);
+winGroup.add(sashLFrame);
 const sashRFrame = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.06, 1.28, 0.68, 2, 0.015), mat(0xFFFFFF, 0.3)), 1.04);
-sashRFrame.position.set(0, 0, -0.34);
-winSashRPivot.add(sashRFrame);
-const sashRGlass = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.08, 0.52), glassPaneMat);
-sashRGlass.position.set(0, 0, -0.34);
-winSashRPivot.add(sashRGlass);
+sashRFrame.position.set(-0.10, 0, 0.35);
+winGroup.add(sashRFrame);
 
-// ============ PINTU DAPUR ARSITEKTURAL 3D (z = 1.05, Membuka Lebar ke Teras Luar) ============
 const doorGroup = new THREE.Group();
 doorGroup.position.set(-2.85, 0.34, 1.05);
 world.add(doorGroup);
-
 const doorLintel = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.09, 1.28), frameMat);
 doorLintel.position.y = 2.42;
 doorGroup.add(doorLintel);
@@ -644,11 +627,6 @@ doorGroup.add(doorLintel);
   dJamb.position.set(0, 1.21, zf);
   doorGroup.add(dJamb);
 });
-
-const doorPivot = new THREE.Group();
-doorPivot.position.set(0.11, 0, -0.56);
-doorGroup.add(doorPivot);
-
 const doorLeaf = withOutline(
   new THREE.Mesh(
     new RoundedBoxGeometry(0.09, 2.36, 1.12, 3, 0.02),
@@ -656,26 +634,10 @@ const doorLeaf = withOutline(
   ),
   1.03
 );
-doorLeaf.position.set(0, 1.18, 0.56);
-doorLeaf.castShadow = true;
-doorPivot.add(doorLeaf);
+doorLeaf.position.set(0.11, 1.18, 0);
+doorGroup.add(doorLeaf);
 
-// Kaca Atas Pintu & Gagang Hitam Modern
-const doorGlassLite = new THREE.Mesh(new RoundedBoxGeometry(0.11, 0.72, 0.74, 2, 0.015), glassPaneMat);
-doorGlassLite.position.set(0, 1.72, 0.56);
-doorPivot.add(doorGlassLite);
-
-const doorLowerInset = new THREE.Mesh(new RoundedBoxGeometry(0.105, 0.82, 0.78, 2, 0.015), mat(0xC99864, 0.48));
-doorLowerInset.position.set(0, 0.72, 0.56);
-doorPivot.add(doorLowerInset);
-
-[-0.065, 0.065].forEach(hx => {
-  const dHandle = new THREE.Mesh(new RoundedBoxGeometry(0.04, 0.045, 0.18, 2, 0.01), frameMat);
-  dHandle.position.set(hx, 1.15, 0.96);
-  doorPivot.add(dHandle);
-});
-
-// ============ KITCHEN SET KAYU HANGAT + KOMPOR 2 TUNGKU + PANCI (Tanpa Kulkas Penghalang!) ============
+// ============ KITCHEN SET KAYU HANGAT + KOMPOR 2 TUNGKU + KNOP KOMPOR AKTIF ============
 const kitchenGroup = new THREE.Group();
 kitchenGroup.position.set(-0.58, 0.34, -2.18);
 world.add(kitchenGroup);
@@ -704,30 +666,67 @@ counterTop.castShadow = true;
 kitchenGroup.add(counterTop);
 
 const cooktop = withOutline(
-  new THREE.Mesh(new RoundedBoxGeometry(1.12, 0.07, 0.64, 3, 0.02), mat(0x1E242B, 0.25)),
+  new THREE.Mesh(new RoundedBoxGeometry(1.18, 0.08, 0.68, 3, 0.02), mat(0x1E242B, 0.25)),
   1.04
 );
 cooktop.position.set(0.32, 1.00, 0);
 kitchenGroup.add(cooktop);
 
-[0.06, 0.58].forEach(bx => {
-  const burner = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.022, 10, 24), mat(0x475569, 0.35, 0.5));
-  burner.rotation.x = Math.PI / 2;
-  burner.position.set(bx, 1.05, 0);
-  kitchenGroup.add(burner);
-  const knob = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.03, 16), mat(0x94A3B8, 0.3));
-  knob.rotation.x = Math.PI / 2;
-  knob.position.set(bx, 1.00, 0.33);
-  kitchenGroup.add(knob);
-});
+// Tungku Kiri (0.04) & Tungku Kanan (0.58 — Tempat Wajan Terbakar)
+const burnerLeft = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.020, 10, 24), mat(0x475569, 0.35, 0.5));
+burnerLeft.rotation.x = Math.PI / 2;
+burnerLeft.position.set(0.02, 1.05, 0);
+kitchenGroup.add(burnerLeft);
 
-const cookingPot = withOutline(
-  new THREE.Mesh(new THREE.CylinderGeometry(0.20, 0.17, 0.24, 24), mat(0xFF5A36, 0.32)),
-  1.06
+const knobLeft = new THREE.Mesh(new THREE.CylinderGeometry(0.038, 0.038, 0.035, 16), mat(0x94A3B8, 0.3));
+knobLeft.rotation.x = Math.PI / 2;
+knobLeft.position.set(0.02, 1.00, 0.35);
+kitchenGroup.add(knobLeft);
+
+const burnerRight = new THREE.Mesh(new THREE.TorusGeometry(0.15, 0.024, 10, 24), mat(0x475569, 0.35, 0.5));
+burnerRight.rotation.x = Math.PI / 2;
+burnerRight.position.set(0.58, 1.05, 0);
+kitchenGroup.add(burnerRight);
+
+// Knop Kompor Kanan yang Diputar OFF pada Langkah 2 (World pos: x=0.00, y=1.34, z=-1.83)
+const activeKnobGroup = new THREE.Group();
+activeKnobGroup.position.set(0.58, 1.00, 0.35);
+kitchenGroup.add(activeKnobGroup);
+
+const knobCyl = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.052, 0.045, 20), mat(0xE2E8F0, 0.25, 0.3)),
+  1.08
 );
-cookingPot.position.set(0.06, 1.18, 0);
-cookingPot.castShadow = true;
-kitchenGroup.add(cookingPot);
+knobCyl.rotation.x = Math.PI / 2;
+activeKnobGroup.add(knobCyl);
+
+const knobPointer = new THREE.Mesh(
+  new RoundedBoxGeometry(0.022, 0.068, 0.030, 2, 0.006),
+  mat(0xEF5F18, 0.25, 0.1, 0xEF5F18, 0.35)
+);
+knobPointer.position.set(0, 0.015, 0.022);
+activeKnobGroup.add(knobPointer);
+
+const knobRingMat = new THREE.MeshBasicMaterial({
+  color: 0x0FA968, transparent: true, opacity: 0.0, side: THREE.DoubleSide
+});
+const knobSafeRing = new THREE.Mesh(new THREE.RingGeometry(0.085, 0.118, 28), knobRingMat);
+knobSafeRing.position.set(0, 0, 0.03);
+activeKnobGroup.add(knobSafeRing);
+
+// Api Biru Tungku Kompor Kanan (Padam saat S.burnerOn -> 0 di Langkah 2)
+const burnerFlameGroup = new THREE.Group();
+burnerFlameGroup.position.set(0.58, 1.065, 0);
+kitchenGroup.add(burnerFlameGroup);
+for (let i = 0; i < 12; i++) {
+  const a = (i / 12) * Math.PI * 2;
+  const bf = new THREE.Mesh(
+    new THREE.ConeGeometry(0.024, 0.065, 8),
+    new THREE.MeshBasicMaterial({ color: 0x00F5D4 })
+  );
+  bf.position.set(Math.cos(a) * 0.145, 0.018, Math.sin(a) * 0.145);
+  burnerFlameGroup.add(bf);
+}
 
 const upperCab = new THREE.Mesh(
   new RoundedBoxGeometry(2.52, 0.74, 0.54, 4, 0.03),
@@ -743,100 +742,30 @@ lpgGroup.position.set(1.24, 0.34, -1.92);
 world.add(lpgGroup);
 
 const melonDarkGreenMat = mat(0x4CA975, 0.38, 0.10);
-
-const footRing = withOutline(
-  new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.27, 0.09, 28), melonDarkGreenMat),
-  1.06
-);
+const footRing = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.27, 0.09, 28), melonDarkGreenMat), 1.06);
 footRing.position.y = 0.045;
-footRing.castShadow = true;
 lpgGroup.add(footRing);
 
-const melonBodyMat = new THREE.MeshStandardMaterial({
-  map: makeGasMelonTexture(),
-  roughness: 0.32,
-  metalness: 0.08
-});
 const melonBody = withOutline(
-  new THREE.Mesh(new THREE.SphereGeometry(0.38, 36, 28), melonBodyMat),
+  new THREE.Mesh(new THREE.SphereGeometry(0.38, 36, 28), new THREE.MeshStandardMaterial({ map: makeGasMelonTexture(), roughness: 0.32, metalness: 0.08 })),
   1.045
 );
 melonBody.scale.set(1.0, 0.90, 1.0);
 melonBody.position.y = 0.39;
 melonBody.rotation.y = -0.55;
 melonBody.castShadow = true;
-melonBody.receiveShadow = true;
 lpgGroup.add(melonBody);
 
-const weldSeam = new THREE.Mesh(
-  new THREE.TorusGeometry(0.382, 0.016, 12, 36),
-  melonDarkGreenMat
+const shroud = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.185, 0.205, 0.18, 28, 1, true),
+  new THREE.MeshStandardMaterial({ color: 0x56B881, roughness: 0.36, metalness: 0.12, side: THREE.DoubleSide })
 );
-weldSeam.rotation.x = Math.PI / 2;
-weldSeam.position.y = 0.39;
-lpgGroup.add(weldSeam);
-
-const shroudGeo = new THREE.CylinderGeometry(0.185, 0.205, 0.18, 28, 1, true);
-const shroudMat = new THREE.MeshStandardMaterial({
-  color: 0x56B881, roughness: 0.36, metalness: 0.12, side: THREE.DoubleSide
-});
-const shroud = new THREE.Mesh(shroudGeo, shroudMat);
 shroud.position.y = 0.77;
-shroud.castShadow = true;
 lpgGroup.add(shroud);
 
-const shroudLip = withOutline(
-  new THREE.Mesh(new THREE.TorusGeometry(0.185, 0.020, 12, 28), melonDarkGreenMat),
-  1.08
-);
-shroudLip.rotation.x = Math.PI / 2;
-shroudLip.position.y = 0.86;
-lpgGroup.add(shroudLip);
-
-[0, 2.1, 4.2].forEach(ang => {
-  const slot = new THREE.Mesh(
-    new RoundedBoxGeometry(0.10, 0.048, 0.05, 2, 0.01),
-    mat(0x1E293B, 0.8)
-  );
-  slot.position.set(Math.sin(ang) * 0.19, 0.78, Math.cos(ang) * 0.19);
-  slot.rotation.y = ang;
-  lpgGroup.add(slot);
-});
-
-const brassValve = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.062, 0.11, 18), mat(0xEAB308, 0.28, 0.65));
-brassValve.position.y = 0.76;
-lpgGroup.add(brassValve);
-
-const regulatorGroup = new THREE.Group();
-regulatorGroup.position.set(0, 0.83, 0);
-lpgGroup.add(regulatorGroup);
-
-const regBody = withOutline(
-  new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.125, 0.12, 22), mat(0x3B4958, 0.34, 0.25)),
-  1.06
-);
-regulatorGroup.add(regBody);
-
-const regTopCap = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.115, 0.035, 20), mat(0x252F3A, 0.35));
-regTopCap.position.y = 0.07;
-regulatorGroup.add(regTopCap);
-
-const gaugeCyl = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, 0.06, 16), mat(0xF8FAFC, 0.25));
-gaugeCyl.rotation.z = Math.PI / 2;
-gaugeCyl.position.set(0.15, 0.01, 0.04);
-regulatorGroup.add(gaugeCyl);
-
-const regSwitch = withOutline(
-  new THREE.Mesh(new RoundedBoxGeometry(0.055, 0.085, 0.22, 3, 0.015), mat(0xEF4444, 0.28)),
-  1.07
-);
-regSwitch.position.set(0, 0.01, 0.12);
-regulatorGroup.add(regSwitch);
-
-const regNozzle = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.14, 14), mat(0xEAB308, 0.3, 0.6));
-regNozzle.rotation.z = Math.PI / 2;
-regNozzle.position.set(-0.16, 0.0, 0);
-regulatorGroup.add(regNozzle);
+const regBody = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.125, 0.12, 22), mat(0x3B4958, 0.34, 0.25)), 1.06);
+regBody.position.y = 0.83;
+lpgGroup.add(regBody);
 
 const hoseCurve = new THREE.CatmullRomCurve3([
   new THREE.Vector3(1.04, 1.16, -1.92),
@@ -845,186 +774,288 @@ const hoseCurve = new THREE.CatmullRomCurve3([
   new THREE.Vector3(0.12, 0.80, -2.08),
   new THREE.Vector3(-0.18, 1.24, -2.12)
 ]);
-const gasHose = withOutline(
-  new THREE.Mesh(new THREE.TubeGeometry(hoseCurve, 32, 0.034, 12, false), mat(0x272E36, 0.55)),
-  1.04
-);
-gasHose.castShadow = true;
+const gasHose = withOutline(new THREE.Mesh(new THREE.TubeGeometry(hoseCurve, 32, 0.034, 12, false), mat(0x272E36, 0.55)), 1.04);
 world.add(gasHose);
 
-/* ============ SAKLAR DINDING ARSITEKTURAL + SLIDE-OPEN CUTAWAY 2 LEMPENG TEMBAGA ============ */
-const switchGroup = new THREE.Group();
-switchGroup.position.set(1.72, 1.94, -2.66);
-world.add(switchGroup);
+/* ============ 3. HERO PROP EP02: WAJAN PENGGORENGAN 3D + CROSS-SECTION CUTAWAY + MINYAK 300°C + UAP 1.700× ============ */
+// World coordinates of Wok Center: x = 0.00, y = 1.42, z = -2.18
+const wokGroup = new THREE.Group();
+wokGroup.position.set(0.00, 1.42, -2.18);
+world.add(wokGroup);
 
-const conduitPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.95, 12), mat(0xCBD5E1, 0.4));
-conduitPipe.position.set(0, 0.52, -0.02);
-switchGroup.add(conduitPipe);
+const wokMetalMat = new THREE.MeshStandardMaterial({
+  color: 0x262E38, roughness: 0.28, metalness: 0.65, side: THREE.DoubleSide
+});
+const wokCutEdgeMat = new THREE.MeshBasicMaterial({ color: 0xEF5F18 });
 
-const wireRed = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.45, 10), mat(0xEF4444, 0.3));
-wireRed.position.set(-0.025, 0.25, 0.01);
-switchGroup.add(wireRed);
-
-const wireBlue = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.45, 10), mat(0x3B82F6, 0.3));
-wireBlue.position.set(0.025, -0.25, 0.01);
-switchGroup.add(wireBlue);
-
-const switchBackBox = withOutline(
-  new THREE.Mesh(new RoundedBoxGeometry(0.50, 0.62, 0.10, 4, 0.02), mat(0x1E293B, 0.42)),
+// Belakang Wajan (Tetap utuh saat cutaway terbuka)
+const wokBackHalf = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.21, 0.24, 32, 1, false, Math.PI, Math.PI), wokMetalMat),
   1.05
 );
-switchBackBox.position.z = -0.02;
-switchGroup.add(switchBackBox);
+wokBackHalf.position.y = 0.10;
+wokBackHalf.castShadow = true;
+wokGroup.add(wokBackHalf);
 
-const switchInnerCavity = new THREE.Mesh(new RoundedBoxGeometry(0.40, 0.50, 0.06, 3, 0.015), mat(0x0F172A, 0.55));
-switchInnerCavity.position.z = 0.01;
-switchGroup.add(switchInnerCavity);
+// Depan Wajan (Bergeser/terbuka saat mode X-Ray Cutaway S04-S08)
+const wokFrontGroup = new THREE.Group();
+wokGroup.add(wokFrontGroup);
 
-const copperMat = new THREE.MeshStandardMaterial({
-  color: 0xF59E0B,
-  roughness: 0.20,
-  metalness: 0.78,
-  emissive: 0xD97706,
-  emissiveIntensity: 0.18
-});
-
-const terminalTop = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.04, 16), copperMat);
-terminalTop.rotation.x = Math.PI / 2;
-terminalTop.position.set(-0.04, 0.17, 0.03);
-switchGroup.add(terminalTop);
-
-const terminalBot = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.04, 16), copperMat);
-terminalBot.rotation.x = Math.PI / 2;
-terminalBot.position.set(0.04, -0.17, 0.03);
-switchGroup.add(terminalBot);
-
-const copperTop = new THREE.Mesh(new RoundedBoxGeometry(0.095, 0.19, 0.045, 3, 0.01), copperMat);
-copperTop.position.set(-0.02, 0.095, 0.04);
-switchGroup.add(copperTop);
-
-const copperBot = new THREE.Mesh(new RoundedBoxGeometry(0.095, 0.19, 0.045, 3, 0.01), copperMat);
-copperBot.position.set(0.02, -0.095, 0.04);
-switchGroup.add(copperBot);
-
-const switchCoverGroup = new THREE.Group();
-switchCoverGroup.position.z = 0.055;
-switchGroup.add(switchCoverGroup);
-
-const switchPlateMat = new THREE.MeshStandardMaterial({
-  color: 0xFFFFFF,
-  roughness: 0.24
-});
-const switchPlate = withOutline(
-  new THREE.Mesh(new RoundedBoxGeometry(0.54, 0.66, 0.07, 4, 0.025), switchPlateMat),
+const wokFrontHalf = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.21, 0.24, 32, 1, false, 0, Math.PI), wokMetalMat),
   1.05
 );
-switchCoverGroup.add(switchPlate);
+wokFrontHalf.position.y = 0.10;
+wokFrontHalf.castShadow = true;
+wokFrontGroup.add(wokFrontHalf);
 
-const switchRocker = withOutline(
-  new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.34, 0.08, 3, 0.02), mat(0xF1F5F9, 0.22)),
-  1.05
+// Gagang Panjang Wajan di Kiri + Kuping Wajan di Kanan
+const wokHandle = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(0.38, 0.055, 0.065, 3, 0.02), mat(0x181E26, 0.35)),
+  1.06
 );
-switchRocker.position.z = 0.045;
-switchCoverGroup.add(switchRocker);
+wokHandle.position.set(-0.50, 0.19, 0);
+wokHandle.rotation.z = -0.18;
+wokGroup.add(wokHandle);
 
-const switchRingMat = new THREE.MeshBasicMaterial({
-  color: 0xEF5F18,
-  transparent: true,
-  opacity: 0.0,
-  side: THREE.DoubleSide
+const wokEarR = withOutline(
+  new THREE.Mesh(new THREE.TorusGeometry(0.065, 0.018, 10, 20), mat(0x181E26, 0.35)),
+  1.06
+);
+wokEarR.position.set(0.37, 0.19, 0);
+wokEarR.rotation.y = Math.PI / 2;
+wokGroup.add(wokEarR);
+
+// Dasar Logam Wajan Membara 300°C (Terlihat jelas saat cutaway)
+const wokBaseGlowMat = new THREE.MeshStandardMaterial({
+  color: 0xFF4500, roughness: 0.25, metalness: 0.3, emissive: 0xFF3B00, emissiveIntensity: 0.85
 });
-const switchRing = new THREE.Mesh(new THREE.RingGeometry(0.36, 0.45, 36), switchRingMat);
-switchRing.position.z = 0.13;
-switchGroup.add(switchRing);
+const wokBaseGlow = new THREE.Mesh(new THREE.CylinderGeometry(0.215, 0.205, 0.038, 32), wokBaseGlowMat);
+wokBaseGlow.position.y = -0.01;
+wokGroup.add(wokBaseGlow);
 
-function makeSparkGeo(R = 0.36, r = 0.12, depth = 0.08) {
-  const s = new THREE.Shape();
-  for (let i = 0; i < 12; i++) {
-    const a = (i * Math.PI) / 6 - Math.PI / 2;
-    const rad = i % 2 === 0 ? R : r;
-    const x = Math.cos(a) * rad, y = Math.sin(a) * rad;
-    if (i === 0) s.moveTo(x, y); else s.lineTo(x, y);
-  }
-  s.closePath();
-  const g = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 2 });
-  g.center();
-  return g;
-}
-const sparkBurst = new THREE.Mesh(makeSparkGeo(0.34, 0.11, 0.07), new THREE.MeshBasicMaterial({ color: 0xFFB703 }));
-const sparkOuter = new THREE.Mesh(makeSparkGeo(0.50, 0.17, 0.05), new THREE.MeshBasicMaterial({ color: 0xFF5A36 }));
-sparkBurst.add(sparkOuter);
-sparkBurst.position.set(0, 0, 0.12);
-switchGroup.add(sparkBurst);
-
-// Volume Gas Elpiji Mengendap di Lantai & Merayap Naik ke Saklar
-const gasVolumeGroup = new THREE.Group();
-gasVolumeGroup.position.set(-0.05, 0.54, -0.05);
-world.add(gasVolumeGroup);
-
-const gasSlabMat = new THREE.MeshStandardMaterial({
-  color: 0xEF5F18,
-  roughness: 0.52,
-  metalness: 0.0,
-  transparent: true,
-  opacity: 0.34,
-  depthWrite: false
+// Lapisan Minyak Goreng Panas 300°C (Cross-Section Cutaway)
+const oilMat = new THREE.MeshStandardMaterial({
+  color: 0xF59E0B, roughness: 0.15, metalness: 0.08,
+  emissive: 0xD97706, emissiveIntensity: 0.35,
+  transparent: true, opacity: 0.86
 });
-const gasSlab = new THREE.Mesh(new RoundedBoxGeometry(5.1, 0.42, 4.9, 8, 0.18), gasSlabMat);
-gasVolumeGroup.add(gasSlab);
+const oilBody = new THREE.Mesh(new THREE.CylinderGeometry(0.31, 0.205, 0.145, 32), oilMat);
+oilBody.position.y = 0.075;
+wokGroup.add(oilBody);
 
-const gasRiseMat = new THREE.MeshStandardMaterial({
-  color: 0xEF5F18,
-  roughness: 0.52,
-  metalness: 0.0,
-  transparent: true,
-  opacity: 0.0,
-  depthWrite: false
+// Bidang Potongan Depan Minyak (Cross-Section Window saat Cutaway)
+const oilCutPlane = new THREE.Mesh(
+  new THREE.PlaneGeometry(0.54, 0.14),
+  new THREE.MeshBasicMaterial({ color: 0xFFB703, transparent: true, opacity: 0.0, side: THREE.DoubleSide })
+);
+oilCutPlane.position.set(0, 0.075, 0.02);
+wokGroup.add(oilCutPlane);
+
+// Gelembung-Gelembung Air Biru yang Tenggelam Menembus Minyak ke Dasar Wajan (S05 - S06)
+const waterDropGroup = new THREE.Group();
+wokGroup.add(waterDropGroup);
+const waterDropMat = new THREE.MeshStandardMaterial({
+  color: 0x00B4D8, roughness: 0.12, metalness: 0.05,
+  emissive: 0x0096C7, emissiveIntensity: 0.45
 });
-const gasRiseSlab = new THREE.Mesh(new RoundedBoxGeometry(3.2, 1.48, 2.7, 8, 0.25), gasRiseMat);
-gasRiseSlab.position.set(0.92, 0.72, -1.35);
-gasVolumeGroup.add(gasRiseSlab);
-
-const leakPuffs = Array.from({ length: 4 }, () => {
-  const m = new THREE.Mesh(
-    new THREE.SphereGeometry(0.16, 16, 16),
-    new THREE.MeshStandardMaterial({ color: 0xEF5F18, transparent: true, opacity: 0.45, roughness: 0.6, depthWrite: false })
-  );
-  world.add(m);
+const sinkingDrops = [
+  { x: -0.09, z: 0.05, r: 0.046, phase: 0.0 },
+  { x:  0.00, z: 0.07, r: 0.056, phase: 0.22 },
+  { x:  0.09, z: 0.05, r: 0.044, phase: 0.45 },
+  { x: -0.04, z: 0.06, r: 0.040, phase: 0.68 },
+  { x:  0.05, z: 0.06, r: 0.048, phase: 0.85 }
+].map(sp => {
+  const m = withOutline(new THREE.Mesh(new THREE.SphereGeometry(sp.r, 18, 16), waterDropMat), 1.10);
+  m.userData = sp;
+  waterDropGroup.add(m);
   return m;
 });
 
-// 6 Aliran Udara Segar Cross-Ventilation (3 masuk lewat JENDELA + 3 masuk lewat PINTU DAPUR!)
-const airflowGroup = new THREE.Group();
-world.add(airflowGroup);
-const airSpecs = [
-  // Masuk dari Jendela (z = -1.00)
-  { z: -1.32, y: 2.15, phase: 0.00 },
-  { z: -1.00, y: 1.92, phase: 0.33 },
-  { z: -0.68, y: 1.72, phase: 0.66 },
-  // Masuk dari Pintu Dapur (z = 1.05) menyapu lantai
-  { z:  0.72, y: 1.45, phase: 0.15 },
-  { z:  1.05, y: 1.08, phase: 0.48 },
-  { z:  1.38, y: 0.74, phase: 0.81 }
-];
-const airArrows = airSpecs.map((sp) => {
+// Inti Ledakan Uap 1.700× di Dasar Wajan + Panah Vektor Radial (S07)
+const steamCoreGroup = new THREE.Group();
+steamCoreGroup.position.set(0, 0.035, 0.05);
+wokGroup.add(steamCoreGroup);
+
+const steamCoreMat = new THREE.MeshBasicMaterial({
+  color: 0xE0FBFC, transparent: true, opacity: 0.95
+});
+const steamCore = new THREE.Mesh(new THREE.SphereGeometry(0.12, 24, 20), steamCoreMat);
+steamCoreGroup.add(steamCore);
+
+const steamOuterHalo = new THREE.Mesh(
+  new THREE.SphereGeometry(0.165, 24, 20),
+  new THREE.MeshBasicMaterial({ color: 0x38BDF8, transparent: true, opacity: 0.55 })
+);
+steamCoreGroup.add(steamOuterHalo);
+
+// 5 Panah Vektor Tekanan Uap 1.700× Menolak ke Atas & Samping
+const steamArrows = [-0.95, -0.48, 0, 0.48, 0.95].map(ang => {
   const g = new THREE.Group();
-  const shaft = new THREE.Mesh(
-    new RoundedBoxGeometry(1.36, 0.12, 0.17, 3, 0.05),
-    new THREE.MeshBasicMaterial({ color: 0x10B981, transparent: true, opacity: 0.90 })
-  );
-  const tip = new THREE.Mesh(
-    new THREE.ConeGeometry(0.21, 0.36, 14),
-    new THREE.MeshBasicMaterial({ color: 0x10B981, transparent: true, opacity: 0.95 })
-  );
-  tip.rotation.z = -Math.PI / 2;
-  tip.position.x = 0.78;
-  g.add(shaft, tip);
-  g.userData = sp;
-  airflowGroup.add(g);
+  const sh = new THREE.Mesh(new RoundedBoxGeometry(0.028, 0.16, 0.028, 2, 0.008), new THREE.MeshBasicMaterial({ color: 0x00F5D4 }));
+  sh.position.y = 0.14;
+  const tp = new THREE.Mesh(new THREE.ConeGeometry(0.048, 0.085, 12), new THREE.MeshBasicMaterial({ color: 0x00F5D4 }));
+  tp.position.y = 0.24;
+  g.add(sh, tp);
+  g.rotation.z = ang;
+  steamCoreGroup.add(g);
   return g;
 });
 
-/* ============ 3. RIG KARAKTER UTAMA: MAS RAKA ============ */
+// Api Normal di Atas Wajan (Menyala saat minyak 300°C, Padam saat ditutup tutup panci di S12)
+const wokFireGroup = new THREE.Group();
+wokFireGroup.position.set(0, 0.15, 0);
+wokGroup.add(wokFireGroup);
+
+const flameSpecs = [
+  { x:  0.00, z:  0.00, r: 0.19, h: 0.52, col: 0xFF5A1F, phase: 0.0 },
+  { x: -0.11, z:  0.04, r: 0.14, h: 0.40, col: 0xFF7B00, phase: 1.2 },
+  { x:  0.11, z:  0.03, r: 0.14, h: 0.42, col: 0xFF4500, phase: 2.4 },
+  { x:  0.00, z:  0.06, r: 0.12, h: 0.34, col: 0xFFB703, phase: 3.6 },
+  { x: -0.06, z: -0.06, r: 0.13, h: 0.38, col: 0xFF6B00, phase: 4.8 }
+];
+const flameMeshes = flameSpecs.map(sp => {
+  const m = new THREE.Mesh(
+    new THREE.ConeGeometry(sp.r, sp.h, 16),
+    new THREE.MeshBasicMaterial({ color: sp.col })
+  );
+  m.position.set(sp.x, sp.h * 0.42, sp.z);
+  m.userData = sp;
+  wokFireGroup.add(m);
+  return m;
+});
+
+// Semburan Bola Api Raksasa (Fireball Plume + Butiran Minyak Menyala Terlontar ke Udara di S02, S03, S08)
+const fireballGroup = new THREE.Group();
+fireballGroup.position.set(0, 0.18, 0);
+wokGroup.add(fireballGroup);
+
+const fbPillar = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.42, 0.18, 1.35, 24),
+  new THREE.MeshBasicMaterial({ color: 0xFF5A1F })
+);
+fbPillar.position.y = 0.65;
+fireballGroup.add(fbPillar);
+
+const fbCrown = new THREE.Mesh(
+  new THREE.SphereGeometry(0.52, 24, 20),
+  new THREE.MeshBasicMaterial({ color: 0xFFB703 })
+);
+fbCrown.position.y = 1.28;
+fireballGroup.add(fbCrown);
+
+const fbInnerCore = new THREE.Mesh(
+  new THREE.SphereGeometry(0.36, 20, 16),
+  new THREE.MeshBasicMaterial({ color: 0xFFF3B0 })
+);
+fbInnerCore.position.set(0, 0.95, 0.18);
+fireballGroup.add(fbInnerCore);
+
+// 14 Butiran Minyak Menyala yang Terlontar ke Udara (S08)
+const splatterDrops = Array.from({ length: 14 }, (_, i) => {
+  const a = (i / 14) * Math.PI * 2;
+  const m = withOutline(
+    new THREE.Mesh(
+      new THREE.SphereGeometry(0.052, 12, 12),
+      new THREE.MeshBasicMaterial({ color: i % 2 === 0 ? 0xFF4500 : 0xFFB703 })
+    ),
+    1.10
+  );
+  m.userData = {
+    vx: Math.cos(a) * (0.45 + (i % 3) * 0.22),
+    vy: 0.75 + (i % 4) * 0.32,
+    vz: Math.sin(a) * (0.35 + (i % 2) * 0.20)
+  };
+  fireballGroup.add(m);
+  return m;
+});
+
+// Gayung Air Plastik Biru Indonesia + Curahan Air ke Wajan
+const gayungGroup = new THREE.Group();
+gayungGroup.position.set(0.52, 2.02, -1.92);
+world.add(gayungGroup);
+
+const gayungMat = mat(0x00A8E8, 0.28, 0.05);
+const gayungCup = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.135, 0.115, 0.22, 24), gayungMat),
+  1.06
+);
+gayungGroup.add(gayungCup);
+
+const gayungWaterTop = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.125, 0.125, 0.02, 20),
+  new THREE.MeshBasicMaterial({ color: 0x90E0EF })
+);
+gayungWaterTop.position.y = 0.095;
+gayungGroup.add(gayungWaterTop);
+
+const gayungHandle = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.042, 0.048, 3, 0.012), gayungMat),
+  1.07
+);
+gayungHandle.position.set(0.22, 0.06, 0);
+gayungHandle.rotation.z = -0.22;
+gayungGroup.add(gayungHandle);
+
+// Curahan Air Biru dari Gayung ke Wajan
+const waterStreamCurve = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(0.36, 1.96, -1.96),
+  new THREE.Vector3(0.20, 1.84, -2.06),
+  new THREE.Vector3(0.08, 1.66, -2.14),
+  new THREE.Vector3(0.00, 1.48, -2.18)
+]);
+const waterStreamMesh = new THREE.Mesh(
+  new THREE.TubeGeometry(waterStreamCurve, 24, 0.042, 12, false),
+  new THREE.MeshBasicMaterial({ color: 0x00B4D8, transparent: true, opacity: 0.90 })
+);
+world.add(waterStreamMesh);
+
+// Cincin Larangan Merah pada Gayung & Wajan (Langkah 1 — Jangan Siram Air & Jangan Angkat)
+const dangerRingMat = new THREE.MeshBasicMaterial({
+  color: 0xEF5F18, transparent: true, opacity: 0.0, side: THREE.DoubleSide
+});
+const dangerRing = new THREE.Mesh(new THREE.RingGeometry(0.42, 0.52, 36), dangerRingMat);
+dangerRing.position.set(0.00, 1.65, -1.85);
+world.add(dangerRing);
+
+// Tutup Panci Stainless / Enamel yang Menggeser Menutup Rapat Wajan (Langkah 3 — S12)
+const panLidGroup = new THREE.Group();
+panLidGroup.position.set(0, 0.23, 0);
+wokGroup.add(panLidGroup);
+
+const lidDome = withOutline(
+  new THREE.Mesh(
+    new THREE.CylinderGeometry(0.18, 0.375, 0.095, 32),
+    mat(0xE2E8F0, 0.22, 0.55)
+  ),
+  1.05
+);
+panLidGroup.add(lidDome);
+
+const lidRim = new THREE.Mesh(
+  new THREE.TorusGeometry(0.372, 0.018, 12, 32),
+  mat(0x94A3B8, 0.25, 0.65)
+);
+lidRim.rotation.x = Math.PI / 2;
+lidRim.position.y = -0.04;
+panLidGroup.add(lidRim);
+
+const lidKnob = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.045, 0.055, 20), mat(0x181E26, 0.35)),
+  1.07
+);
+lidKnob.position.y = 0.068;
+panLidGroup.add(lidKnob);
+
+const lidSafeRingMat = new THREE.MeshBasicMaterial({
+  color: 0x0FA968, transparent: true, opacity: 0.0, side: THREE.DoubleSide
+});
+const lidSafeRing = new THREE.Mesh(new THREE.RingGeometry(0.40, 0.48, 36), lidSafeRingMat);
+lidSafeRing.rotation.x = -Math.PI / 2;
+lidSafeRing.position.y = 0.02;
+panLidGroup.add(lidSafeRing);
+
+/* ============ 4. RIG KARAKTER UTAMA: MAS RAKA ============ */
 function makeMasFaceTexture() {
   const cv = document.createElement('canvas');
   cv.width = 512; cv.height = 512;
@@ -1241,31 +1272,34 @@ function buildMasRaka() {
 const RAKA = buildMasRaka();
 world.add(RAKA.root);
 
-/* ============ 4. PRO-DIRECTOR @puckermanefacts ISOMETRIC DIORAMA CAMERA CHOREOGRAPHY ============ */
-const DURATION = 59.56;
+/* ============ 5. PRO-DIRECTOR @puckermanefacts ISOMETRIC DIORAMA CAMERA CHOREOGRAPHY (EP02 — 65.41s) ============ */
+const DURATION = 65.41;
 const S = {
-  camX: 14.2, camY: 15.6, camZ: 18.8,
-  lookX: -0.20, lookY: 1.25, lookZ: -0.15,
-  fov: 27,
+  camX: 13.8, camY: 15.2, camZ: 18.4,
+  lookX: -0.10, lookY: 1.45, lookZ: -0.85,
+  fov: 26,
 
-  cX: 0.05, cY: 0.34, cZ: -0.25, cRotY: 0.38,
-  cArmL: -1.20, cArmR: -0.25, cKneel: 0,
+  cX: 0.72, cY: 0.34, cZ: -1.15, cRotY: -0.45,
+  cArmL: -1.25, cArmR: -0.35, cKneel: 0,
 
   darkMode: 0,
   cutawayAlpha: 0,
-  copperClose: 0,
-  rockerTilt: 0,
-  sparkScale: 0,
-  ringScale: 0,
-  ringAlpha: 0,
+  flameScale: 1.0,
+  fireballScale: 0,
+  splatterProg: 0,
 
-  gasOpacity: 0.30,
-  gasRise: 0,
-  gasFlushX: 0,
-  regLift: 0,
-  winOpen: 0,
-  doorOpen: 0,
-  airOpacity: 0,
+  gayungAlpha: 1,
+  gayungTilt: 0,
+  pourAlpha: 0,
+  waterSinkProg: 0,
+  steamCoreScale: 0,
+
+  burnerOn: 1,
+  knobOff: 0,
+  knobRingAlpha: 0,
+  lidSlide: 0,
+  lidRingAlpha: 0,
+  dangerRingAlpha: 0,
 
   c1Alpha: 0,
   c2Alpha: 0,
@@ -1274,192 +1308,209 @@ const S = {
 
 const tl = gsap.timeline({ paused: true });
 
-// SCENE 01 (0.00s - 3.60s): Hook — Signature @puckermanefacts Elevated Isometric Cutaway Diorama
+// SCENE 01 (0.00s - 4.45s): Hook — "Kenapa saat wajan kebakaran di kompor, kamu nggak boleh menyiramnya pakai air?"
 tl.fromTo(S,
   {
-    camX: 14.4, camY: 15.8, camZ: 19.0,
-    lookX: -0.22, lookY: 1.25, lookZ: -0.15,
-    fov: 27,
-    cX: -0.15, cZ: -0.18, cRotY: 0.42, cArmL: -1.25, cArmR: -0.25, cKneel: 0,
-    darkMode: 0, cutawayAlpha: 0, copperClose: 0, rockerTilt: 0,
-    sparkScale: 0, ringScale: 0.8, ringAlpha: 0,
-    gasOpacity: 0.34, gasRise: 0, gasFlushX: 0, regLift: 0, winOpen: 0, doorOpen: 0, airOpacity: 0,
+    camX: 13.8, camY: 15.2, camZ: 18.4,
+    lookX: -0.05, lookY: 1.48, lookZ: -1.05,
+    fov: 26,
+    cX: 0.75, cZ: -1.12, cRotY: -0.42, cArmL: -1.35, cArmR: -0.35, cKneel: 0,
+    darkMode: 0, cutawayAlpha: 0, flameScale: 1.05, fireballScale: 0, splatterProg: 0,
+    gayungAlpha: 1, gayungTilt: 0.15, pourAlpha: 0, waterSinkProg: 0, steamCoreScale: 0,
+    burnerOn: 1, knobOff: 0, knobRingAlpha: 0, lidSlide: 0, lidRingAlpha: 0, dangerRingAlpha: 0,
     c1Alpha: 0, c2Alpha: 0, c3Alpha: 0
   },
   {
-    camX: 12.8, camY: 14.0, camZ: 17.0,
-    lookX: -0.10, lookY: 1.30, lookZ: -0.25,
-    cArmL: -1.46,
-    duration: 3.55, ease: 'sine.inOut'
+    camX: 11.4, camY: 12.6, camZ: 15.2,
+    lookX: 0.02, lookY: 1.55, lookZ: -1.35,
+    cArmL: -1.55,
+    duration: 4.40, ease: 'sine.inOut'
   }, 0
 );
 
-// SCENE 02 (3.60s - 7.55s): "Karena satu klik saklar, bisa langsung memicu ledakan." — Elevated Isometric Medium-Push
+// SCENE 02 (4.45s - 8.65s): "Karena segayung air justru bikin apinya meledak ke seluruh dapur."
 tl.to(S, {
-  camX: 9.2, camY: 9.8, camZ: 12.4,
-  lookX: 0.38, lookY: 1.42, lookZ: -1.05,
+  camX: 8.8, camY: 9.8, camZ: 12.2,
+  lookX: 0.05, lookY: 1.72, lookZ: -1.65,
   fov: 25,
-  cX: -0.10, cZ: -0.55, cRotY: 0.52, cArmL: -0.30, cArmR: -1.38,
-  duration: 1.65, ease: 'power2.inOut'
-}, 3.60);
-tl.to(S, {
-  sparkScale: 1.15, ringScale: 1.55, ringAlpha: 0.9, c1Alpha: 1,
-  duration: 0.38, ease: 'back.out(2)'
-}, 5.45);
-tl.to(S, {
-  sparkScale: 0, ringAlpha: 0, c1Alpha: 0,
-  duration: 0.38, ease: 'power2.in'
-}, 7.05);
-
-// SCENE 03 (7.55s - 12.42s): Dark Kitchen Gas Leak Scenario — High Top-Front Isometric Angle (Zero Wall Occlusion!)
-tl.to(S, {
-  camX: 6.4, camY: 12.6, camZ: 15.4,
-  lookX: 0.15, lookY: 1.25, lookZ: -0.75,
-  fov: 26,
-  darkMode: 0.88, gasOpacity: 0.72,
-  cX: -0.45, cZ: -0.25, cRotY: 0.65, cArmL: -0.30, cArmR: -0.55,
+  gayungTilt: 0.95, pourAlpha: 1,
   duration: 1.15, ease: 'power2.inOut'
-}, 7.55);
+}, 4.45);
 tl.to(S, {
-  camX: 5.4, camY: 10.2, camZ: 12.6,
-  lookX: 0.52, lookY: 1.40, lookZ: -1.25,
-  cX: 0.88, cZ: -1.55, cRotY: 0.52, cArmR: -1.58, rockerTilt: 1,
-  duration: 1.15, ease: 'power2.out'
-}, 9.95);
-tl.to(S, { sparkScale: 0.98, duration: 0.22 }, 11.28);
-tl.to(S, { sparkScale: 0, darkMode: 0.10, duration: 0.35 }, 12.02);
-
-// SCENE 04 (12.42s - 16.03s): Intentional Detail Shot 1 — Architectural Cutaway 2 Copper Plates
-tl.to(S, {
-  camX: 0.82, camY: 2.22, camZ: 0.28,
-  lookX: 1.72, lookY: 1.94, lookZ: -2.63,
-  fov: 20,
-  cX: -1.45, cZ: -0.15, cRotY: 0.35, cArmR: -0.30,
-  cutawayAlpha: 1, copperClose: 0, c1Alpha: 1,
-  duration: 0.95, ease: 'power3.inOut'
-}, 12.42);
-tl.to(S, { c1Alpha: 0, duration: 0.28, ease: 'power2.in' }, 15.65);
-
-// SCENE 05 (16.03s - 21.40s): Intentional Detail Shot 2 — Copper Collision & 1.000°C Spark Burst (Clean Unclipped Ring!)
-tl.to(S, {
-  camX: 0.90, camY: 2.16, camZ: 0.14,
-  lookX: 1.72, lookY: 1.93, lookZ: -2.64,
-  copperClose: 1, sparkScale: 0.54, ringScale: 0.54, ringAlpha: 0.88, c1Alpha: 1,
+  fireballScale: 1.25, splatterProg: 0.65, pourAlpha: 0, c1Alpha: 1,
+  cX: 0.95, cZ: -0.95, cArmL: -1.65, cArmR: -1.45,
   duration: 0.42, ease: 'back.out(2)'
-}, 17.15);
+}, 5.80);
 tl.to(S, {
-  sparkScale: 0, cutawayAlpha: 0, ringAlpha: 0, c1Alpha: 0, darkMode: 0,
-  duration: 0.42, ease: 'power2.in'
-}, 20.88);
+  fireballScale: 0, splatterProg: 0, c1Alpha: 0, gayungTilt: 0.1,
+  duration: 0.45, ease: 'power2.in'
+}, 8.20);
 
-// SCENE 06 (21.40s - 25.20s): High Bird's-Eye Isometric Diorama — Gas Elpiji 2x Lebih Berat Mengendap di Lantai
+// SCENE 03 (8.65s - 14.90s): Micro-Scenario — "Misalnya lagi goreng makanan, minyak terlalu panas lalu menyala api, dan tangan refleks menyiram air."
 tl.to(S, {
-  camX: 15.2, camY: 18.4, camZ: 19.6,
-  lookX: -0.20, lookY: 1.05, lookZ: -0.15,
-  fov: 27,
-  cX: -0.75, cZ: -0.15, cKneel: 0, cRotY: 0.42, cArmL: 0.15, cArmR: -0.25,
-  gasOpacity: 0.78, gasRise: 0.08, c2Alpha: 1,
-  duration: 1.0, ease: 'power3.inOut'
-}, 21.40);
-tl.to(S, { c2Alpha: 0, duration: 0.28, ease: 'power2.in' }, 24.80);
-
-// SCENE 07 (25.20s - 30.90s): Elevated Isometric Crane — Gas Mengendap Lalu Naik Setinggi Saklar
-tl.to(S, {
-  camX: 11.4, camY: 11.8, camZ: 15.0,
-  lookX: 0.12, lookY: 1.32, lookZ: -0.65,
-  fov: 26,
-  gasOpacity: 0.86, gasRise: 1.0,
-  duration: 3.1, ease: 'power2.inOut'
-}, 25.45);
-tl.to(S, { c2Alpha: 1, duration: 0.38, ease: 'back.out(2)' }, 27.60);
-tl.to(S, { c2Alpha: 0, duration: 0.28, ease: 'power2.in' }, 30.45);
-
-// SCENE 08 (30.90s - 36.62s): Elevated 3/4 Detail — Saklar ON/OFF Menyambar Gas
-tl.to(S, {
-  camX: 4.5, camY: 5.1, camZ: 6.2,
-  lookX: 1.28, lookY: 1.62, lookZ: -2.02,
-  fov: 23,
-  cX: -1.35, cZ: -0.15,
-  c1Alpha: 1, cutawayAlpha: 0.85,
-  duration: 0.85, ease: 'power3.inOut'
-}, 30.90);
-tl.to(S, { rockerTilt: 0, sparkScale: 1.05, ringAlpha: 0.9, duration: 0.25 }, 31.65);
-tl.to(S, { rockerTilt: 1, sparkScale: 1.28, ringScale: 1.65, duration: 0.25 }, 32.55);
-tl.to(S, { sparkScale: 0, cutawayAlpha: 0, ringAlpha: 0, c1Alpha: 0, gasRise: 0.22, duration: 0.42, ease: 'power2.in' }, 36.15);
-
-// SCENE 09 (36.62s - 39.65s): Elevated Isometric Room Reset — "Lakukan 3 Langkah Ini"
-tl.to(S, {
-  camX: 13.4, camY: 14.6, camZ: 17.6,
-  lookX: -0.18, lookY: 1.28, lookZ: -0.18,
-  fov: 27,
-  cX: -0.05, cZ: -0.25, cRotY: 0.36, cArmL: -1.32, cArmR: -1.32,
-  gasOpacity: 0.44,
-  duration: 0.85, ease: 'power3.inOut'
-}, 36.62);
-
-// SCENE 10 (39.65s - 43.63s): Langkah 1 — Elevated Isometric Medium (Utuh, Mas Raka + Gas + Saklar Seimbang!)
-tl.to(S, {
-  camX: 9.0, camY: 9.6, camZ: 12.0,
-  lookX: 0.35, lookY: 1.42, lookZ: -1.05,
+  camX: 9.6, camY: 11.2, camZ: 13.6,
+  lookX: 0.05, lookY: 1.52, lookZ: -1.45,
   fov: 25,
-  cX: -0.08, cZ: -0.78, cRotY: 0.45, cArmL: -1.52, cArmR: -0.30,
-  ringScale: 1.25, ringAlpha: 0.88, c3Alpha: 1,
-  duration: 0.85, ease: 'power3.inOut'
-}, 39.65);
-tl.to(S, { ringAlpha: 0, c3Alpha: 0, duration: 0.32, ease: 'power2.in' }, 43.25);
-
-// SCENE 11 (43.63s - 47.46s): Langkah 2 — Elevated 3/4 Detail Shot Lepas Regulator Gas Melon (Menghadap Tabung Gas!)
+  flameScale: 0.35, gayungAlpha: 0,
+  cX: 0.62, cZ: -1.28, cRotY: -0.52, cArmL: -0.95, cArmR: -0.35,
+  duration: 1.20, ease: 'power2.inOut'
+}, 8.65);
 tl.to(S, {
-  camX: 6.4, camY: 6.9, camZ: 8.6,
-  lookX: 0.78, lookY: 1.18, lookZ: -1.62,
+  flameScale: 1.18, gayungAlpha: 1, cArmL: -1.48,
+  duration: 0.95, ease: 'back.out(1.7)'
+}, 11.10);
+tl.to(S, {
+  gayungTilt: 0.95, pourAlpha: 1,
+  duration: 0.45, ease: 'power2.out'
+}, 13.20);
+tl.to(S, {
+  fireballScale: 1.15, pourAlpha: 0,
+  duration: 0.38, ease: 'back.out(2)'
+}, 13.70);
+tl.to(S, {
+  fireballScale: 0, gayungAlpha: 0,
+  duration: 0.38, ease: 'power2.in'
+}, 14.50);
+
+// SCENE 04 (14.90s - 19.45s): Science 1 — "Minyak goreng yang terbakar sendiri itu, suhunya sudah mencapai 300 derajat." (Macro Cutaway Wajan)
+tl.to(S, {
+  camX: 1.45, camY: 2.38, camZ: 1.55,
+  lookX: 0.00, lookY: 1.50, lookZ: -2.14,
+  fov: 20,
+  cX: 1.35, cZ: -0.95, cRotY: -0.55,
+  cutawayAlpha: 1, flameScale: 0.92,
+  duration: 1.05, ease: 'power3.inOut'
+}, 14.90);
+tl.to(S, { c1Alpha: 1, duration: 0.38, ease: 'back.out(2)' }, 16.55);
+tl.to(S, { c1Alpha: 0, duration: 0.28, ease: 'power2.in' }, 19.12);
+
+// SCENE 05 (19.45s - 23.70s): Science 2 — "Masalahnya, air lebih berat daripada minyak, dan tidak bisa menyatu."
+tl.to(S, {
+  camX: 1.25, camY: 2.25, camZ: 1.42,
+  lookX: 0.00, lookY: 1.50, lookZ: -2.15,
+  fov: 20,
+  waterSinkProg: 0.38, c2Alpha: 1,
+  duration: 0.95, ease: 'power2.inOut'
+}, 19.45);
+tl.to(S, { c2Alpha: 0, duration: 0.28, ease: 'power2.in' }, 23.38);
+
+// SCENE 06 (23.70s - 28.70s): Science 3 — "Saat disiram, air langsung tenggelam menembus minyak ke dasar wajan yang sangat panas."
+tl.to(S, {
+  camX: 1.05, camY: 2.08, camZ: 1.25,
+  lookX: 0.00, lookY: 1.46, lookZ: -2.16,
+  fov: 19,
+  waterSinkProg: 1.0,
+  duration: 1.85, ease: 'power2.inOut'
+}, 23.70);
+tl.to(S, { c1Alpha: 1, duration: 0.38, ease: 'back.out(2)' }, 25.85);
+tl.to(S, { c1Alpha: 0, duration: 0.28, ease: 'power2.in' }, 28.45);
+
+// SCENE 07 (28.70s - 33.60s): Science 4 — "Dalam sekejap, air mendidih jadi uap dan mengembang 1.700 kali lipat."
+tl.to(S, {
+  camX: 1.15, camY: 2.15, camZ: 1.35,
+  lookX: 0.00, lookY: 1.48, lookZ: -2.16,
+  fov: 19,
+  waterSinkProg: 0, steamCoreScale: 1.0,
+  duration: 0.85, ease: 'back.out(2)'
+}, 28.70);
+tl.to(S, { steamCoreScale: 1.35, c2Alpha: 1, duration: 0.42, ease: 'back.out(2)' }, 31.10);
+tl.to(S, { c2Alpha: 0, duration: 0.28, ease: 'power2.in' }, 33.28);
+
+// SCENE 08 (33.60s - 38.45s): Science 5 — "Ledakan uap dari dasar wajan ini langsung melontarkan minyak menyala ke udara."
+tl.to(S, {
+  camX: 5.8, camY: 6.8, camZ: 8.2,
+  lookX: 0.00, lookY: 1.82, lookZ: -1.95,
   fov: 23,
-  cX: 0.42, cZ: -1.56, cRotY: 1.42, cKneel: 0.34, cArmR: -1.42, cArmL: -1.32,
-  duration: 0.82, ease: 'power3.inOut'
-}, 43.63);
-tl.to(S, {
-  regLift: 1, gasOpacity: 0.28, c3Alpha: 1,
-  duration: 0.65, ease: 'back.out(1.7)'
-}, 44.85);
-tl.to(S, { c3Alpha: 0, duration: 0.28, ease: 'power2.in' }, 47.15);
-
-// SCENE 12 (47.46s - 52.83s): Langkah 3 — HIGH ARCHITECTURAL ISOMETRIC DIORAMA WIDE (Pintu 3D + Jendela Terbuka Lebar & Udara Mendorong Gas Keluar!)
-tl.to(S, {
-  camX: 16.4, camY: 18.8, camZ: 21.2,
-  lookX: -0.25, lookY: 1.18, lookZ: -0.05,
-  fov: 28,
-  cX: 0.42, cZ: -0.15, cKneel: 0, cRotY: 0.42, cArmL: -1.45, cArmR: -0.30,
-  winOpen: 1, doorOpen: 1, airOpacity: 1, c3Alpha: 1,
   duration: 0.95, ease: 'power3.inOut'
-}, 47.46);
+}, 33.60);
 tl.to(S, {
-  gasFlushX: 2.35, gasOpacity: 0, gasRise: 0,
-  duration: 2.6, ease: 'power2.out'
-}, 48.10);
-tl.to(S, { c3Alpha: 0, duration: 0.32, ease: 'power2.in' }, 52.45);
+  steamCoreScale: 0, fireballScale: 1.32, splatterProg: 1.0, c1Alpha: 1,
+  duration: 0.48, ease: 'back.out(1.8)'
+}, 35.10);
+tl.to(S, {
+  fireballScale: 0, splatterProg: 0, cutawayAlpha: 0, c1Alpha: 0,
+  duration: 0.45, ease: 'power2.in'
+}, 38.05);
 
-// SCENE 13 (52.83s - 57.38s): Summary Takeaway — Elevated Isometric Diorama Wide
+// SCENE 09 (38.45s - 41.85s): Transition to 3 Safety Steps — "Kalau wajan di kompor terbakar, lakukan 3 langkah ini."
 tl.to(S, {
-  camX: 13.0, camY: 14.0, camZ: 17.2,
-  lookX: -0.15, lookY: 1.28, lookZ: -0.15,
-  fov: 27,
-  cX: 0.05, cZ: -0.25, cRotY: 0.36, cArmL: -0.32, cArmR: -0.32,
-  airOpacity: 0.28,
+  camX: 13.0, camY: 14.2, camZ: 17.2,
+  lookX: -0.08, lookY: 1.42, lookZ: -1.05,
+  fov: 26,
+  cX: 0.72, cZ: -1.15, cRotY: -0.35, cArmL: -1.32, cArmR: -1.32,
+  flameScale: 0.95, gayungAlpha: 0,
+  duration: 0.90, ease: 'power3.inOut'
+}, 38.45);
+
+// SCENE 10 (41.85s - 46.30s): Langkah 1 — "Pertama, jangan siram air dan jangan angkat wajan yang sedang terbakar."
+tl.to(S, {
+  camX: 8.6, camY: 9.4, camZ: 11.8,
+  lookX: 0.08, lookY: 1.55, lookZ: -1.55,
+  fov: 24,
+  cX: 0.78, cZ: -1.18, cRotY: -0.42, cArmL: -1.52, cArmR: -0.30,
+  gayungAlpha: 1, gayungTilt: 0, dangerRingAlpha: 0.92, c3Alpha: 1,
+  duration: 0.85, ease: 'power3.inOut'
+}, 41.85);
+tl.to(S, {
+  gayungAlpha: 0, dangerRingAlpha: 0, c3Alpha: 0,
+  duration: 0.32, ease: 'power2.in'
+}, 45.95);
+
+// SCENE 11 (46.30s - 50.32s): Langkah 2 — "Kedua, matikan kompor dari knopnya untuk memutus sumber panas."
+tl.to(S, {
+  camX: 4.8, camY: 5.4, camZ: 6.8,
+  lookX: 0.08, lookY: 1.38, lookZ: -1.85,
+  fov: 22,
+  cX: 0.58, cZ: -1.42, cRotY: -0.65, cKneel: 0.16, cArmL: -1.38, cArmR: -0.35,
+  duration: 0.82, ease: 'power3.inOut'
+}, 46.30);
+tl.to(S, {
+  knobOff: 1, burnerOn: 0, flameScale: 0.62, knobRingAlpha: 0.95, c3Alpha: 1,
+  duration: 0.55, ease: 'back.out(1.8)'
+}, 47.45);
+tl.to(S, {
+  knobRingAlpha: 0, c3Alpha: 0,
+  duration: 0.28, ease: 'power2.in'
+}, 50.00);
+
+// SCENE 12 (50.32s - 57.20s): Langkah 3 — "Ketiga, tutup rapat wajan dengan tutup panci atau kain basah yang sudah diperas supaya apinya kehabisan oksigen."
+tl.to(S, {
+  camX: 6.2, camY: 7.4, camZ: 8.8,
+  lookX: 0.05, lookY: 1.54, lookZ: -1.85,
+  fov: 23,
+  cX: 0.65, cZ: -1.38, cKneel: 0, cRotY: -0.58, cArmL: -1.45, cArmR: -1.25,
+  duration: 0.85, ease: 'power3.inOut'
+}, 50.32);
+tl.to(S, {
+  lidSlide: 1, flameScale: 0, lidRingAlpha: 0.92, c3Alpha: 1,
+  duration: 0.72, ease: 'power3.out'
+}, 51.45);
+tl.to(S, {
+  lidRingAlpha: 0, c3Alpha: 0,
+  duration: 0.32, ease: 'power2.in'
+}, 56.85);
+
+// SCENE 13 (57.20s - 62.95s): Summary Takeaway — "Jadi yang bikin api menyembur ke seluruh dapur bukan minyaknya, tapi air yang kita siram saat panik."
+tl.to(S, {
+  camX: 12.6, camY: 13.8, camZ: 16.8,
+  lookX: -0.08, lookY: 1.40, lookZ: -1.05,
+  fov: 26,
+  cX: 0.45, cZ: -0.85, cRotY: 0.25, cArmL: -0.32, cArmR: -0.32,
   duration: 1.05, ease: 'power2.inOut'
-}, 52.83);
+}, 57.20);
 
-// SCENE 14 (57.38s - 59.56s): Clean Hero Isometric Push-In — "Jadi... jangan panik dulu."
+// SCENE 14 (62.95s - 65.41s): Clean Hero Isometric Push-In — "Jadi... jangan panik dulu."
 tl.to(S, {
-  camX: 10.2, camY: 10.8, camZ: 13.8,
-  lookX: -0.02, lookY: 1.35, lookZ: -0.28,
+  camX: 10.0, camY: 10.8, camZ: 13.6,
+  lookX: 0.05, lookY: 1.42, lookZ: -0.95,
   fov: 25,
-  cX: 0.05, cZ: -0.25, cRotY: 0.36, cArmL: -1.48, cArmR: -0.25,
-  airOpacity: 0,
-  duration: 0.80, ease: 'power3.out'
-}, 57.38);
+  cX: 0.45, cZ: -0.85, cRotY: 0.28, cArmL: -1.48, cArmR: -0.25,
+  duration: 0.85, ease: 'power3.out'
+}, 62.95);
 
 tl.to({}, { duration: 0.01 }, DURATION);
 
-/* ============ 5. SMOOTH EASE-IN / EASE-OUT & 100% VERBATIM SUBTITLE SCHEDULE ============ */
+/* ============ 6. SMOOTH EASE-IN / EASE-OUT & 100% VERBATIM SUBTITLE SCHEDULE (EP02) ============ */
 function easeOutBack(x) {
   const c1 = 1.70158;
   const c3 = c1 + 1;
@@ -1495,80 +1546,77 @@ function getWindowMotion(t, tIn, tOut, enterDur = 0.36, exitDur = 0.26) {
   return { alpha: 1, y: 0, scale: 1 };
 }
 
-// 100% VERBATIM ACOUSTIC-ALIGNED CAPTION CHUNKS (Every single spoken word included!)
+// 100% VERBATIM ACOUSTIC-ALIGNED CAPTION CHUNKS FOR EP02 (vo_ep02.mp3 = 65.41s)
 const CAPTION_CHUNKS = [
-  // S01 (0.09s - 3.43s): "Kenapa saat dapur bau gas, kamu nggak boleh nyentuh saklar lampu?"
-  { s: 0.06, e: 1.78, words: ['Kenapa', 'saat', 'dapur', 'bau', 'gas,'] },
-  { s: 1.82, e: 3.52, words: ['kamu', 'nggak', 'boleh', 'nyentuh', 'saklar', 'lampu?'] },
+  // S01 (0.06s - 3.98s): "Kenapa saat wajan kebakaran di kompor, kamu nggak boleh menyiramnya pakai air?"
+  { s: 0.06, e: 2.20, words: ['Kenapa', 'saat', 'wajan', 'kebakaran', 'di', 'kompor,'] },
+  { s: 2.34, e: 4.02, words: ['kamu', 'nggak', 'boleh', 'menyiramnya', 'pakai', 'air?'] },
 
-  // S02 (4.01s - 7.03s): "Karena satu klik saklar, bisa langsung memicu ledakan."
-  { s: 3.98, e: 5.42, words: ['Karena', 'satu', 'klik', 'saklar,'] },
-  { s: 5.46, e: 7.12, words: ['bisa', 'langsung', 'memicu', 'ledakan.'] },
+  // S02 (4.47s - 8.16s): "Karena segayung air, justru bikin apinya meledak ke seluruh dapur."
+  { s: 4.45, e: 5.70, words: ['Karena', 'segayung', 'air,'] },
+  { s: 5.82, e: 8.20, words: ['justru', 'bikin', 'apinya', 'meledak', 'ke', 'seluruh', 'dapur.'] },
 
-  // S03 (7.55s - 11.98s): "Misalnya dapur gelap, tercium bau gas, lalu tangan refleks menekan saklar."
-  { s: 7.52, e: 8.82, words: ['Misalnya', 'dapur', 'gelap,'] },
-  { s: 8.95, e: 10.04, words: ['tercium', 'bau', 'gas,'] },
-  { s: 10.12, e: 12.08, words: ['lalu', 'tangan', 'refleks', 'menekan', 'saklar.'] },
+  // S03 (8.71s - 14.38s): "Misalnya lagi goreng makanan, minyak terlalu panas lalu menyala api, dan tangan refleks menyiram air."
+  { s: 8.69, e: 10.15, words: ['Misalnya', 'lagi', 'goreng', 'makanan,'] },
+  { s: 10.38, e: 12.48, words: ['minyak', 'terlalu', 'panas', 'lalu', 'menyala', 'api,'] },
+  { s: 12.66, e: 14.42, words: ['dan', 'tangan', 'refleks', 'menyiram', 'air.'] },
 
-  // S04 (12.42s - 15.49s): "Di dalam saklar, ada dua lempeng tembaga penyambung listrik."
-  { s: 12.40, e: 13.72, words: ['Di', 'dalam', 'saklar,', 'ada', 'dua'] },
-  { s: 13.75, e: 15.58, words: ['lempeng', 'tembaga', 'penyambung', 'listrik.'] },
+  // S04 (14.95s - 19.08s): "Minyak goreng yang terbakar sendiri itu, suhunya sudah mencapai 300 derajat."
+  { s: 14.93, e: 16.45, words: ['Minyak', 'goreng', 'yang', 'terbakar', 'sendiri', 'itu,'] },
+  { s: 16.54, e: 19.12, words: ['suhunya', 'sudah', 'mencapai', '300', 'derajat.'] },
 
-  // S05 (16.05s - 20.88s): "Saat ditekan, tembaga ini beradu dan memercikkan api kecil bersuhu 1.000 derajat."
-  { s: 16.03, e: 18.18, words: ['Saat', 'ditekan,', 'tembaga', 'ini', 'beradu'] },
-  { s: 18.21, e: 19.50, words: ['dan', 'memercikkan', 'api', 'kecil'] },
-  { s: 19.53, e: 20.96, words: ['bersuhu', '1.000', 'derajat.'] },
+  // S05 (19.49s - 23.36s): "Masalahnya, air lebih berat daripada minyak, dan tidak bisa menyatu."
+  { s: 19.47, e: 22.05, words: ['Masalahnya,', 'air', 'lebih', 'berat', 'daripada', 'minyak,'] },
+  { s: 22.25, e: 23.40, words: ['dan', 'tidak', 'bisa', 'menyatu.'] },
 
-  // S06 (21.39s - 24.70s): "Masalahnya, gas elpiji dua kali lebih berat dari udara."
-  { s: 21.36, e: 22.62, words: ['Masalahnya,', 'gas', 'elpiji'] },
-  { s: 22.65, e: 24.78, words: ['dua', 'kali', 'lebih', 'berat', 'dari', 'udara.'] },
+  // S06 (23.73s - 28.44s): "Saat disiram, air langsung tenggelam menembus minyak ke dasar wajan yang sangat panas."
+  { s: 23.71, e: 26.50, words: ['Saat', 'disiram,', 'air', 'langsung', 'tenggelam', 'menembus', 'minyak'] },
+  { s: 26.54, e: 28.48, words: ['ke', 'dasar', 'wajan', 'yang', 'sangat', 'panas.'] },
 
-  // S07 (25.21s - 30.39s): "Saat bocor, gas tidak naik ke atas, tapi mengendap di lantai, lalu naik sampai setinggi saklar."
-  { s: 25.19, e: 26.94, words: ['Saat', 'bocor,', 'gas', 'tidak', 'naik', 'ke', 'atas,'] },
-  { s: 26.98, e: 28.54, words: ['tapi', 'mengendap', 'di', 'lantai,'] },
-  { s: 28.57, e: 30.48, words: ['lalu', 'naik', 'sampai', 'setinggi', 'saklar.'] },
+  // S07 (28.73s - 33.25s): "Dalam sekejap, air mendidih jadi uap, dan mengembang 1.700 kali lipat."
+  { s: 28.71, e: 30.96, words: ['Dalam', 'sekejap,', 'air', 'mendidih', 'jadi', 'uap,'] },
+  { s: 31.10, e: 33.28, words: ['dan', 'mengembang', '1.700', 'kali', 'lipat.'] },
 
-  // S08 (30.90s - 36.13s): "Mau saklar dinyalakan atau dimatikan, percikan apinya tetap keluar dan langsung menyambar gas."
-  { s: 30.88, e: 33.00, words: ['Mau', 'saklar', 'dinyalakan', 'atau', 'dimatikan,'] },
-  { s: 33.05, e: 34.60, words: ['percikan', 'apinya', 'tetap', 'keluar'] },
-  { s: 34.64, e: 36.22, words: ['dan', 'langsung', 'menyambar', 'gas.'] },
+  // S08 (33.66s - 37.93s): "Ledakan uap dari dasar wajan ini, langsung melontarkan minyak menyala ke udara."
+  { s: 33.64, e: 35.50, words: ['Ledakan', 'uap', 'dari', 'dasar', 'wajan', 'ini,'] },
+  { s: 35.62, e: 37.98, words: ['langsung', 'melontarkan', 'minyak', 'menyala', 'ke', 'udara.'] },
 
-  // S09 (36.62s - 39.16s): "Kalau mencium bau gas, lakukan 3 langkah ini."
-  { s: 36.60, e: 37.80, words: ['Kalau', 'mencium', 'bau', 'gas,'] },
-  { s: 37.85, e: 39.24, words: ['lakukan', '3', 'langkah', 'ini.'] },
+  // S09 (38.47s - 41.44s): "Kalau wajan di kompor terbakar, lakukan 3 langkah ini."
+  { s: 38.45, e: 40.05, words: ['Kalau', 'wajan', 'di', 'kompor', 'terbakar,'] },
+  { s: 40.19, e: 41.48, words: ['lakukan', '3', 'langkah', 'ini.'] },
 
-  // S10 (39.64s - 43.18s): "Pertama, jangan sentuh saklar lampu atau alat elektronik apa pun."
-  { s: 39.62, e: 41.50, words: ['Pertama,', 'jangan', 'sentuh', 'saklar', 'lampu'] },
-  { s: 41.54, e: 43.24, words: ['atau', 'alat', 'elektronik', 'apa', 'pun.'] },
+  // S10 (41.88s - 45.92s): "Pertama, jangan siram air, dan jangan angkat wajan yang sedang terbakar."
+  { s: 41.86, e: 43.70, words: ['Pertama,', 'jangan', 'siram', 'air,'] },
+  { s: 43.74, e: 45.96, words: ['dan', 'jangan', 'angkat', 'wajan', 'yang', 'sedang', 'terbakar.'] },
 
-  // S11 (43.63s - 47.03s): "Kedua, putar pengunci regulator, dan lepas dari tabung gas."
-  { s: 43.61, e: 45.94, words: ['Kedua,', 'putar', 'pengunci', 'regulator,'] },
-  { s: 46.00, e: 47.12, words: ['dan', 'lepas', 'dari', 'tabung', 'gas.'] },
+  // S11 (46.34s - 49.98s): "Kedua, matikan kompor dari knopnya untuk memutus sumber panas."
+  { s: 46.32, e: 48.20, words: ['Kedua,', 'matikan', 'kompor', 'dari', 'knopnya'] },
+  { s: 48.23, e: 50.02, words: ['untuk', 'memutus', 'sumber', 'panas.'] },
 
-  // S12 (47.46s - 52.35s): "Ketiga, buka pintu dan jendela lebar-lebar, supaya udara luar mendorong gas keluar."
-  { s: 47.44, e: 48.48, words: ['Ketiga,', 'buka', 'pintu'] },
-  { s: 48.51, e: 50.14, words: ['dan', 'jendela', 'lebar-lebar,'] },
-  { s: 50.22, e: 52.42, words: ['supaya', 'udara', 'luar', 'mendorong', 'gas', 'keluar.'] },
+  // S12 (50.35s - 56.85s): "Ketiga, tutup rapat wajan dengan tutup panci, atau kain basah yang sudah diperas, supaya apinya kehabisan oksigen."
+  { s: 50.33, e: 52.84, words: ['Ketiga,', 'tutup', 'rapat', 'wajan', 'dengan', 'tutup', 'panci,'] },
+  { s: 52.90, e: 54.96, words: ['atau', 'kain', 'basah', 'yang', 'sudah', 'diperas,'] },
+  { s: 55.08, e: 56.88, words: ['supaya', 'apinya', 'kehabisan', 'oksigen.'] },
 
-  // S13 (52.83s - 56.93s): "Jadi yang memicu ledakan bukan tabungnya, tapi percikan listrik saat kita panik."
-  { s: 52.81, e: 53.96, words: ['Jadi', 'yang', 'memicu', 'ledakan'] },
-  { s: 53.99, e: 55.06, words: ['bukan', 'tabungnya,'] },
-  { s: 55.16, e: 57.00, words: ['tapi', 'percikan', 'listrik', 'saat', 'kita', 'panik.'] },
+  // S13 (57.25s - 62.54s): "Jadi yang bikin api menyembur ke seluruh dapur bukan minyaknya, tapi air yang kita siram saat panik."
+  { s: 57.23, e: 59.28, words: ['Jadi', 'yang', 'bikin', 'api', 'menyembur'] },
+  { s: 59.36, e: 60.44, words: ['ke', 'seluruh', 'dapur', 'bukan', 'minyaknya,'] },
+  { s: 60.59, e: 62.58, words: ['tapi', 'air', 'yang', 'kita', 'siram', 'saat', 'panik.'] },
 
-  // S14 (57.38s - 59.50s): "Jadi... jangan panik dulu." (Custom pause-aware timestamps)
+  // S14 (63.00s - 65.25s): "Jadi... jangan panik dulu."
   {
-    s: 57.35, e: 59.56,
+    s: 62.98, e: 65.28,
     words: ['Jadi...', 'jangan', 'panik', 'dulu.'],
     customTimes: [
-      { word: 'Jadi...', ws: 57.36, we: 58.22 },
-      { word: 'jangan',  ws: 58.26, we: 58.66 },
-      { word: 'panik',   ws: 58.66, we: 59.04 },
-      { word: 'dulu.',   ws: 59.04, we: 59.56 }
+      { word: 'Jadi...', ws: 63.00, we: 63.78 },
+      { word: 'jangan',  ws: 63.95, we: 64.35 },
+      { word: 'panik',   ws: 64.35, we: 64.75 },
+      { word: 'dulu.',   ws: 64.75, we: 65.28 }
     ]
   }
 ];
 
-const SPOKEN_WEIGHT_OVERRIDES = { '1.000': 6, '3': 4 };
+const SPOKEN_WEIGHT_OVERRIDES = { '300': 9, '1.700': 14, '3': 4 };
 CAPTION_CHUNKS.forEach(ch => {
   if (ch.customTimes) {
     ch.wordTimes = ch.customTimes;
@@ -1599,10 +1647,13 @@ document.querySelectorAll('#switcher button[data-cap]').forEach(btn => {
 });
 
 const TOP_SEGMENTS = [
-  { s: 0.00, e: 3.60, type: 'hook', hTitle: 'BAU GAS BOCOR?', hPill: 'JANGAN SENTUH SAKLAR!' },
-  { s: 39.65, e: 43.58, type: 'step', badge: '1', title: 'Jangan sentuh saklar', showDots: true, prog: 1 },
-  { s: 43.63, e: 47.42, type: 'step', badge: '2', title: 'Lepas regulator gas', showDots: true, prog: 2 },
-  { s: 47.46, e: 52.78, type: 'step', badge: '3', title: 'Buka pintu & jendela', showDots: true, prog: 3 }
+  { s: 0.00, e: 4.10, type: 'hook', hTitle: 'WAJAN KEBAKARAN?', hPill: 'JANGAN SIRAM AIR!' },
+  { s: 14.95, e: 19.15, type: 'metric', badge: '', title: 'Suhu minyak: 300°C', showDots: false },
+  { s: 19.49, e: 23.40, type: 'metric', badge: '', title: 'Air lebih berat dari minyak', showDots: false },
+  { s: 28.73, e: 33.30, type: 'metric', badge: '', title: 'Uap mengembang 1.700× lipat', showDots: false },
+  { s: 41.85, e: 46.00, type: 'step', badge: '1', title: 'Jangan siram air & angkat', showDots: true, prog: 1 },
+  { s: 46.32, e: 50.05, type: 'step', badge: '2', title: 'Matikan knop kompor', showDots: true, prog: 2 },
+  { s: 50.35, e: 56.90, type: 'step', badge: '3', title: 'Tutup rapat pakai tutup panci', showDots: true, prog: 3 }
 ];
 
 function setCalloutLine(lineId, dotId, callEl, worldTarget, offsetX, offsetY, alpha) {
@@ -1652,7 +1703,7 @@ function updateHUD(t) {
   const progWrap = $('#prog-wrap');
   const segs = [$('#seg1'), $('#seg2'), $('#seg3')];
 
-  // 1. Update Sparse Top Header Segment
+  // 1. Update Top Header Segment
   const seg = TOP_SEGMENTS.find(x => t >= x.s && t <= x.e);
   if (!seg) {
     hook.style.opacity = '0';
@@ -1684,27 +1735,27 @@ function updateHUD(t) {
   }
 
   // 2. Update Compact 3D Callout Text per Scene
-  if (t < 7.55) {
-    $('#call1-text').textContent = 'pemicu ledakan';
-  } else if (t < 16.03) {
-    $('#call1-text').textContent = '2 lempeng tembaga';
-  } else if (t < 21.40) {
-    $('#call1-text').textContent = 'percikan 1.000°C';
-  } else if (t < 25.20) {
-    $('#call2-text').textContent = 'mengendap di lantai';
-  } else if (t < 30.90) {
-    $('#call2-text').textContent = 'naik ke saklar';
-  } else if (t < 36.62) {
-    $('#call1-text').textContent = 'menyambar gas';
-  } else if (t < 43.63) {
-    $('#call3-text').textContent = 'jangan disentuh';
-  } else if (t < 47.46) {
-    $('#call3-text').textContent = 'lepas regulator';
+  if (t < 8.65) {
+    $('#call1-text').textContent = 'api meledak ke dapur';
+  } else if (t < 19.45) {
+    $('#call1-text').textContent = 'minyak 300°C';
+  } else if (t < 23.70) {
+    $('#call2-text').textContent = 'tidak bisa menyatu';
+  } else if (t < 28.70) {
+    $('#call1-text').textContent = 'tenggelam ke dasar';
+  } else if (t < 33.60) {
+    $('#call2-text').textContent = 'mengembang 1.700×';
+  } else if (t < 38.45) {
+    $('#call1-text').textContent = 'minyak menyala terlontar';
+  } else if (t < 46.30) {
+    $('#call3-text').textContent = 'jangan disiram air';
+  } else if (t < 50.32) {
+    $('#call3-text').textContent = 'matikan knop kompor';
   } else {
-    $('#call3-text').textContent = 'pintu & jendela dibuka';
+    $('#call3-text').textContent = 'kehabisan oksigen';
   }
 
-  // 3. Update Verbatim Word-by-Word Subtitle Bar (Pure Natural Typography, Zero Box Padding)
+  // 3. Update Verbatim Word-by-Word Subtitle Bar
   let activeChunk = CAPTION_CHUNKS.find(c => t >= c.s && t <= c.e);
   let gapAlpha = 1;
   if (!activeChunk) {
@@ -1741,7 +1792,7 @@ function updateHUD(t) {
 function render(t) {
   updateHUD(t);
   const tr = $('#time-readout');
-  if (tr) tr.textContent = `${t.toFixed(1).padStart(4, '0')}s / 59.6s`;
+  if (tr) tr.textContent = `${t.toFixed(1).padStart(4, '0')}s / 65.4s`;
 
   const dm = S.darkMode;
   hemi.intensity = 1.68 - dm * 1.12;
@@ -1761,88 +1812,121 @@ function render(t) {
   RAKA.armL.rotation.x = S.cArmL;
   RAKA.armR.rotation.x = S.cArmR;
 
+  // Wok Cross-Section Cutaway Animation (S04 - S08)
   const cut = S.cutawayAlpha;
-  switchCoverGroup.position.x = cut * 0.42;
-  switchCoverGroup.position.z = 0.055 + cut * 0.05;
-  switchCoverGroup.rotation.y = cut * 0.48;
-  conduitPipe.visible = cut > 0.05;
-  wireRed.visible = cut > 0.05;
-  wireBlue.visible = cut > 0.05;
+  wokFrontGroup.position.x = -cut * 0.52;
+  wokFrontGroup.position.z = cut * 0.28;
+  wokFrontGroup.rotation.y = -cut * 0.55;
+  wokFrontGroup.visible = cut < 0.85;
+  oilCutPlane.material.opacity = cut * 0.58;
+  wokBaseGlowMat.emissiveIntensity = 0.45 + cut * 0.85 + 0.20 * Math.sin(t * 10.0);
 
-  switchRocker.rotation.x = (S.rockerTilt - 0.5) * 0.35;
-  copperTop.position.y = 0.095 - S.copperClose * 0.038;
-  copperBot.position.y = -0.095 + S.copperClose * 0.038;
-  copperBot.rotation.z = (1 - S.copperClose) * 0.18;
-
-  sparkBurst.visible = S.sparkScale > 0.01;
-  const spPulse = 0.88 + 0.24 * Math.sin(t * 24.0);
-  sparkBurst.scale.setScalar(Math.max(0.001, S.sparkScale * spPulse));
-  sparkBurst.rotation.z = t * 4.5;
-  sparkLight.intensity = S.sparkScale * 4.2 * spPulse;
-
-  switchRing.scale.setScalar(Math.max(0.001, S.ringScale));
-  switchRingMat.opacity = S.ringAlpha;
-
-  gasVolumeGroup.visible = S.gasOpacity > 0.01;
-  gasVolumeGroup.position.x = -0.05 + S.gasFlushX;
-  gasSlabMat.opacity = S.gasOpacity * 0.60;
-  gasRiseSlab.visible = S.gasRise > 0.01;
-  gasRiseMat.opacity = S.gasRise * 0.46;
-  gasRiseSlab.scale.y = Math.max(0.05, S.gasRise);
-  gasRiseSlab.position.y = 0.35 + S.gasRise * 0.72;
-
-  leakPuffs.forEach((pf, i) => {
-    const showLeak = S.gasOpacity > 0.2 && S.regLift < 0.5;
-    pf.visible = showLeak;
-    if (showLeak) {
-      const lp = (t * 0.55 + i * 0.25) % 1;
-      pf.position.set(
-        1.24 - lp * 0.35 + Math.sin(lp * 6 + i) * 0.08,
-        1.15 - lp * 0.62,
-        -1.88 + lp * 0.45
-      );
-      const sc = Math.sin(lp * Math.PI) * (0.65 + lp * 0.85);
-      pf.scale.setScalar(Math.max(0.001, sc));
-    }
+  // Normal Wok Flames
+  wokFireGroup.visible = S.flameScale > 0.02;
+  flameMeshes.forEach((fm, idx) => {
+    const sp = fm.userData;
+    const flick = 0.86 + 0.22 * Math.sin(t * 16.0 + sp.phase);
+    const scY = Math.max(0.001, S.flameScale * flick);
+    const scXZ = Math.max(0.001, S.flameScale * (0.92 + 0.12 * Math.cos(t * 12.0 + idx)));
+    fm.scale.set(scXZ, scY, scXZ);
+    fm.position.y = sp.h * 0.42 * scY;
   });
 
-  regulatorGroup.position.y = 0.83 + S.regLift * 0.46;
-  regSwitch.rotation.y = S.regLift * (Math.PI * 0.5);
-  winSashLPivot.rotation.y = S.winOpen * 1.18;
-  winSashRPivot.rotation.y = -S.winOpen * 1.18;
-  doorPivot.rotation.y = S.doorOpen * 1.18;
+  // Fireball Plume & Splattering Oil Droplets (S02, S03, S08)
+  fireballGroup.visible = S.fireballScale > 0.02;
+  const fbPulse = 0.92 + 0.16 * Math.sin(t * 22.0);
+  const fbs = Math.max(0.001, S.fireballScale * fbPulse);
+  fbPillar.scale.set(fbs, fbs, fbs);
+  fbCrown.scale.setScalar(fbs * (1.0 + 0.12 * Math.cos(t * 18.0)));
+  fbInnerCore.scale.setScalar(fbs);
 
-  airflowGroup.visible = S.airOpacity > 0.01;
-  airArrows.forEach((ar) => {
-    const sp = ar.userData;
-    const p = (t * 0.68 + sp.phase) % 1;
-    ar.position.x = -3.15 + p * 4.45;
-    ar.position.y = sp.y - p * 0.22;
-    ar.position.z = sp.z;
-    const sc = Math.sin(p * Math.PI) * S.airOpacity;
-    ar.scale.setScalar(Math.max(0.001, sc));
+  splatterDrops.forEach((dr) => {
+    const sp = dr.userData;
+    const p = S.splatterProg;
+    dr.visible = p > 0.02;
+    dr.position.set(
+      sp.vx * p * 1.45,
+      0.35 + sp.vy * p * 1.55 - 0.55 * p * p,
+      sp.vz * p * 1.45
+    );
+    dr.scale.setScalar(Math.max(0.001, Math.sin(p * Math.PI) * 1.35));
   });
 
-  const c2Target = (t < 25.20)
-    ? new THREE.Vector3(0.65, 0.55, -0.35)
-    : new THREE.Vector3(1.45, 1.55, -1.95);
-  const c2OffX = (t < 25.20) ? 115 : -145;
-  const c2OffY = (t < 25.20) ? -145 : -150;
+  fireLight.intensity = (S.flameScale * 2.2 + S.fireballScale * 5.5) * (0.9 + 0.15 * Math.sin(t * 18.0));
 
-  const c3Target = (t >= 39.5 && t < 43.6)
-    ? new THREE.Vector3(1.72, 1.94, -2.58)
-    : (t >= 47.4 ? new THREE.Vector3(-2.65, 1.85, 0.25) : new THREE.Vector3(1.24, 1.48, -1.92));
-  const c3OffX = (t >= 47.4) ? 145 : (t >= 43.6 ? 115 : -135);
-  const c3OffY = (t >= 43.6 && t < 47.4) ? -175 : -165;
+  // Gayung & Water Pour Stream
+  gayungGroup.visible = S.gayungAlpha > 0.05;
+  gayungGroup.rotation.z = S.gayungTilt * 0.78;
+  gayungGroup.position.y = 2.02 - S.gayungTilt * 0.10;
+  waterStreamMesh.visible = S.pourAlpha > 0.05;
 
-  setCalloutLine('#line-c1', '#dot-c1', $('#call1'), new THREE.Vector3(1.68, 1.94, -2.60), -145, -170, S.c1Alpha);
+  // Sinking Water Droplets through Lighter Oil (S05 - S06)
+  waterDropGroup.visible = S.waterSinkProg > 0.02;
+  sinkingDrops.forEach((d) => {
+    const sp = d.userData;
+    const p = Math.min(1, Math.max(0, S.waterSinkProg));
+    // Starts at oil top (y=0.145) and sinks to glowing 300C pan bottom (y=0.022)
+    d.position.set(
+      sp.x + Math.sin(t * 6.0 + sp.phase * 6) * 0.008,
+      0.145 - p * 0.122,
+      sp.z
+    );
+    d.scale.setScalar(Math.max(0.001, Math.min(1, p * 2.5)));
+  });
+
+  // 1.700x Steam Expansion Core & Force Vectors at Pan Bottom (S07)
+  steamCoreGroup.visible = S.steamCoreScale > 0.02;
+  const stPulse = 0.94 + 0.12 * Math.sin(t * 20.0);
+  steamCoreGroup.scale.setScalar(Math.max(0.001, S.steamCoreScale * stPulse));
+
+  // Burner Flame & Stove Knob Turn-Off (Langkah 2 — S11)
+  burnerFlameGroup.visible = S.burnerOn > 0.05;
+  knobPointer.rotation.z = S.knobOff * (Math.PI * 0.5);
+  knobRingMat.opacity = S.knobRingAlpha;
+  knobSafeRing.scale.setScalar(1.0 + 0.12 * Math.sin(t * 8.0));
+
+  // Step 1 Danger Ring
+  dangerRingMat.opacity = S.dangerRingAlpha;
+  dangerRing.scale.setScalar(1.0 + 0.08 * Math.sin(t * 7.0));
+
+  // Step 3 Pan Lid Slide & Seal (S12)
+  panLidGroup.visible = S.lidSlide > 0.02;
+  panLidGroup.position.x = (1 - S.lidSlide) * -0.78;
+  panLidGroup.position.y = 0.23 + (1 - S.lidSlide) * 0.14;
+  panLidGroup.rotation.z = (1 - S.lidSlide) * 0.25;
+  lidSafeRingMat.opacity = S.lidRingAlpha;
+
+  // Dynamic 3D Callout Targets
+  const c1Target = (t < 8.65 || (t >= 33.60 && t < 38.45))
+    ? new THREE.Vector3(0.00, 2.25, -2.10)
+    : (t >= 23.70 && t < 28.70
+      ? new THREE.Vector3(0.00, 1.43, -2.12)
+      : new THREE.Vector3(0.00, 1.50, -2.12));
+  const c1OffX = -155;
+  const c1OffY = (t >= 23.70 && t < 28.70) ? 145 : -155;
+
+  const c2Target = (t < 23.70)
+    ? new THREE.Vector3(0.05, 1.54, -2.12)
+    : new THREE.Vector3(0.00, 1.48, -2.12);
+  const c2OffX = 150;
+  const c2OffY = -155;
+
+  const c3Target = (t >= 41.80 && t < 46.30)
+    ? new THREE.Vector3(0.28, 1.85, -2.02)
+    : (t >= 46.30 && t < 50.32
+      ? new THREE.Vector3(0.00, 1.34, -1.83)
+      : new THREE.Vector3(0.00, 1.66, -2.15));
+  const c3OffX = (t >= 46.30 && t < 50.32) ? -145 : 145;
+  const c3OffY = -165;
+
+  setCalloutLine('#line-c1', '#dot-c1', $('#call1'), c1Target, c1OffX, c1OffY, S.c1Alpha);
   setCalloutLine('#line-c2', '#dot-c2', $('#call2'), c2Target, c2OffX, c2OffY, S.c2Alpha);
   setCalloutLine('#line-c3', '#dot-c3', $('#call3'), c3Target, c3OffX, c3OffY, S.c3Alpha);
 
   renderer.render(scene, camera);
 }
 
-/* ============ 6. STAGE SCALE & DETERMINISTIC CAPTURE HOOKS ============ */
+/* ============ 7. STAGE SCALE & DETERMINISTIC CAPTURE HOOKS ============ */
 const stage = $('#stage');
 const fit = () => {
   const s = Math.min(innerWidth / W, innerHeight / H);
@@ -1912,8 +1996,10 @@ window.OPENER = {
   scene,
   camera,
   world,
-  switchGroup,
-  lpgGroup,
+  wokGroup,
+  gayungGroup,
+  panLidGroup,
+  activeKnobGroup,
   ready: false
 };
 
