@@ -1855,10 +1855,12 @@ const audioEl = $('#vo-audio');
 let isPlaying = false;
 
 (function frame() {
-  if (isPlaying && !audioEl.paused) {
-    tl.time(audioEl.currentTime, false);
+  if (!window.THUMB_LOCK) {
+    if (isPlaying && !audioEl.paused) {
+      tl.time(audioEl.currentTime, false);
+    }
+    render(tl.time());
   }
-  render(tl.time());
   requestAnimationFrame(frame);
 })();
 
@@ -1905,6 +1907,13 @@ window.OPENER = {
   seek,
   S,
   render,
+  RAKA,
+  renderer,
+  scene,
+  camera,
+  world,
+  switchGroup,
+  lpgGroup,
   ready: false
 };
 
