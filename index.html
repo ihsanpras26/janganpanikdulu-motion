@@ -1408,12 +1408,12 @@ tl.to(S, {
 }, 39.65);
 tl.to(S, { ringAlpha: 0, c3Alpha: 0, duration: 0.32, ease: 'power2.in' }, 43.25);
 
-// SCENE 11 (43.63s - 47.46s): Langkah 2 — Elevated 3/4 Detail Shot Lepas Regulator Gas Melon (Zero Cropped Head!)
+// SCENE 11 (43.63s - 47.46s): Langkah 2 — Elevated 3/4 Detail Shot Lepas Regulator Gas Melon (Menghadap Tabung Gas!)
 tl.to(S, {
   camX: 6.4, camY: 6.9, camZ: 8.6,
-  lookX: 0.68, lookY: 1.18, lookZ: -1.55,
+  lookX: 0.78, lookY: 1.18, lookZ: -1.62,
   fov: 23,
-  cX: 0.22, cZ: -1.45, cRotY: -0.48, cKneel: 0.32, cArmR: -1.42, cArmL: -0.35,
+  cX: 0.42, cZ: -1.56, cRotY: 1.42, cKneel: 0.34, cArmR: -1.42, cArmL: -1.32,
   duration: 0.82, ease: 'power3.inOut'
 }, 43.63);
 tl.to(S, {
@@ -1832,8 +1832,8 @@ function render(t) {
   const c3Target = (t >= 39.5 && t < 43.6)
     ? new THREE.Vector3(1.72, 1.94, -2.58)
     : (t >= 47.4 ? new THREE.Vector3(-2.65, 1.85, 0.25) : new THREE.Vector3(1.24, 1.48, -1.92));
-  const c3OffX = (t >= 47.4) ? 145 : -135;
-  const c3OffY = (t >= 43.6 && t < 47.4) ? -165 : -165;
+  const c3OffX = (t >= 47.4) ? 145 : (t >= 43.6 ? 115 : -135);
+  const c3OffY = (t >= 43.6 && t < 47.4) ? -175 : -165;
 
   setCalloutLine('#line-c1', '#dot-c1', $('#call1'), new THREE.Vector3(1.68, 1.94, -2.60), -145, -170, S.c1Alpha);
   setCalloutLine('#line-c2', '#dot-c2', $('#call2'), c2Target, c2OffX, c2OffY, S.c2Alpha);

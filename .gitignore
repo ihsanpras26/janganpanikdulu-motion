@@ -11,8 +11,7 @@ chrome_*
 *.pma
 *.log
 
-# Local heavy MP4 master builds (rendered on demand)
-EP01_Bau_Gas_Bocor_MASTER_1080p.mp4
+# Local preview builds
 EP01_Bau_Gas_Bocor_PREVIEW.mp4
 
 # Operating System files
