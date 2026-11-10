@@ -113,7 +113,14 @@ A 27-year-old Indonesian male voice with a warm, clear, medium-low baritone timb
 
 ## 4. Kit Upload Multi-Platform (Instagram Reels, TikTok, & Facebook Reels)
 
-### A. 3 Opsi Thumbnail / Cover (`1080×1920` dengan Safe-Zone Grid `1:1` & `4:5`)
+### A. Tautan Langsung Google Drive (`ihsangemini26@gmail.com`)
+- **Folder Utama `@janganpanikdulu`**: [Buka di Google Drive](https://drive.google.com/drive/folders/1srmQk4Lk03RRilMW-C2QrBnsRzuKBGyj)
+- **Folder `00 - Branding & Setup Profil`**: [Buka di Google Drive](https://drive.google.com/drive/folders/1j6OyrwQf8fb2TtNzPLHOpWHmcEF4nysu)
+- **Folder `EP01 - Bau Gas Bocor Jangan Sentuh Saklar`**: [Buka di Google Drive](https://drive.google.com/drive/folders/1J00eZU1Zc9MHd8HMDJ5lqDfoTHanrLbB)
+  - **Video Master (`1080p 30fps`)**: [01_Video_Master_EP01_1080p.mp4](https://drive.google.com/file/d/1PiQ2Jft1MuCtn9wWCG5xW7rOeH17mFIM/view)
+  - **Caption Terkunci (Opsi 1 Siap Select-All di HP)**: [02_CAPTION_SIAP_COPY_LANGSUNG.txt](https://drive.google.com/file/d/1dYIyxSbDZ6WAqOfcI_a_-_zpSJyh6lmK/view)
+
+### B. 3 Opsi Thumbnail / Cover (`1080×1920` dengan Safe-Zone Grid `1:1` & `4:5`)
 - **Opsi 1 (`thumb_ep01_opsi_1.png`)**: *Visual X-Ray Curiosity* — Cutaway saklar memercikkan api `1.000°C` + uap gas oranye merayap naik (`BAU GAS BOCOR? / JANGAN SENTUH SAKLAR LAMPU!`).
 - **Opsi 2 (`thumb_ep01_opsi_2.png`)**: *Dark Kitchen Drama* — Skenario dapur gelap penuh gas saat tangan refleks menekan saklar (`1 KLIK = MELEDAK? / BAHAYA SAKLAR SAAT BAU GAS`).
 - **Opsi 3 (`thumb_ep01_opsi_3.png`)**: *Clean Isometric Diorama* — Tampilan utuh dapur isometrik khas `@puckermanefacts` (`JANGAN PANIK DULU / BAU GAS BOCOR DI DAPUR?`).
