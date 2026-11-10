@@ -119,58 +119,34 @@ A 27-year-old Indonesian male voice with a warm, clear, medium-low baritone timb
 - **Opsi 3 (`thumb_ep01_opsi_3.png`)**: *Clean Isometric Diorama* — Tampilan utuh dapur isometrik khas `@puckermanefacts` (`JANGAN PANIK DULU / BAU GAS BOCOR DI DAPUR?`).
 - **Lembar Perbandingan 3 Opsi**: [`vault/assets/thumb_ep01_3_opsi_sheet.jpg`](file:///d:/Jangan%20Panik%20Dulu%20-%20Motion/vault/assets/thumb_ep01_3_opsi_sheet.jpg)
 
-### B. Caption Instagram Reels (Fokus *Save* & *Share* ke Grup Keluarga)
+### B. Format Caption Singkat & Simpel ala `@puckermanefacts` & `@hasyaaap` (Bisa Dipakai Sama Persis di IG, TikTok, & FB)
+
+Karena penjelasan lengkap sudah ada di dalam video dan teks *caption* layar, *caption* postingan cukup **1–3 kalimat pendek** agar bersih, tidak mengulang isi video, dan bisa langsung di-*copy-paste* sama persis ke **Instagram Reels, TikTok, dan Facebook Reels**:
+
+#### Opsi 1 — Gaya Celetukan Santai & *Relatable* (Khas `@puckermanefacts`)
 ```text
-Cium bau gas di dapur? Tahan tanganmu, jangan sentuh saklar lampu.
+Niatnya cuma mau nyalain lampu dapur, padahal di dalam saklar ada percikan 1.000°C. Simpan ilmunya biar nggak panik pas darurat.
 
-Banyak yang mengira ledakan gas terjadi karena tabungnya tiba-tiba meledak sendiri. Padahal pemicu utamanya justru 1 klik saklar listrik saat kita panik.
-
-Di dalam saklar dinding, ada 2 lempeng tembaga penyambung arus listrik. Saat kamu tekan ON ataupun OFF, dua tembaga ini beradu dan memercikkan bunga api kecil bersuhu sekitar 1.000°C.
-
-Masalahnya, gas elpiji (LPG) 2 kali lebih berat daripada udara. Saat bocor, gas tidak terbang ke plafon, melainkan mengendap di lantai dapur lalu menumpuk naik sampai setinggi saklar. Begitu saklar ditekan, percikan 1.000°C tadi langsung menyambar gas di ruangan.
-
-Kalau tercium bau gas di rumah, lakukan 3 langkah ini:
-1. Jangan nyalakan atau matikan saklar lampu, kipas angin, maupun alat elektronik apa pun.
-2. Putar pengunci regulator dan lepas dari tabung gas.
-3. Buka pintu dan jendela lebar-lebar supaya udara luar mendorong gas keluar.
-
-Simpan video ini dan bagikan ke grup WhatsApp rumah/keluarga supaya semua orang di rumah tahu apa yang harus dilakukan.
-
-Pernah ngalamin bau gas mendadak di dapur? Apa yang pertama kali kamu lakukan waktu itu?
-
-#janganpanikdulu #edukasidarurat #baugas #gasbocor #tipsdapur #keselamatankeluarga #faktasains #pertolonganpertama
+#janganpanikdulu #gasbocor #tipsdapur #faktasains #edukasidarurat
 ```
 
-### C. Caption TikTok (Singkat, *Search-Engine Optimized* untuk Kolom Pencarian TikTok)
+#### Opsi 2 — Gaya *Punchline* + Pancingan Komentar (Khas `@hasyaaap`)
 ```text
-Kenapa nggak boleh nyentuh saklar lampu saat dapur bau gas? Ternyata di dalam saklar ada 2 lempeng tembaga yang memercikkan api 1.000°C saat ditekan ON maupun OFF.
+Ternyata yang memicu ledakan bukan tabungnya, tapi percikan listrik di dalam saklar saat kita panik.
 
-Karena gas elpiji 2x lebih berat dari udara, gas yang bocor mengendap di lantai lalu naik sampai setinggi saklar.
+Kalau cium bau gas di rumah, refleks pertama kamu biasanya ngapain?
 
-3 langkah aman saat mencium bau gas:
-1. Jangan sentuh saklar lampu atau alat elektronik apa pun.
-2. Putar pengunci regulator dan lepas dari tabung gas.
-3. Buka pintu dan jendela lebar-lebar agar udara luar mendorong gas keluar.
-
-Save & share ke keluarga di rumah. Kira-kira bahas kondisi darurat apa lagi di episode berikutnya?
-
-#janganpanikdulu #gasbocor #tipsdapur #faktasains #edukasidarurat #keselamatanrumah #fypindonesia
+#janganpanikdulu #gasbocor #tipsrumah #faktasains #edukasidarurat
 ```
 
-### D. Caption Facebook Reels / Halaman Facebook (Gaya Cerita Relatable + Pemicu Diskusi Komentar Ibu/Bapak Rumah Tangga)
+#### Opsi 3 — Gaya *Checklist* 3 Baris (Singkat & Mudah Di-*Save*)
 ```text
-Masih banyak yang belum tahu: saat masuk dapur yang gelap dan tercium bau gas, refleks menyalakan saklar lampu justru hal paling berbahaya.
+Cium bau gas di dapur? Jangan sentuh saklar lampu.
+1. Biarkan posisi saklar apa adanya
+2. Lepas pengunci regulator gas
+3. Buka pintu & jendela lebar-lebar
 
-Meskipun saklar terlihat tertutup rapat dari luar, di dalamnya ada dua lempeng tembaga yang beradu setiap kali ditekan—baik saat dinyalakan maupun dimatikan—dan menghasilkan percikan api kecil bersuhu 1.000 derajat Celsius.
+Kirim ke grup orang rumah biar sama-sama tahu.
 
-Karena sifat gas elpiji 2 kali lebih berat dari udara, gas bocor selalu mengendap di bawah dan memenuhi ruangan sampai setinggi saklar.
-
-Ingat 3 langkah aman ini untuk orang rumah:
-1. Biarkan posisi saklar lampu apa adanya (jangan dinyalakan dan jangan dimatikan).
-2. Lepas pengunci regulator dari tabung gas 3kg/12kg.
-3. Buka pintu dan jendela dapur lebar-lebar supaya angin mendorong sisa gas keluar.
-
-Boleh bagikan postingan ini ke keluarga atau pasangan di rumah supaya sama-sama waspada. Kalau di rumah Anda, tabung gas ditaruh di ruang terbuka atau di dalam kabinet tertutup?
-
-#JanganPanikDulu #TipsRumahTangga #GasElpiji #KeamananDapur #EdukasiKeluarga
+#janganpanikdulu #gasbocor #tipsdapur #keselamatanrumah #faktasains
 ```
