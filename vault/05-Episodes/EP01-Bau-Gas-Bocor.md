@@ -119,34 +119,42 @@ A 27-year-old Indonesian male voice with a warm, clear, medium-low baritone timb
 - **Opsi 3 (`thumb_ep01_opsi_3.png`)**: *Clean Isometric Diorama* — Tampilan utuh dapur isometrik khas `@puckermanefacts` (`JANGAN PANIK DULU / BAU GAS BOCOR DI DAPUR?`).
 - **Lembar Perbandingan 3 Opsi**: [`vault/assets/thumb_ep01_3_opsi_sheet.jpg`](file:///d:/Jangan%20Panik%20Dulu%20-%20Motion/vault/assets/thumb_ep01_3_opsi_sheet.jpg)
 
-### B. Format Caption Singkat & Simpel ala `@puckermanefacts` & `@hasyaaap` (Bisa Dipakai Sama Persis di IG, TikTok, & FB)
+### B. Formula Caption `@janganpanikdulu` (Straight, Beridentitas, Tanpa Klise + CTA Spesifik)
 
-Karena penjelasan lengkap sudah ada di dalam video dan teks *caption* layar, *caption* postingan cukup **1–3 kalimat pendek** agar bersih, tidak mengulang isi video, dan bisa langsung di-*copy-paste* sama persis ke **Instagram Reels, TikTok, dan Facebook Reels**:
+Struktur baku *caption* `@janganpanikdulu` untuk setiap episode (bisa dipakai langsung di Instagram Reels, TikTok, dan Facebook):
+1. **Baris 1 (Hook Fakta Konkret):** 1 kalimat lugas berisi angka/mekanisme fisik (muncul utuh sebelum tombol `...lainnya`).
+2. **Baris 2 (Identitas `@janganpanikdulu`):** Kalimat komando singkat dimulai dengan **"Jangan panik dulu:"** diikuti tindakan fisik intinya.
+3. **Baris 3 (CTA Spesifik):** Ajakan bertindak yang menyebut subjek dan tujuan nyata (bukan *"jangan lupa like & share"*).
 
-#### Opsi 1 — Gaya Celetukan Santai & *Relatable* (Khas `@puckermanefacts`)
+#### Opsi 1 — Fokus CTA *Share* ke Orang Rumah + *Follow* (Rekomendasi Utama)
 ```text
-Niatnya cuma mau nyalain lampu dapur, padahal di dalam saklar ada percikan 1.000°C. Simpan ilmunya biar nggak panik pas darurat.
+Saklar lampu yang ditekan ON maupun OFF memercikkan bunga api 1.000°C tepat di ketinggian gas elpiji yang mengendap.
 
-#janganpanikdulu #gasbocor #tipsdapur #faktasains #edukasidarurat
+Jangan panik dulu: biarkan posisi saklar apa adanya, lepas pengunci regulator, lalu buka pintu dan jendela lebar-lebar.
+
+Kirim video ini ke grup WA rumah supaya nggak ada yang refleks pencet saklar, dan follow @janganpanikdulu untuk panduan darurat berikutnya.
+
+#janganpanikdulu #gasbocor #tipsdapur #edukasidarurat #faktasains
 ```
 
-#### Opsi 2 — Gaya *Punchline* + Pancingan Komentar (Khas `@hasyaaap`)
+#### Opsi 2 — Fokus CTA Diskusi Komentar + Pemilihan Topik Episode 2
 ```text
-Ternyata yang memicu ledakan bukan tabungnya, tapi percikan listrik di dalam saklar saat kita panik.
+Gas elpiji dua kali lebih berat dari udara, jadi saat bocor gasnya mengumpul di lantai dapur sampai setinggi saklar listrik.
 
-Kalau cium bau gas di rumah, refleks pertama kamu biasanya ngapain?
+Jangan panik dulu: tahan tangan dari saklar, cabut regulator dari tabung, dan buka jalur udara keluar.
 
-#janganpanikdulu #gasbocor #tipsrumah #faktasains #edukasidarurat
+Follow @janganpanikdulu biar tahu cara selamat di situasi genting. Episode 2 bahas wajan minyak terbakar atau kabel korsleting dulu? Tulis di komentar.
+
+#janganpanikdulu #gasbocor #tipsrumah #edukasidarurat #faktasains
 ```
 
-#### Opsi 3 — Gaya *Checklist* 3 Baris (Singkat & Mudah Di-*Save*)
+#### Opsi 3 — Versi Ultra-Padat (3 Baris Straight)
 ```text
-Cium bau gas di dapur? Jangan sentuh saklar lampu.
-1. Biarkan posisi saklar apa adanya
-2. Lepas pengunci regulator gas
-3. Buka pintu & jendela lebar-lebar
+Satu klik saklar di dapur yang bau gas cukup buat memicu percikan 1.000°C dari lempeng tembaga di dalamnya.
 
-Kirim ke grup orang rumah biar sama-sama tahu.
+Jangan panik dulu: jangan sentuh alat elektronik apa pun, lepas regulator gas, dan buka pintu serta jendela.
+
+Simpan buat jaga-jaga di rumah, dan follow @janganpanikdulu.
 
 #janganpanikdulu #gasbocor #tipsdapur #keselamatanrumah #faktasains
 ```
