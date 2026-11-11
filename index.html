@@ -6,11 +6,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="./vendor/gsap.min.js"></script>
 <script type="importmap">
 {"imports":{
-  "three":"https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
-  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+  "three":"./vendor/three.module.js"
 }}
 </script>
 <style>
@@ -61,8 +60,8 @@ html,body{
   background:linear-gradient(180deg,rgba(var(--scrim-rgb),.32) 0%,rgba(var(--scrim-rgb),.10) 52%,rgba(var(--scrim-rgb),0) 100%);
 }
 .scrim-bottom{
-  position:absolute;left:0;right:0;bottom:0;height:280px;
-  background:linear-gradient(0deg,rgba(var(--scrim-rgb),.18) 0%,rgba(var(--scrim-rgb),.06) 50%,rgba(var(--scrim-rgb),0) 100%);
+  position:absolute;left:0;right:0;bottom:0;height:520px;
+  background:linear-gradient(0deg,rgba(var(--scrim-rgb),.22) 0%,rgba(var(--scrim-rgb),.10) 58%,rgba(var(--scrim-rgb),0) 100%);
 }
 
 /* ZONA 1: Frosted Glass Translucent Brand Watermark di Kiri Atas */
@@ -163,12 +162,12 @@ html,body{
 .callout.danger{color:var(--danger);border:2.5px solid var(--danger)}
 .callout.safe{color:var(--safe);border:2.5px solid var(--safe)}
 
-/* ZONA 4: 3 STUDIO CAPTION OPTIONS */
+/* ZONA 4: 3 STUDIO CAPTION OPTIONS (Raised to Multi-Platform Safe Zone: FB Reels, IG Reels, TikTok, Shorts) */
 #sub-wrap{
-  position:absolute;left:44px;right:44px;bottom:136px;display:flex;justify-content:center;
+  position:absolute;left:64px;right:64px;bottom:375px;display:flex;justify-content:center;
 }
 .sub-card{
-  max-width:980px;
+  max-width:910px;
   padding:16px 34px 18px;
   border-radius:20px;
   font-size:36px;font-weight:800;letter-spacing:-.016em;line-height:1.30;
@@ -348,7 +347,7 @@ body.clean-snap #switcher{display:none !important}
 
 <script type="module">
 import * as THREE from 'three';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { RoundedBoxGeometry } from './vendor/RoundedBoxGeometry.js';
 
 const $ = s => document.querySelector(s);
 const Q = new URLSearchParams(location.search);
@@ -362,7 +361,7 @@ const renderer = new THREE.WebGLRenderer({
   alpha: true,
   preserveDrawingBuffer: true
 });
-renderer.setPixelRatio(Q.has('clean') ? 1.5 : Math.min(window.devicePixelRatio || 1, 2));
+renderer.setPixelRatio(1);
 renderer.setSize(W, H, false);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -379,7 +378,7 @@ scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xFFF7EB, 2.28);
 sun.position.set(7.5, 14.0, 9.5);
 sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.mapSize.set(1024, 1024);
 const sd = 6.8;
 sun.shadow.camera.left = -sd;
 sun.shadow.camera.right = sd;
@@ -908,11 +907,11 @@ wokFireGroup.position.set(0, 0.15, 0);
 wokGroup.add(wokFireGroup);
 
 const flameSpecs = [
-  { x:  0.00, z:  0.00, r: 0.19, h: 0.52, col: 0xFF5A1F, phase: 0.0 },
-  { x: -0.11, z:  0.04, r: 0.14, h: 0.40, col: 0xFF7B00, phase: 1.2 },
-  { x:  0.11, z:  0.03, r: 0.14, h: 0.42, col: 0xFF4500, phase: 2.4 },
-  { x:  0.00, z:  0.06, r: 0.12, h: 0.34, col: 0xFFB703, phase: 3.6 },
-  { x: -0.06, z: -0.06, r: 0.13, h: 0.38, col: 0xFF6B00, phase: 4.8 }
+  { x:  0.00, z:  0.00, r: 0.21, h: 0.68, col: 0xFF5A1F, phase: 0.0 },
+  { x: -0.11, z:  0.04, r: 0.16, h: 0.54, col: 0xFF7B00, phase: 1.2 },
+  { x:  0.11, z:  0.03, r: 0.16, h: 0.56, col: 0xFF4500, phase: 2.4 },
+  { x:  0.00, z:  0.06, r: 0.14, h: 0.46, col: 0xFFB703, phase: 3.6 },
+  { x: -0.06, z: -0.06, r: 0.15, h: 0.52, col: 0xFF6B00, phase: 4.8 }
 ];
 const flameMeshes = flameSpecs.map(sp => {
   const m = new THREE.Mesh(
@@ -1279,8 +1278,8 @@ const S = {
   lookX: -0.10, lookY: 1.45, lookZ: -0.85,
   fov: 26,
 
-  cX: 0.72, cY: 0.34, cZ: -1.15, cRotY: -0.45,
-  cArmL: -1.25, cArmR: -0.35, cKneel: 0,
+  cX: -1.12, cY: 0.34, cZ: -1.22, cRotY: 0.58,
+  cArmL: -0.35, cArmR: -1.35, cKneel: 0,
 
   darkMode: 0,
   cutawayAlpha: 0,
@@ -1314,16 +1313,16 @@ tl.fromTo(S,
     camX: 13.8, camY: 15.2, camZ: 18.4,
     lookX: -0.05, lookY: 1.48, lookZ: -1.05,
     fov: 26,
-    cX: 0.75, cZ: -1.12, cRotY: -0.42, cArmL: -1.35, cArmR: -0.35, cKneel: 0,
-    darkMode: 0, cutawayAlpha: 0, flameScale: 1.05, fireballScale: 0, splatterProg: 0,
+    cX: -1.12, cZ: -1.22, cRotY: 0.58, cArmL: -0.35, cArmR: -1.35, cKneel: 0,
+    darkMode: 0, cutawayAlpha: 0, flameScale: 1.15, fireballScale: 0, splatterProg: 0,
     gayungAlpha: 1, gayungTilt: 0.15, pourAlpha: 0, waterSinkProg: 0, steamCoreScale: 0,
     burnerOn: 1, knobOff: 0, knobRingAlpha: 0, lidSlide: 0, lidRingAlpha: 0, dangerRingAlpha: 0,
     c1Alpha: 0, c2Alpha: 0, c3Alpha: 0
   },
   {
     camX: 11.4, camY: 12.6, camZ: 15.2,
-    lookX: 0.02, lookY: 1.55, lookZ: -1.35,
-    cArmL: -1.55,
+    lookX: -0.05, lookY: 1.55, lookZ: -1.35,
+    cArmR: -1.55,
     duration: 4.40, ease: 'sine.inOut'
   }, 0
 );
@@ -1331,14 +1330,14 @@ tl.fromTo(S,
 // SCENE 02 (4.45s - 8.65s): "Karena segayung air justru bikin apinya meledak ke seluruh dapur."
 tl.to(S, {
   camX: 8.8, camY: 9.8, camZ: 12.2,
-  lookX: 0.05, lookY: 1.72, lookZ: -1.65,
+  lookX: -0.05, lookY: 1.72, lookZ: -1.65,
   fov: 25,
   gayungTilt: 0.95, pourAlpha: 1,
   duration: 1.15, ease: 'power2.inOut'
 }, 4.45);
 tl.to(S, {
   fireballScale: 1.25, splatterProg: 0.65, pourAlpha: 0, c1Alpha: 1,
-  cX: 0.95, cZ: -0.95, cArmL: -1.65, cArmR: -1.45,
+  cX: -1.25, cZ: -1.08, cArmL: -1.45, cArmR: -1.65,
   duration: 0.42, ease: 'back.out(2)'
 }, 5.80);
 tl.to(S, {
@@ -1349,14 +1348,14 @@ tl.to(S, {
 // SCENE 03 (8.65s - 14.90s): Micro-Scenario — "Misalnya lagi goreng makanan, minyak terlalu panas lalu menyala api, dan tangan refleks menyiram air."
 tl.to(S, {
   camX: 9.6, camY: 11.2, camZ: 13.6,
-  lookX: 0.05, lookY: 1.52, lookZ: -1.45,
+  lookX: -0.05, lookY: 1.52, lookZ: -1.45,
   fov: 25,
   flameScale: 0.35, gayungAlpha: 0,
-  cX: 0.62, cZ: -1.28, cRotY: -0.52, cArmL: -0.95, cArmR: -0.35,
+  cX: -1.05, cZ: -1.28, cRotY: 0.62, cArmL: -0.35, cArmR: -0.95,
   duration: 1.20, ease: 'power2.inOut'
 }, 8.65);
 tl.to(S, {
-  flameScale: 1.18, gayungAlpha: 1, cArmL: -1.48,
+  flameScale: 1.22, gayungAlpha: 1, cArmR: -1.48,
   duration: 0.95, ease: 'back.out(1.7)'
 }, 11.10);
 tl.to(S, {
@@ -1377,7 +1376,7 @@ tl.to(S, {
   camX: 1.45, camY: 2.38, camZ: 1.55,
   lookX: 0.00, lookY: 1.50, lookZ: -2.14,
   fov: 20,
-  cX: 1.35, cZ: -0.95, cRotY: -0.55,
+  cX: -1.65, cZ: -1.10, cRotY: 0.55,
   cutawayAlpha: 1, flameScale: 0.92,
   duration: 1.05, ease: 'power3.inOut'
 }, 14.90);
@@ -1421,6 +1420,7 @@ tl.to(S, {
   camX: 5.8, camY: 6.8, camZ: 8.2,
   lookX: 0.00, lookY: 1.82, lookZ: -1.95,
   fov: 23,
+  cX: -1.25, cZ: -1.15,
   duration: 0.95, ease: 'power3.inOut'
 }, 33.60);
 tl.to(S, {
@@ -1437,17 +1437,17 @@ tl.to(S, {
   camX: 13.0, camY: 14.2, camZ: 17.2,
   lookX: -0.08, lookY: 1.42, lookZ: -1.05,
   fov: 26,
-  cX: 0.72, cZ: -1.15, cRotY: -0.35, cArmL: -1.32, cArmR: -1.32,
-  flameScale: 0.95, gayungAlpha: 0,
+  cX: -1.08, cZ: -1.20, cRotY: 0.52, cArmL: -1.25, cArmR: -1.35,
+  flameScale: 1.05, gayungAlpha: 0,
   duration: 0.90, ease: 'power3.inOut'
 }, 38.45);
 
 // SCENE 10 (41.85s - 46.30s): Langkah 1 — "Pertama, jangan siram air dan jangan angkat wajan yang sedang terbakar."
 tl.to(S, {
-  camX: 8.6, camY: 9.4, camZ: 11.8,
-  lookX: 0.08, lookY: 1.55, lookZ: -1.55,
+  camX: 8.2, camY: 9.2, camZ: 11.4,
+  lookX: -0.05, lookY: 1.55, lookZ: -1.65,
   fov: 24,
-  cX: 0.78, cZ: -1.18, cRotY: -0.42, cArmL: -1.52, cArmR: -0.30,
+  cX: -1.08, cZ: -1.22, cRotY: 0.58, cArmL: -0.35, cArmR: -1.52,
   gayungAlpha: 1, gayungTilt: 0, dangerRingAlpha: 0.92, c3Alpha: 1,
   duration: 0.85, ease: 'power3.inOut'
 }, 41.85);
@@ -1459,9 +1459,9 @@ tl.to(S, {
 // SCENE 11 (46.30s - 50.32s): Langkah 2 — "Kedua, matikan kompor dari knopnya untuk memutus sumber panas."
 tl.to(S, {
   camX: 4.8, camY: 5.4, camZ: 6.8,
-  lookX: 0.08, lookY: 1.38, lookZ: -1.85,
+  lookX: -0.08, lookY: 1.40, lookZ: -1.88,
   fov: 22,
-  cX: 0.58, cZ: -1.42, cRotY: -0.65, cKneel: 0.16, cArmL: -1.38, cArmR: -0.35,
+  cX: -0.92, cZ: -1.36, cRotY: 0.65, cKneel: 0.14, cArmL: -0.35, cArmR: -1.42,
   duration: 0.82, ease: 'power3.inOut'
 }, 46.30);
 tl.to(S, {
@@ -1476,9 +1476,9 @@ tl.to(S, {
 // SCENE 12 (50.32s - 57.20s): Langkah 3 — "Ketiga, tutup rapat wajan dengan tutup panci atau kain basah yang sudah diperas supaya apinya kehabisan oksigen."
 tl.to(S, {
   camX: 6.2, camY: 7.4, camZ: 8.8,
-  lookX: 0.05, lookY: 1.54, lookZ: -1.85,
+  lookX: -0.05, lookY: 1.54, lookZ: -1.88,
   fov: 23,
-  cX: 0.65, cZ: -1.38, cKneel: 0, cRotY: -0.58, cArmL: -1.45, cArmR: -1.25,
+  cX: -0.98, cZ: -1.32, cKneel: 0, cRotY: 0.62, cArmL: -0.45, cArmR: -1.48,
   duration: 0.85, ease: 'power3.inOut'
 }, 50.32);
 tl.to(S, {
@@ -1495,16 +1495,16 @@ tl.to(S, {
   camX: 12.6, camY: 13.8, camZ: 16.8,
   lookX: -0.08, lookY: 1.40, lookZ: -1.05,
   fov: 26,
-  cX: 0.45, cZ: -0.85, cRotY: 0.25, cArmL: -0.32, cArmR: -0.32,
+  cX: -0.55, cZ: -0.85, cRotY: 0.35, cArmL: -0.32, cArmR: -0.32,
   duration: 1.05, ease: 'power2.inOut'
 }, 57.20);
 
 // SCENE 14 (62.95s - 65.41s): Clean Hero Isometric Push-In — "Jadi... jangan panik dulu."
 tl.to(S, {
   camX: 10.0, camY: 10.8, camZ: 13.6,
-  lookX: 0.05, lookY: 1.42, lookZ: -0.95,
+  lookX: -0.05, lookY: 1.42, lookZ: -0.95,
   fov: 25,
-  cX: 0.45, cZ: -0.85, cRotY: 0.28, cArmL: -1.48, cArmR: -0.25,
+  cX: -0.55, cZ: -0.85, cRotY: 0.38, cArmL: -1.48, cArmR: -0.25,
   duration: 0.85, ease: 'power3.out'
 }, 62.95);
 
@@ -1667,8 +1667,8 @@ function setCalloutLine(lineId, dotId, callEl, worldTarget, offsetX, offsetY, al
   const v = worldTarget.clone().project(camera);
   const px = (v.x * 0.5 + 0.5) * W;
   const py = (-v.y * 0.5 + 0.5) * H;
-  const cx = Math.max(210, Math.min(870, px + offsetX));
-  const cy = Math.max(380, Math.min(1520, py + offsetY));
+  const cx = Math.max(210, Math.min(860, px + offsetX));
+  const cy = Math.max(360, Math.min(1290, py + offsetY));
 
   const lineProg = easeOutCubic(Math.min(1, alpha * 1.35));
   const badgeProg = easeOutBack(Math.max(0, Math.min(1, (alpha - 0.18) / 0.82)));
@@ -1802,7 +1802,8 @@ function render(t) {
   camera.fov = S.fov;
   camera.updateProjectionMatrix();
   camera.position.set(S.camX, S.camY, S.camZ);
-  camera.lookAt(S.lookX, S.lookY, S.lookZ);
+  // Shift lookY slightly down (-0.18) so the 3D diorama & wok sit higher in the upper-center safe zone above the raised FB/IG/TikTok caption bar
+  camera.lookAt(S.lookX, S.lookY - 0.18, S.lookZ);
 
   const kn = S.cKneel;
   const breath = Math.sin(t * 2.6) * 0.012;
@@ -1900,24 +1901,24 @@ function render(t) {
   const c1Target = (t < 8.65 || (t >= 33.60 && t < 38.45))
     ? new THREE.Vector3(0.00, 2.25, -2.10)
     : (t >= 23.70 && t < 28.70
-      ? new THREE.Vector3(0.00, 1.43, -2.12)
+      ? new THREE.Vector3(0.00, 1.44, -2.12)
       : new THREE.Vector3(0.00, 1.50, -2.12));
-  const c1OffX = -155;
-  const c1OffY = (t >= 23.70 && t < 28.70) ? 145 : -155;
+  const c1OffX = (t >= 14.90 && t < 19.45) ? -155 : 165;
+  const c1OffY = (t >= 23.70 && t < 28.70) ? -45 : -145;
 
   const c2Target = (t < 23.70)
     ? new THREE.Vector3(0.05, 1.54, -2.12)
     : new THREE.Vector3(0.00, 1.48, -2.12);
-  const c2OffX = 150;
-  const c2OffY = -155;
+  const c2OffX = 160;
+  const c2OffY = -145;
 
   const c3Target = (t >= 41.80 && t < 46.30)
     ? new THREE.Vector3(0.28, 1.85, -2.02)
     : (t >= 46.30 && t < 50.32
       ? new THREE.Vector3(0.00, 1.34, -1.83)
       : new THREE.Vector3(0.00, 1.66, -2.15));
-  const c3OffX = (t >= 46.30 && t < 50.32) ? -145 : 145;
-  const c3OffY = -165;
+  const c3OffX = 160;
+  const c3OffY = -155;
 
   setCalloutLine('#line-c1', '#dot-c1', $('#call1'), c1Target, c1OffX, c1OffY, S.c1Alpha);
   setCalloutLine('#line-c2', '#dot-c2', $('#call2'), c2Target, c2OffX, c2OffY, S.c2Alpha);
