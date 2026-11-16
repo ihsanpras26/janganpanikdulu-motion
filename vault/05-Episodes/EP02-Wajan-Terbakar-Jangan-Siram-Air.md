@@ -6,7 +6,7 @@ pillar: "Pilar A — Darurat Rumah, Dapur & Keseharian"
 mascot: "[[02-Mascot-Bible-Mas-Raka|Mas Raka]]"
 palette: "[[01-Brand-Identity-Orange-Blue|Option 2: White × Deep Indigo #261A66 × Solid Orange #EF5F18]]"
 playbook: "[[07-Scriptwriting-DNA-Playbook]]"
-status: draft-script-waiting-approval
+status: master-rendered
 ---
 
 # EP02 — Wajan Terbakar? Jangan Siram Air! (SCRIPT & ELEVENLABS VO KIT)
@@ -101,3 +101,4 @@ Ketiga, tutup rapat wajan dengan tutup panci, atau kain basah yang sudah diperas
 | **12** | **Langkah 3** | Mas Raka menggeser tutup panci besi dari samping menutup rapat mulut wajan; di dalam *cutaway*, oksigen habis dan api padam. | Step Pill `3`: `TUTUP RAPAT DENGAN TUTUP PANCI` (`progress dot 3 on`) + Callout hijau `OKSIGEN TERPUTUS` |
 | **13** | **Contrast Payoff** | Split/transisi perbandingan tenang di dapur yang sudah aman, uap tipis keluar saat wajan dingin. | Subtitle Karaoke Highlight: `bukan minyaknya` vs `air yang kita siram` |
 | **14** | **Sign-Off** | Mas Raka tersenyum tenang di dapur yang aman + penutup brand `@janganpanikdulu`. | Pill Sign-Off: `JADI... JANGAN PANIK DULU.` |
+| **15** | **Outro CTA (`65.41s - 69.60s` / `4.19s`)** | Jeda nafas `0.45s` + Silky Triple Circle Wipe (`#EF5F18` → `#261A66` → `#FFFFFF`, `expo.inOut`) memunculkan **Separated Circle Badge** (`460x460px`, pusat `540x740px`) dan **Mas Raka Pop-Out Rise** (`cY: -1.15 -> -0.22`, bawah ter-clip busur `r = 218px`, kepala/jambul/tangan sapa keluar tepi atas), diikuti anggukan tenang & *loop-safe hold* `1.01s`. | **Unified Profile Action Bar** (`880x156px`, `top: 1090px`, `@janganpanikdulu` + `pp_janganpanikdulu_final.png`): klik taktil `2.73s` (`+ Ikuti` → `✓ Mengikuti` + *orange ring ripple*) + CTA `Follow dulu biar nggak panikan!` |

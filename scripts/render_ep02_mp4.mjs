@@ -28,7 +28,7 @@ const CAP_OPT = process.argv[3] || '1';
 const FPS = MODE === 'preview' ? 20 : 30;
 const CAP_W = MODE === 'preview' ? 540 : 1080;
 const CAP_H = MODE === 'preview' ? 960 : 1920;
-const DURATION = 65.41;
+const DURATION = 69.60;
 const TOTAL_FRAMES = Math.ceil(DURATION * FPS);
 const OUT_MP4 = MODE === 'preview'
   ? path.join(ROOT, 'EP02_Wajan_Terbakar_PREVIEW.mp4')
@@ -208,26 +208,63 @@ function cleanupTmp() {
       Array.from({ length: NUM_WORKERS }, (_, idx) => spawnWorkerBrowser(idx, targetUrl))
     );
 
-    console.log(`Starting EP02 ${MODE} studio render: ${TOTAL_FRAMES} frames at ${FPS}fps (${CAP_W}x${CAP_H}) -> ${OUT_MP4}`);
+    console.log(`Starting EP02 ${MODE} studio render: ${TOTAL_FRAMES} frames at ${FPS}fps (${CAP_W}x${CAP_H}, Anti-Flicker Lossless PNG -> High-Bitrate Sosmed H.264) -> ${OUT_MP4}`);
 
-    const ff = spawn('ffmpeg', [
-      '-y',
-      '-f', 'image2pipe',
-      '-vcodec', 'mjpeg',
-      '-framerate', String(FPS),
-      '-i', '-',
-      '-i', AUDIO_WAV,
-      '-c:v', 'libx264',
-      '-preset', MODE === 'preview' ? 'ultrafast' : 'slow',
-      '-pix_fmt', 'yuv420p',
-      '-crf', MODE === 'preview' ? '20' : '14',
-      '-movflags', '+faststart',
-      '-c:a', 'aac',
-      '-b:a', '256k',
-      '-ar', '48000',
-      '-shortest',
-      OUT_MP4
-    ], { env: CHILD_ENV });
+    const ffArgs = MODE === 'preview'
+      ? [
+          '-y',
+          '-f', 'image2pipe',
+          '-vcodec', 'png',
+          '-framerate', String(FPS),
+          '-i', '-',
+          '-i', AUDIO_WAV,
+          '-c:v', 'libx264',
+          '-profile:v', 'high',
+          '-level:v', '4.2',
+          '-preset', 'veryfast',
+          '-pix_fmt', 'yuv420p',
+          '-crf', '18',
+          '-movflags', '+faststart',
+          '-c:a', 'aac',
+          '-b:a', '256k',
+          '-ar', '48000',
+          '-shortest',
+          OUT_MP4
+        ]
+      : [
+          '-y',
+          '-f', 'image2pipe',
+          '-vcodec', 'png',
+          '-framerate', String(FPS),
+          '-i', '-',
+          '-i', AUDIO_WAV,
+          '-c:v', 'libx264',
+          '-profile:v', 'high',
+          '-level:v', '4.2',
+          '-preset', 'slow',
+          '-tune', 'animation',
+          '-crf', '12',
+          '-b:v', '18M',
+          '-minrate', '14M',
+          '-maxrate', '24M',
+          '-bufsize', '36M',
+          '-g', String(FPS),
+          '-keyint_min', String(FPS),
+          '-sc_threshold', '0',
+          '-pix_fmt', 'yuv420p',
+          '-colorspace', 'bt709',
+          '-color_primaries', 'bt709',
+          '-color_trc', 'bt709',
+          '-color_range', 'tv',
+          '-movflags', '+faststart',
+          '-c:a', 'aac',
+          '-b:a', '320k',
+          '-ar', '48000',
+          '-shortest',
+          OUT_MP4
+        ];
+
+    const ff = spawn('ffmpeg', ffArgs, { env: CHILD_ENV });
 
     let ffErr = '';
     ff.stderr.on('data', d => { ffErr += d.toString(); });
@@ -246,9 +283,10 @@ function cleanupTmp() {
         promises.push((async () => {
           await worker.send('Runtime.evaluate', {
             expression: `window.OPENER.seek(${t.toFixed(6)})`,
+            awaitPromise: true,
             returnByValue: true
           });
-          const snap = await worker.send('Page.captureScreenshot', { format: 'jpeg', quality: MODE === 'preview' ? 88 : 96 });
+          const snap = await worker.send('Page.captureScreenshot', { format: 'png' });
           if (!snap?.result?.data) {
             throw new Error(`Empty screenshot on frame ${f}: ${JSON.stringify(snap)}`);
           }

@@ -32,3 +32,4 @@ Selamat datang di **Single Source of Truth (SSOT)** untuk produksi konten **Code
 - **[[05-Episodes/EP01-Bau-Gas-Bocor|EP01 — Bau Gas Bocor? Jangan Nyalakan Lampu!]]** *(Sample Master Blueprint — Published)*
 - **[[05-Episodes/EP02-Wajan-Terbakar-Jangan-Siram-Air|EP02 — Wajan Terbakar? Jangan Siram Air!]]** *(In Production — Script & Storyboard Ready)*
 - **[[05-Episodes/EP03-Rem-Matic-Blong-Di-Turunan|EP03 — Rem Motor Matic Blong di Turunan? Jangan Matikan Mesin!]]** *(Locked Backlog for Episode 3)*
+- **[[05-Episodes/EP04-Digigit-Ular-Jangan-Ikat-Dan-Sedot|EP04 - Digigit Ular? Jangan Diikat Kencang!]]** *(VO Synced & 25-Scene Storyboard Ready)*

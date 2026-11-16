@@ -64,17 +64,15 @@ html,body{
   background:linear-gradient(0deg,rgba(var(--scrim-rgb),.22) 0%,rgba(var(--scrim-rgb),.10) 58%,rgba(var(--scrim-rgb),0) 100%);
 }
 
-/* ZONA 1: Frosted Glass Translucent Brand Watermark di Kiri Atas */
+/* ZONA 1: Crisp Solid Brand Watermark di Kiri Atas (Anti-Flicker) */
 .account-card{
   position:absolute;left:44px;top:46px;
   display:inline-flex;align-items:center;gap:10px;
-  background:rgba(255,255,255,.70);
-  backdrop-filter:blur(18px) saturate(160%);
-  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  background:#FFFFFF;
   padding:8px 20px 9px 14px;
   border-radius:999px;
-  border:1.5px solid rgba(255,255,255,.85);
-  box-shadow:0 10px 24px rgba(20,14,54,.12), inset 0 1px 0 rgba(255,255,255,.95);
+  border:2px solid #261A66;
+  box-shadow:0 8px 20px rgba(20,14,54,.14);
   font-size:21px;font-weight:800;letter-spacing:-.015em;
   color:var(--brand-blue);
 }
@@ -113,12 +111,10 @@ html,body{
 }
 .step-pill{
   display:inline-flex;align-items:center;gap:14px;
-  background:rgba(255,255,255,.82);
-  backdrop-filter:blur(16px) saturate(150%);
-  -webkit-backdrop-filter:blur(16px) saturate(150%);
+  background:#FFFFFF;
   padding:10px 30px 10px 12px;border-radius:999px;
-  border:2px solid rgba(255,255,255,.88);
-  box-shadow:0 12px 28px rgba(20,14,54,.16);
+  border:2.5px solid #261A66;
+  box-shadow:0 10px 24px rgba(20,14,54,.16);
 }
 .step-pill.text-only{
   padding:11px 32px 12px;
@@ -149,9 +145,7 @@ html,body{
 /* ZONA 3: COMPACT 3D CALLOUT LABELS ala @puckermanefacts */
 .callout{
   position:absolute;left:0;top:0;
-  background:rgba(255,255,255,.88);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
+  background:#FFFFFF;
   padding:8px 18px 9px;border-radius:12px;
   font-size:25px;font-weight:800;letter-spacing:-.015em;white-space:nowrap;opacity:0;
   box-shadow:0 8px 20px rgba(12,10,36,.18);
@@ -164,7 +158,87 @@ html,body{
 
 /* ZONA 4: 3 STUDIO CAPTION OPTIONS (Raised to Multi-Platform Safe Zone: FB Reels, IG Reels, TikTok, Shorts) */
 #sub-wrap{
-  position:absolute;left:64px;right:64px;bottom:375px;display:flex;justify-content:center;
+  position:absolute;left:64px;right:64px;bottom:375px;display:flex;justify-content:center;z-index:20;
+}
+
+/* ZONA 5: REUSABLE OUTRO TRIPLE-WIPE + UNIFIED PROFILE FOLLOW BAR (OPSI 3) */
+#outro-wipe{
+  position:absolute;inset:0;pointer-events:none;z-index:16;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.wipe-ring{
+  position:absolute;left:50%;top:50%;width:2400px;height:2400px;
+  border-radius:50%;transform:translate(-50%,-50%) scale(0);
+  will-change:transform;
+}
+#wipe-orange{background:#EF5F18;}
+#wipe-indigo{background:#261A66;}
+#wipe-white{background:#FFFFFF;}
+#outro-circle-badge{
+  position:absolute;left:50%;top:740px;width:460px;height:460px;
+  border-radius:50%;background:#261A66;border:12px solid #EF5F18;
+  box-shadow:0 22px 48px rgba(38,26,102,.18);
+  transform:translate(-50%,-50%) scale(0);
+  will-change:transform,opacity;
+}
+
+#stage.outro-active #gl{
+  z-index:17;
+  clip-path:path('M 0 0 H 1080 V 740 H 758 A 218 218 0 0 1 322 740 H 0 Z');
+}
+#stage.outro-active #hud{opacity:0;}
+
+#outro-ui{
+  position:absolute;left:0;right:0;top:1090px;z-index:19;
+  display:flex;flex-direction:column;align-items:center;pointer-events:none;
+}
+#outro-bar{
+  width:880px;height:156px;border-radius:999px;
+  background:#FFFFFF;border:4px solid #261A66;
+  box-shadow:0 20px 46px rgba(38,26,102,.15), 0 8px 0 #261A66;
+  padding:0 26px 0 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  opacity:0;transform:translateY(36px) scale(.92);
+  will-change:transform,opacity;
+}
+.outro-avatar-wrap{
+  width:118px;height:118px;border-radius:50%;flex-shrink:0;
+  border:4px solid #EF5F18;padding:3px;background:#FFFFFF;
+  box-shadow:0 6px 16px rgba(239,95,24,.22);
+}
+.outro-avatar{
+  width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;
+}
+.outro-meta{
+  flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;
+}
+.outro-handle-txt{
+  font-size:35px;font-weight:800;letter-spacing:-.025em;color:#261A66;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.outro-sub-txt{
+  font-size:23px;font-weight:700;letter-spacing:-.01em;color:rgba(38,26,102,.68);
+}
+#outro-follow-btn{
+  position:relative;flex-shrink:0;height:86px;padding:0 38px;border-radius:999px;
+  background:#EF5F18;color:#FFFFFF;border:3.5px solid #261A66;
+  font-size:30px;font-weight:800;letter-spacing:-.015em;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 6px 0 #261A66;
+  will-change:transform,background-color;
+}
+#outro-follow-btn.followed{
+  background:#261A66;color:#FFFFFF;box-shadow:0 4px 0 #EF5F18;
+}
+#outro-ripple{
+  position:absolute;inset:-8px;border-radius:999px;
+  border:4px solid #EF5F18;opacity:0;transform:scale(.85);pointer-events:none;
+}
+#outro-cursor{
+  position:absolute;right:116px;top:110px;width:58px;height:58px;
+  opacity:0;transform:translate(95px,95px) scale(1);
+  filter:drop-shadow(0 8px 14px rgba(20,14,54,.30));
+  will-change:transform,opacity;
 }
 .sub-card{
   max-width:910px;
@@ -182,17 +256,14 @@ html,body{
   margin:0;
   background:transparent;
   position:relative;
-  transition:color .08s ease, opacity .08s ease, transform .10s ease;
 }
 
-/* OPSI 1 (Default): Frosted Daylight Glass + Editorial Signal Color Flow */
+/* OPSI 1 (Default): Crisp Solid White Card + Deep Indigo & Signal Orange Flow */
 body.cap-opt-1 .sub-card,
 body:not(.cap-opt-2):not(.cap-opt-3) .sub-card{
-  background:rgba(255,255,255,.70);
-  backdrop-filter:blur(20px) saturate(170%);
-  -webkit-backdrop-filter:blur(20px) saturate(170%);
-  border:1.5px solid rgba(255,255,255,.88);
-  box-shadow:0 14px 34px rgba(20,14,54,.14), inset 0 1px 0 rgba(255,255,255,.92);
+  background:#FFFFFF;
+  border:3px solid #261A66;
+  box-shadow:0 12px 28px rgba(20,14,54,.18), 0 5px 0 #261A66;
 }
 body.cap-opt-1 .sub-card .w.past,
 body:not(.cap-opt-2):not(.cap-opt-3) .sub-card .w.past{
@@ -205,37 +276,33 @@ body:not(.cap-opt-2):not(.cap-opt-3) .sub-card .w.active{
 }
 body.cap-opt-1 .sub-card .w.future,
 body:not(.cap-opt-2):not(.cap-opt-3) .sub-card .w.future{
-  color:rgba(38,26,102,.38);
+  color:rgba(38,26,102,.42);
 }
 
-/* OPSI 2: Smoked Deep-Indigo Cinema Glass + Crisp White & Amber-Orange Pop */
+/* OPSI 2: Solid Deep-Indigo Cinema Card + Crisp White & Signal Orange Pop */
 body.cap-opt-2 .sub-card{
-  background:rgba(24,18,62,.66);
-  backdrop-filter:blur(22px) saturate(175%);
-  -webkit-backdrop-filter:blur(22px) saturate(175%);
-  border:1.5px solid rgba(255,255,255,.22);
-  box-shadow:0 16px 38px rgba(10,8,32,.26), inset 0 1px 0 rgba(255,255,255,.20);
+  background:#261A66;
+  border:3px solid #FFFFFF;
+  box-shadow:0 14px 32px rgba(10,8,32,.26);
 }
 body.cap-opt-2 .sub-card .w.past{
   color:#FFFFFF;opacity:1;
 }
 body.cap-opt-2 .sub-card .w.active{
-  color:#FF742E;opacity:1;
+  color:#EF5F18;opacity:1;
   transform:translateY(-1.5px);
 }
 body.cap-opt-2 .sub-card .w.future{
-  color:rgba(255,255,255,.40);
+  color:rgba(255,255,255,.44);
 }
 
-/* OPSI 3: Clear Frosted Pill Capsule + Precision Underline Indicator */
+/* OPSI 3: Crisp Solid White Pill Capsule + Precision Underline Indicator */
 body.cap-opt-3 .sub-card{
-  background:rgba(255,255,255,.62);
-  backdrop-filter:blur(24px) saturate(180%);
-  -webkit-backdrop-filter:blur(24px) saturate(180%);
-  border:1.5px solid rgba(255,255,255,.86);
+  background:#FFFFFF;
+  border:3px solid #261A66;
   border-radius:999px;
   padding:15px 40px 20px;
-  box-shadow:0 14px 34px rgba(20,14,54,.14), inset 0 1px 0 rgba(255,255,255,.94);
+  box-shadow:0 12px 28px rgba(20,14,54,.18), 0 5px 0 #261A66;
 }
 body.cap-opt-3 .sub-card .w.past{
   color:#261A66;opacity:1;
@@ -320,13 +387,39 @@ body.clean-snap #switcher{display:none !important}
       <div class="sub-card" id="sub-card"></div>
     </div>
   </div>
+
+  <!-- ZONA 5: Reusable Triple-Wipe + Unified Profile Follow Bar (Opsi 3) -->
+  <div id="outro-wipe">
+    <div class="wipe-ring" id="wipe-orange"></div>
+    <div class="wipe-ring" id="wipe-indigo"></div>
+    <div class="wipe-ring" id="wipe-white"></div>
+    <div id="outro-circle-badge"></div>
+  </div>
+  <div id="outro-ui">
+    <div id="outro-bar">
+      <div class="outro-avatar-wrap">
+        <img class="outro-avatar" id="outro-avatar-img" src="./pp_janganpanikdulu_final.png" alt="@janganpanikdulu">
+      </div>
+      <div class="outro-meta">
+        <div class="outro-handle-txt">@janganpanikdulu</div>
+        <div class="outro-sub-txt">Sains &amp; Tips Darurat</div>
+      </div>
+      <div id="outro-follow-btn">
+        <span id="outro-btn-label">+ Ikuti</span>
+        <span id="outro-ripple"></span>
+      </div>
+      <svg id="outro-cursor" viewBox="0 0 36 36" fill="none">
+        <path d="M7 4L29 17.5L18.5 20.5L13.5 30.5L7 4Z" fill="#FFFFFF" stroke="#261A66" stroke-width="3" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
 </div>
 
 <audio id="vo-audio" src="audio_ep02_master.mp3" preload="auto"></audio>
 
 <div id="switcher">
   <button id="btn-play" class="active">▶ Play Master + Audio</button>
-  <span id="time-readout">00.0s / 65.4s</span>
+  <span id="time-readout">00.0s / 69.6s</span>
   <div class="sw-label">Scene:</div>
   <button data-t="1.8">Hook</button>
   <button data-t="6.2">Ledakan Air</button>
@@ -339,7 +432,7 @@ body.clean-snap #switcher{display:none !important}
   <button data-t="48.0">Langkah 2</button>
   <button data-t="53.5">Langkah 3</button>
   <button data-t="64.0">Sign-Off</button>
-  <div class="sw-label">Caption:</div>
+  <button data-t="68.2">Outro CTA</button>
   <button data-cap="1" class="active">Opsi 1</button>
   <button data-cap="2">Opsi 2</button>
   <button data-cap="3">Opsi 3</button>
@@ -359,6 +452,7 @@ const renderer = new THREE.WebGLRenderer({
   canvas: $('#gl'),
   antialias: true,
   alpha: true,
+  logarithmicDepthBuffer: true,
   preserveDrawingBuffer: true
 });
 renderer.setPixelRatio(1);
@@ -827,28 +921,36 @@ wokGroup.add(wokEarR);
 
 // Dasar Logam Wajan Membara 300°C (Terlihat jelas saat cutaway)
 const wokBaseGlowMat = new THREE.MeshStandardMaterial({
-  color: 0xFF4500, roughness: 0.25, metalness: 0.3, emissive: 0xFF3B00, emissiveIntensity: 0.85
+  color: 0xFF4500, roughness: 0.25, metalness: 0.3, emissive: 0xFF3B00, emissiveIntensity: 0.85,
+  polygonOffset: true, polygonOffsetFactor: 2, polygonOffsetUnits: 2
 });
-const wokBaseGlow = new THREE.Mesh(new THREE.CylinderGeometry(0.215, 0.205, 0.038, 32), wokBaseGlowMat);
-wokBaseGlow.position.y = -0.01;
+const wokBaseGlow = new THREE.Mesh(new THREE.CylinderGeometry(0.215, 0.205, 0.036, 32), wokBaseGlowMat);
+wokBaseGlow.position.y = -0.015;
 wokGroup.add(wokBaseGlow);
 
 // Lapisan Minyak Goreng Panas 300°C (Cross-Section Cutaway)
 const oilMat = new THREE.MeshStandardMaterial({
   color: 0xF59E0B, roughness: 0.15, metalness: 0.08,
   emissive: 0xD97706, emissiveIntensity: 0.35,
-  transparent: true, opacity: 0.86
+  transparent: true, opacity: 0.86,
+  depthWrite: false,
+  polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1
 });
 const oilBody = new THREE.Mesh(new THREE.CylinderGeometry(0.31, 0.205, 0.145, 32), oilMat);
-oilBody.position.y = 0.075;
+oilBody.position.y = 0.078;
+oilBody.renderOrder = 2;
 wokGroup.add(oilBody);
 
 // Bidang Potongan Depan Minyak (Cross-Section Window saat Cutaway)
 const oilCutPlane = new THREE.Mesh(
   new THREE.PlaneGeometry(0.54, 0.14),
-  new THREE.MeshBasicMaterial({ color: 0xFFB703, transparent: true, opacity: 0.0, side: THREE.DoubleSide })
+  new THREE.MeshBasicMaterial({
+    color: 0xFFB703, transparent: true, opacity: 0.0, side: THREE.DoubleSide,
+    depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1
+  })
 );
-oilCutPlane.position.set(0, 0.075, 0.02);
+oilCutPlane.position.set(0, 0.078, 0.025);
+oilCutPlane.renderOrder = 3;
 wokGroup.add(oilCutPlane);
 
 // Gelembung-Gelembung Air Biru yang Tenggelam Menembus Minyak ke Dasar Wajan (S05 - S06)
@@ -1271,8 +1373,9 @@ function buildMasRaka() {
 const RAKA = buildMasRaka();
 world.add(RAKA.root);
 
-/* ============ 5. PRO-DIRECTOR @puckermanefacts ISOMETRIC DIORAMA CAMERA CHOREOGRAPHY (EP02 — 65.41s) ============ */
-const DURATION = 65.41;
+/* ============ 5. PRO-DIRECTOR @puckermanefacts ISOMETRIC DIORAMA CAMERA CHOREOGRAPHY (EP02 — 67.92s) ============ */
+const OUTRO_START = 65.41;
+const DURATION = 69.60;
 const S = {
   camX: 13.8, camY: 15.2, camZ: 18.4,
   lookX: -0.10, lookY: 1.45, lookZ: -0.85,
@@ -1302,7 +1405,17 @@ const S = {
 
   c1Alpha: 0,
   c2Alpha: 0,
-  c3Alpha: 0
+  c3Alpha: 0,
+
+  outroWipeO: 0,
+  outroWipeI: 0,
+  outroWipeW: 0,
+  outroCircleScale: 0,
+  outroHeadTilt: 0,
+  outroBarProg: 0,
+  outroCursorProg: 0,
+  outroClickProg: 0,
+  outroNod: 0
 };
 
 const tl = gsap.timeline({ paused: true });
@@ -1508,6 +1621,41 @@ tl.to(S, {
   duration: 0.85, ease: 'power3.out'
 }, 62.95);
 
+function buildOutroTimeline(tl, t0) {
+  // 0.00s - 0.45s: Breath pause on Mas Raka's smile in the safe kitchen
+  // 0.45s - 1.35s: Silky Triple Circle Wipe (#EF5F18 -> #261A66 -> #FFFFFF)
+  tl.to(S, { outroWipeO: 1.15, duration: 0.65, ease: 'expo.inOut' }, t0 + 0.45);
+  tl.to(S, { outroWipeI: 1.15, duration: 0.65, ease: 'expo.inOut' }, t0 + 0.57);
+  tl.to(S, { outroWipeW: 1.15, duration: 0.65, ease: 'expo.inOut' }, t0 + 0.69);
+
+  // 1.05s - 1.55s: Circle Badge blooms + position camera & hidden Mas Raka below circle
+  tl.set(S, {
+    camX: 0, camY: 1.65, camZ: 15.6,
+    lookX: 0, lookY: 1.15, lookZ: 0,
+    fov: 22,
+    cX: 0, cY: -0.65, cZ: 0, cRotY: 0, cKneel: 0,
+    cArmL: -0.25, cArmR: -0.25,
+    outroHeadTilt: 0.12
+  }, t0 + 1.05);
+  tl.to(S, { outroCircleScale: 1, duration: 0.50, ease: 'power3.out' }, t0 + 1.05);
+
+  // 1.30s - 1.95s: Mas Raka rises smoothly from bottom + secondary wave & head tilt
+  tl.to(S, { cY: 0.42, duration: 0.65, ease: 'power4.out' }, t0 + 1.30);
+  tl.to(S, { outroHeadTilt: 0, duration: 0.50, ease: 'power2.out' }, t0 + 1.36);
+  tl.to(S, { cArmR: -2.35, duration: 0.55, ease: 'power3.out' }, t0 + 1.38);
+
+  // 1.75s - 2.25s: Profile Action Bar rises smoothly
+  tl.to(S, { outroBarProg: 1, duration: 0.50, ease: 'power3.out' }, t0 + 1.75);
+
+  // 2.25s - 2.73s: Cursor glides smoothly to "+ Ikuti"
+  tl.to(S, { outroCursorProg: 1, duration: 0.48, ease: 'power2.inOut' }, t0 + 2.25);
+
+  // 2.73s - 3.18s: Tactile click -> "✓ Mengikuti" + orange ripple + calm nod
+  tl.to(S, { outroClickProg: 1, duration: 0.38, ease: 'power2.out' }, t0 + 2.73);
+  tl.to(S, { outroNod: 1, duration: 0.45, ease: 'sine.inOut' }, t0 + 2.73);
+}
+
+buildOutroTimeline(tl, OUTRO_START);
 tl.to({}, { duration: 0.01 }, DURATION);
 
 /* ============ 6. SMOOTH EASE-IN / EASE-OUT & 100% VERBATIM SUBTITLE SCHEDULE (EP02) ============ */
@@ -1792,7 +1940,36 @@ function updateHUD(t) {
 function render(t) {
   updateHUD(t);
   const tr = $('#time-readout');
-  if (tr) tr.textContent = `${t.toFixed(1).padStart(4, '0')}s / 65.4s`;
+  if (tr) tr.textContent = `${t.toFixed(1).padStart(4, '0')}s / 69.6s`;
+
+  const isOutroStage = S.outroWipeW > 0.72;
+  stage.classList.toggle('outro-active', isOutroStage);
+  world.children.forEach(ch => { if (ch !== RAKA.root) ch.visible = !isOutroStage; });
+  RAKA.root.visible = true;
+
+  $('#wipe-orange').style.transform = `translate(-50%,-50%) scale(${S.outroWipeO.toFixed(4)})`;
+  $('#wipe-indigo').style.transform = `translate(-50%,-50%) scale(${S.outroWipeI.toFixed(4)})`;
+  $('#wipe-white').style.transform  = `translate(-50%,-50%) scale(${S.outroWipeW.toFixed(4)})`;
+  $('#outro-circle-badge').style.transform = `translate(-50%,-50%) scale(${S.outroCircleScale.toFixed(4)})`;
+  const barEl = $('#outro-bar'), btnEl = $('#outro-follow-btn');
+  const curEl = $('#outro-cursor'), ripEl = $('#outro-ripple');
+  const bp = S.outroBarProg, cp = S.outroCursorProg, kp = S.outroClickProg;
+
+  barEl.style.opacity = Math.min(1, bp * 1.4).toFixed(3);
+  barEl.style.transform = `translateY(${((1 - bp) * 36).toFixed(1)}px) scale(${(0.92 + 0.08 * bp).toFixed(3)})`;
+
+  curEl.style.opacity = Math.min(1, cp * 1.6).toFixed(3);
+  const clickPress = kp > 0 && kp < 0.45 ? 0.86 : 1.0;
+  curEl.style.transform = `translate(${((1 - cp) * 95).toFixed(1)}px, ${((1 - cp) * 95).toFixed(1)}px) scale(${clickPress})`;
+
+  const isFollowed = kp >= 0.35;
+  btnEl.classList.toggle('followed', isFollowed);
+  $('#outro-btn-label').textContent = isFollowed ? '✓ Mengikuti' : '+ Ikuti';
+  const btnBounce = kp > 0 ? (1 + Math.sin(Math.min(1, kp) * Math.PI) * 0.09) : 1;
+  btnEl.style.transform = `scale(${btnBounce.toFixed(3)})`;
+
+  ripEl.style.opacity = kp > 0.2 ? Math.max(0, 1 - (kp - 0.2) * 1.3).toFixed(3) : '0';
+  ripEl.style.transform = `scale(${(0.85 + kp * 0.55).toFixed(3)})`;
 
   const dm = S.darkMode;
   hemi.intensity = 1.68 - dm * 1.12;
@@ -1802,8 +1979,8 @@ function render(t) {
   camera.fov = S.fov;
   camera.updateProjectionMatrix();
   camera.position.set(S.camX, S.camY, S.camZ);
-  // Shift lookY slightly down (-0.18) so the 3D diorama & wok sit higher in the upper-center safe zone above the raised FB/IG/TikTok caption bar
-  camera.lookAt(S.lookX, S.lookY - 0.18, S.lookZ);
+  // Shift lookY slightly down (-0.18) during diorama scenes; center on Mas Raka during outro
+  camera.lookAt(S.lookX, isOutroStage ? S.lookY : (S.lookY - 0.18), S.lookZ);
 
   const kn = S.cKneel;
   const breath = Math.sin(t * 2.6) * 0.012;
@@ -1812,6 +1989,11 @@ function render(t) {
   RAKA.bodyPivot.position.y = 0.72 - kn * 0.22;
   RAKA.armL.rotation.x = S.cArmL;
   RAKA.armR.rotation.x = S.cArmR;
+  RAKA.armL.rotation.z = isOutroStage ? -0.14 : 0;
+  RAKA.armR.rotation.z = isOutroStage ? (0.28 + Math.sin(t * 7.5) * 0.10) : 0;
+  RAKA.headPivot.rotation.x = isOutroStage ? Math.sin(S.outroNod * Math.PI) * 0.16 : 0;
+  RAKA.headPivot.rotation.y = isOutroStage ? Math.sin(t * 2.2) * 0.04 : 0;
+  RAKA.headPivot.rotation.z = isOutroStage ? S.outroHeadTilt : 0;
 
   // Wok Cross-Section Cutaway Animation (S04 - S08)
   const cut = S.cutawayAlpha;
@@ -1938,16 +2120,19 @@ fit();
 
 const audioEl = $('#vo-audio');
 let isPlaying = false;
+const isDeterministicCapture = Q.has('clean') || Q.has('capture');
 
-(function frame() {
-  if (!window.THUMB_LOCK) {
-    if (isPlaying && !audioEl.paused) {
-      tl.time(audioEl.currentTime, false);
+if (!isDeterministicCapture) {
+  (function frame() {
+    if (!window.THUMB_LOCK) {
+      if (isPlaying && !audioEl.paused) {
+        tl.time(audioEl.currentTime, false);
+      }
+      render(tl.time());
     }
-    render(tl.time());
-  }
-  requestAnimationFrame(frame);
-})();
+    requestAnimationFrame(frame);
+  })();
+}
 
 $('#btn-play').onclick = () => {
   if (audioEl.paused) {
@@ -1982,6 +2167,13 @@ const seek = (t) => {
   tl.time(t, false);
   if (gsap.ticker.tick) gsap.ticker.tick();
   render(t);
+  const gl = renderer.getContext();
+  if (gl && gl.finish) gl.finish();
+  return new Promise((resolve) => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => resolve(true));
+    });
+  });
 };
 
 window.OPENER = {
@@ -2004,7 +2196,12 @@ window.OPENER = {
   ready: false
 };
 
-document.fonts.ready.then(() => {
+const avatarImg = $('#outro-avatar-img');
+const avatarReady = avatarImg && avatarImg.decode
+  ? avatarImg.decode().catch(() => {})
+  : Promise.resolve();
+
+Promise.all([document.fonts.ready, avatarReady]).then(() => {
   window.OPENER.ready = true;
   if (!Q.has('clean')) render(0);
 });

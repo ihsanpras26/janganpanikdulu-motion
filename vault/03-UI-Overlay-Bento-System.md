@@ -35,3 +35,19 @@ Sistem overlay `@janganpanikdulu` mengutamakan **tampilan bersih, lega, dan meny
   - Badge putih `#FFFFFF` (`border-radius: 16px`) dengan border solid `#EF5F18` (bahaya) atau `#0FA968` (aman) + ikon SVG vektor, terhubung langsung ke objek 3D yang bersih.
 - **Subtitle Bar Bawah (`.sub-card`)**:
   - Kontainer putih `#FFFFFF` (`border: 3px solid #261A66`, `border-radius: 24px`) dengan teks `#261A66` dan highlight kata kunci berupa pill solid `#EF5F18` berteks putih.
+
+## 3. ZONA 5 — Reusable Outro System (Pop-Out Circle Bust & Paced 4.19s Outro)
+
+Sistem penutup (*outro*) standar berdurasi **`4.19s`** (`buildOutroTimeline(tl, t0)` di `index.html`), dipicu tepat setelah kalimat wajib `"Jadi... jangan panik dulu."`:
+
+- **`0.00s - 1.35s` | Jeda Nafas & Silky Triple Circle Wipe**:
+  - Jeda nafas **`0.45s`** + Silky Triple Circle Wipe (**`#EF5F18` Signal Orange** → **`#261A66` Deep Indigo** → **`#FFFFFF` Crisp White**, `expo.inOut`).
+  - Mengaktifkan class `stage.outro-active` untuk menyembunyikan properti diorama dapur dan mengisolasi panggung penutup di atas latar putih bersih `#FFFFFF`.
+- **`1.05s - 1.55s` | Separated Circle Badge**:
+  - **Separated Circle Badge** (`460x460px`, pusat `540x740px`, solid `#261A66` dengan border `12px solid #EF5F18`) mekar bersih (`power3.out`).
+- **`1.30s - 1.95s` | Mas Raka Pop-Out Rise**:
+  - Karakter naik dari bawah dalam lingkaran (`cY: -1.15 -> -0.22`, deselerasi `power4.out`) dengan bagian bawah ter-clip mengikuti busur lingkaran bawah (`r = 218px`), sementara kepala, jambul, dan tangan sapa keluar melewati tepi atas lingkaran.
+- **`1.75s - 2.25s` | Unified Profile Action Bar**:
+  - **Unified Profile Action Bar** (`880x156px`, `top: 1090px`, jarak bersih `120px` di bawah lingkaran) masuk halus (`power3.out`) bersamaan dengan VO CTA, memuat avatar `pp_janganpanikdulu_final.png`, `@janganpanikdulu`, dan tombol solid `#EF5F18` berlabel **`+ Ikuti`**.
+- **`2.25s - 4.19s` | Cursor Slide, Tactile Click & Loop-Safe Hold**:
+  - Kursor meluncur (`power2.inOut`) → klik taktil pada **`2.73s`** mengubah tombol ke solid `#261A66` **`✓ Mengikuti`** + *orange ring ripple* + anggukan tenang Mas Raka, lalu bertahan dalam *loop-safe hold* **`1.01s`** hingga akhir durasi `4.19s`.

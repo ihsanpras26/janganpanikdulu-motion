@@ -8,7 +8,9 @@ import wave
 # Portable Paths
 ROOT = Path(__file__).resolve().parent.parent
 vo_mp3 = ROOT / "vo_ep02.mp3"
+vo_outro_mp3 = ROOT / "ElevenLabs_2026-11-13T12_51_02_Senandika - Young, Confident and Clear_pvc_s30_sim75_v4.mp3"
 vo_wav = ROOT / "temp_vo_ep02_48k.wav"
+vo_outro_wav = ROOT / "temp_vo_outro_48k.wav"
 out_wav = ROOT / "audio_ep02_master.wav"
 out_mp3 = ROOT / "audio_ep02_master.mp3"
 puck_dir = ROOT / "sfx_puckermane"
@@ -33,11 +35,35 @@ if vo_wav.exists():
     except Exception:
         pass
 
-# Normalize VO to -1.1 dBFS peak for broadcast clarity
-vo_peak = np.max(np.abs(vo))
-if vo_peak > 0:
-    vo = vo * (0.88 / vo_peak)
-
+# Load & append Outro CTA VO (starts at 65.41s + 0.94s breath pause, total 69.60s = outro_start_sec + 4.19s)
+outro_start_sec = len(vo) / SR
+if vo_outro_mp3.exists():
+    subprocess.run([
+        "ffmpeg", "-y", "-i", str(vo_outro_mp3),
+        "-ar", str(SR), "-ac", "2", "-c:a", "pcm_s16le", str(vo_outro_wav)
+    ], check=True, stderr=subprocess.DEVNULL)
+    with wave.open(str(vo_outro_wav), "rb") as wf:
+        raw_o = wf.readframes(wf.getnframes())
+        vo_o = np.frombuffer(raw_o, dtype=np.int16).astype(np.float32).reshape(-1, 2) / 32768.0
+    if vo_outro_wav.exists():
+        try:
+            vo_outro_wav.unlink()
+        except Exception:
+            pass
+    vo_peak_main = np.max(np.abs(vo))
+    if vo_peak_main > 0:
+        vo = vo * (0.88 / vo_peak_main)
+    vo_peak_o = np.max(np.abs(vo_o))
+    if vo_peak_o > 0:
+        vo_o = vo_o * (0.88 / vo_peak_o)
+    pause_before = np.zeros((int(0.94 * SR), 2), dtype=np.float32)
+    target_total_samples = int(round(69.60 * SR))
+    tail_samples = max(int(0.74 * SR), target_total_samples - (len(vo) + len(pause_before) + len(vo_o)))
+    pause_after = np.zeros((tail_samples, 2), dtype=np.float32)
+    vo = np.concatenate([vo, pause_before, vo_o, pause_after], axis=0)[:target_total_samples]
+    vo_peak = np.max(np.abs(vo))
+    if vo_peak > 0:
+        vo = vo * (0.88 / vo_peak)
 sfx = np.zeros_like(vo)
 rng = np.random.default_rng(102)
 
@@ -297,9 +323,14 @@ add_stereo(sfx, 57.20, puck_whoosh_thump, gain_db=-17.2)
 # S14 (62.95s - 65.41s): Sign-Off ("Jadi... jangan panik dulu.")
 add_stereo(sfx, 62.95, puck_air_whoosh, gain_db=-17.2)
 add_stereo(sfx, 63.15, puck_step_pop, gain_db=-18.2)
-add_stereo(sfx, 63.92, make_saas_pill_in(587.33), gain_db=-17.5)
 
-# Smooth Sidechain Envelope Ducking (keeps VO crystal clear above foley)
+# S15 OUTRO CTA (65.41s - 69.60s): Separated Circle Badge + Rising Pop-Out Mas Raka + Profile Follow Click
+add_stereo(sfx, outro_start_sec + 0.45, puck_air_whoosh, gain_db=-16.6)
+add_stereo(sfx, outro_start_sec + 1.05, make_saas_pill_in(587.33), gain_db=-16.5)
+add_stereo(sfx, outro_start_sec + 1.30, puck_step_pop, gain_db=-16.8)
+add_stereo(sfx, outro_start_sec + 1.75, make_saas_pill_in(659.25), gain_db=-16.2)
+add_stereo(sfx, outro_start_sec + 2.73, puck_mech_snap, gain_db=-15.0)
+add_stereo(sfx, outro_start_sec + 2.76, make_saas_callout_pop(880.0), gain_db=-15.6)
 vo_mono = 0.5 * (np.abs(vo[:, 0]) + np.abs(vo[:, 1]))
 win = int(0.040 * SR)
 kernel = np.ones(win, dtype=np.float32) / win

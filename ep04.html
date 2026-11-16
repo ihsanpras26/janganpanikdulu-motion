@@ -1,0 +1,2229 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Jangan Panik Dulu — EP04: Digigit Ular? Jangan Diikat Kencang!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<script src="./vendor/gsap.min.js"></script>
+<script type="importmap">
+{"imports":{
+  "three":"./vendor/three.module.js"
+}}
+</script>
+<style>
+/* ===== LOCKED BRAND IDENTITY (OPSI 2): Crisp White (#FFFFFF) x Deep Indigo (#261A66) x Solid Orange (#EF5F18) ===== */
+:root{
+  --brand-orange:#EF5F18;
+  --brand-blue:#261A66;
+  --brand-white:#FFFFFF;
+  --scrim-rgb:20,14,54;
+
+  --hook-stroke:#261A66;
+  --hook-pill-bg:#261A66; --hook-pill-ink:#FFFFFF; --hook-pill-shadow:#EF5F18;
+
+  --step-pill-bg:#FFFFFF; --step-pill-ink:#261A66; --step-pill-border:#261A66;
+  --step-num-bg:#EF5F18; --step-num-ink:#FFFFFF;
+  --prog-track:rgba(255,255,255,.45); --prog-fill:#EF5F18;
+
+  --sub-bg:#FFFFFF; --sub-ink:#261A66; --sub-border:#261A66;
+  --sub-hl-bg:#EF5F18; --sub-hl-ink:#FFFFFF;
+
+  --safe:#0FA968; --danger:#EF5F18;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  width:100%;height:100%;background:#0F141A;overflow:hidden;
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+#stage{
+  position:fixed;left:50%;top:50%;width:1080px;height:1920px;
+  transform:translate(-50%,-50%) scale(1);overflow:hidden;
+  background:linear-gradient(180deg,#CBE4FB 0%,#E8F3FF 48%,#DCEBD5 100%);
+}
+#stage.xray-bg{
+  background:linear-gradient(180deg,#E2ECF8 0%,#F4F8FD 52%,#E6EEF7 100%);
+}
+#stage.safe-bg{
+  background:linear-gradient(180deg,#D6EFE6 0%,#F2FAF6 52%,#E3F2EA 100%);
+}
+#gl{position:absolute;inset:0;width:1080px;height:1920px;display:block;z-index:1}
+#OverlaySVG{position:absolute;inset:0;width:1080px;height:1920px;pointer-events:none;z-index:4}
+#OverlaySVG line{stroke-width:3.5;stroke-linecap:round}
+#line-c1,#line-c2{stroke:var(--danger)}
+#dot-c1,#dot-c2{fill:var(--danger);stroke:#FFFFFF;stroke-width:3}
+#line-c3,#line-c4{stroke:var(--safe)}
+#dot-c3,#dot-c4{fill:var(--safe);stroke:#FFFFFF;stroke-width:3}
+
+#hud{position:absolute;inset:0;pointer-events:none;z-index:6}
+
+.scrim-top{
+  position:absolute;left:0;right:0;top:0;height:260px;
+  background:linear-gradient(180deg,rgba(var(--scrim-rgb),.30) 0%,rgba(var(--scrim-rgb),.09) 52%,rgba(var(--scrim-rgb),0) 100%);
+}
+.scrim-bottom{
+  position:absolute;left:0;right:0;bottom:0;height:520px;
+  background:linear-gradient(0deg,rgba(var(--scrim-rgb),.22) 0%,rgba(var(--scrim-rgb),.08) 58%,rgba(var(--scrim-rgb),0) 100%);
+}
+
+/* ZONA 1: Clean Brand Card */
+.account-card{
+  position:absolute;left:44px;top:46px;
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.78);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  padding:8px 20px 9px 14px;
+  border-radius:999px;
+  border:1.5px solid rgba(255,255,255,.90);
+  box-shadow:0 10px 24px rgba(20,14,54,.12), inset 0 1px 0 rgba(255,255,255,.95);
+  font-size:21px;font-weight:800;letter-spacing:-.015em;
+  color:var(--brand-blue);
+}
+.account-dot{
+  width:9px;height:9px;border-radius:50%;
+  background:var(--brand-orange);
+  display:inline-block;
+  box-shadow:0 0 8px rgba(239,95,24,.5);
+}
+
+/* ZONA 2A: HOOK LOCKUP */
+#hook-card{
+  position:absolute;left:46px;right:46px;top:148px;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  will-change:transform,opacity;
+}
+.hook-title{
+  font-size:84px;font-weight:800;letter-spacing:-.035em;line-height:1;
+  color:#FFFFFF;text-align:center;
+  -webkit-text-stroke:14px var(--hook-stroke);paint-order:stroke fill;
+  text-shadow:0 10px 24px rgba(20,14,54,.28);
+}
+.hook-pill{
+  background:var(--hook-pill-bg);color:var(--hook-pill-ink);
+  font-size:40px;font-weight:800;letter-spacing:-.02em;
+  padding:13px 34px;border-radius:16px;transform:rotate(-1.1deg);
+  border:3.5px solid #FFFFFF;
+  box-shadow:0 9px 0 var(--hook-pill-shadow), 0 16px 30px rgba(20,14,54,.28);
+}
+
+/* ZONA 2B: ULTRA-CLEAN SINGLE TOP PILL */
+#step-tracker{
+  position:absolute;left:0;right:0;top:132px;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  opacity:0;will-change:transform,opacity;
+}
+.step-pill{
+  display:inline-flex;align-items:center;gap:14px;
+  background:rgba(255,255,255,.86);
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  padding:10px 28px 10px 12px;border-radius:999px;
+  border:2px solid rgba(255,255,255,.94);
+  box-shadow:0 12px 28px rgba(20,14,54,.16);
+}
+.step-pill.text-only{
+  padding:11px 32px 12px;
+}
+.step-num{
+  width:48px;height:48px;border-radius:50%;
+  background:var(--step-num-bg);color:var(--step-num-ink);
+  font-family:"Space Grotesk","Plus Jakarta Sans",sans-serif;
+  font-size:25px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.step-title{
+  font-size:31px;font-weight:800;letter-spacing:-.02em;
+  color:var(--step-pill-ink);white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.progress{display:flex;gap:14px;align-items:center}
+.progress i{
+  width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.78);
+  border:2.5px solid rgba(38,26,102,.25);
+  display:block;box-shadow:0 3px 8px rgba(20,14,54,.15);
+}
+.progress i.on{
+  background:var(--prog-fill);
+  border-color:#FFFFFF;
+}
+
+/* ZONA 3: COMPACT 3D CALLOUT LABELS */
+.callout{
+  position:absolute;left:0;top:0;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(14px) saturate(160%);
+  -webkit-backdrop-filter:blur(14px) saturate(160%);
+  padding:8px 18px 9px;border-radius:12px;
+  font-size:24px;font-weight:800;letter-spacing:-.015em;white-space:nowrap;opacity:0;
+  box-shadow:0 8px 20px rgba(12,10,36,.18);
+  display:inline-flex;align-items:center;
+  font-variant-numeric:tabular-nums;
+  will-change:transform,opacity;
+}
+.callout.danger{color:var(--danger);border:2.5px solid var(--danger)}
+.callout.safe{color:var(--safe);border:2.5px solid var(--safe)}
+
+/* ZONA 4: CAPTION BAR */
+#sub-wrap{
+  position:absolute;left:64px;right:64px;bottom:375px;display:flex;justify-content:center;z-index:20;
+}
+.sub-card{
+  max-width:910px;
+  padding:16px 34px 18px;
+  border-radius:20px;
+  font-size:35px;font-weight:800;letter-spacing:-.016em;line-height:1.30;
+  text-align:center;
+  display:inline-block;
+  font-variant-numeric:tabular-nums;
+  will-change:transform,opacity;
+}
+.sub-card .w{display:inline-block;padding:0;margin:0;background:transparent;position:relative}
+
+body.cap-opt-1 .sub-card,
+body:not(.cap-opt-2):not(.cap-opt-3) .sub-card{
+  background:rgba(255,255,255,.78);
+  backdrop-filter:blur(22px) saturate(175%);
+  -webkit-backdrop-filter:blur(22px) saturate(175%);
+  border:1.5px solid rgba(255,255,255,.92);
+  box-shadow:0 14px 34px rgba(20,14,54,.14), inset 0 1px 0 rgba(255,255,255,.95);
+}
+body.cap-opt-1 .sub-card .w.past,
+body:not(.cap-opt-2):not(.cap-opt-3) .sub-card .w.past{color:#261A66;opacity:1}
+body.cap-opt-1 .sub-card .w.active,
+body:not(.cap-opt-2):not(.cap-opt-3) .sub-card .w.active{color:#EF5F18;opacity:1;transform:translateY(-1.5px)}
+body.cap-opt-1 .sub-card .w.future,
+body:not(.cap-opt-2):not(.cap-opt-3) .sub-card .w.future{color:rgba(38,26,102,.38)}
+
+body.cap-opt-2 .sub-card{background:#261A66;border:3px solid #FFFFFF;box-shadow:0 14px 32px rgba(10,8,32,.26)}
+body.cap-opt-2 .sub-card .w.past{color:#FFFFFF;opacity:1}
+body.cap-opt-2 .sub-card .w.active{color:#EF5F18;opacity:1;transform:translateY(-1.5px)}
+body.cap-opt-2 .sub-card .w.future{color:rgba(255,255,255,.44)}
+
+body.cap-opt-3 .sub-card{background:#FFFFFF;border:3px solid #261A66;border-radius:999px;padding:15px 40px 20px;box-shadow:0 12px 28px rgba(20,14,54,.18), 0 5px 0 #261A66}
+body.cap-opt-3 .sub-card .w.past{color:#261A66;opacity:1}
+body.cap-opt-3 .sub-card .w.active{color:#EF5F18;opacity:1}
+body.cap-opt-3 .sub-card .w.active::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:4px;border-radius:99px;background:#EF5F18}
+body.cap-opt-3 .sub-card .w.future{color:rgba(38,26,102,.42)}
+
+/* ZONA 5: REUSABLE OUTRO TRIPLE-WIPE + UNIFIED PROFILE FOLLOW BAR */
+#outro-wipe{
+  position:absolute;inset:0;pointer-events:none;z-index:16;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.wipe-ring{
+  position:absolute;left:50%;top:50%;width:2400px;height:2400px;
+  border-radius:50%;transform:translate(-50%,-50%) scale(0);
+  will-change:transform;
+}
+#wipe-orange{background:#EF5F18;}
+#wipe-indigo{background:#261A66;}
+#wipe-white{background:#FFFFFF;}
+#outro-circle-badge{
+  position:absolute;left:50%;top:740px;width:460px;height:460px;
+  border-radius:50%;background:#261A66;border:12px solid #EF5F18;
+  box-shadow:0 22px 48px rgba(38,26,102,.18);
+  transform:translate(-50%,-50%) scale(0);
+  will-change:transform,opacity;
+}
+#stage.outro-active #gl{
+  z-index:17;
+  clip-path:path('M 0 0 H 1080 V 740 H 758 A 218 218 0 0 1 322 740 H 0 Z');
+}
+#stage.outro-active #hud{opacity:0;}
+
+#outro-ui{
+  position:absolute;left:0;right:0;top:1090px;z-index:19;
+  display:flex;flex-direction:column;align-items:center;pointer-events:none;
+}
+#outro-bar{
+  width:880px;height:156px;border-radius:999px;
+  background:#FFFFFF;border:4px solid #261A66;
+  box-shadow:0 20px 46px rgba(38,26,102,.15), 0 8px 0 #261A66;
+  padding:0 26px 0 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  opacity:0;transform:translateY(36px) scale(.92);
+  will-change:transform,opacity;
+}
+.outro-avatar-wrap{
+  width:118px;height:118px;border-radius:50%;flex-shrink:0;
+  border:4px solid #EF5F18;padding:3px;background:#FFFFFF;
+  box-shadow:0 6px 16px rgba(239,95,24,.22);
+}
+.outro-avatar{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.outro-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.outro-handle-txt{font-size:35px;font-weight:800;letter-spacing:-.025em;color:#261A66;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.outro-sub-txt{font-size:23px;font-weight:700;letter-spacing:-.01em;color:rgba(38,26,102,.68)}
+#outro-follow-btn{
+  position:relative;flex-shrink:0;height:86px;padding:0 38px;border-radius:999px;
+  background:#EF5F18;color:#FFFFFF;border:3.5px solid #261A66;
+  font-size:30px;font-weight:800;letter-spacing:-.015em;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 6px 0 #261A66;
+  will-change:transform,background-color;
+}
+#outro-follow-btn.followed{background:#261A66;color:#FFFFFF;box-shadow:0 4px 0 #EF5F18}
+#outro-ripple{position:absolute;inset:-8px;border-radius:999px;border:4px solid #EF5F18;opacity:0;transform:scale(.85);pointer-events:none}
+#outro-cursor{
+  position:absolute;right:116px;top:110px;width:58px;height:58px;
+  opacity:0;transform:translate(95px,95px) scale(1);
+  filter:drop-shadow(0 8px 14px rgba(20,14,54,.30));
+  will-change:transform,opacity;
+}
+
+/* Interactive Preview Toolbar (hidden when capturing) */
+#switcher{
+  position:fixed;left:50%;bottom:10px;transform:translateX(-50%);z-index:80;
+  display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:1060px;
+  background:rgba(24,30,38,.94);padding:8px 12px;border-radius:14px;color:#fff;font-size:11px;
+}
+body.clean-snap #switcher{display:none !important}
+#switcher .sw-label{font-weight:800;color:#EF5F18;text-transform:uppercase}
+#switcher button{background:#2D3748;color:#fff;border:none;padding:5px 8px;border-radius:7px;font:700 11px inherit;cursor:pointer}
+#switcher button.active{background:#EF5F18}
+#time-readout{font-family:"Space Grotesk",monospace;font-size:12px;font-weight:700;color:#90E0EF;min-width:92px;text-align:center}
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <canvas id="gl"></canvas>
+
+  <svg id="OverlaySVG" viewBox="0 0 1080 1920">
+    <line id="line-c1" x1="0" y1="0" x2="0" y2="0" stroke="#EF5F18" stroke-width="3.5" opacity="0"/>
+    <circle id="dot-c1" cx="0" cy="0" r="7" fill="#EF5F18" stroke="#FFF" stroke-width="3" opacity="0"/>
+
+    <line id="line-c2" x1="0" y1="0" x2="0" y2="0" stroke="#EF5F18" stroke-width="3.5" opacity="0"/>
+    <circle id="dot-c2" cx="0" cy="0" r="7" fill="#EF5F18" stroke="#FFF" stroke-width="3" opacity="0"/>
+
+    <line id="line-c3" x1="0" y1="0" x2="0" y2="0" stroke="#0FA968" stroke-width="3.5" opacity="0"/>
+    <circle id="dot-c3" cx="0" cy="0" r="7" fill="#0FA968" stroke="#FFF" stroke-width="3" opacity="0"/>
+
+    <line id="line-c4" x1="0" y1="0" x2="0" y2="0" stroke="#0FA968" stroke-width="3.5" opacity="0"/>
+    <circle id="dot-c4" cx="0" cy="0" r="7" fill="#0FA968" stroke="#FFF" stroke-width="3" opacity="0"/>
+  </svg>
+
+  <div id="hud">
+    <div class="scrim-top"></div>
+    <div class="scrim-bottom"></div>
+
+    <div class="account-card"><span class="account-dot"></span>@janganpanikdulu</div>
+
+    <div id="hook-card">
+      <h1 class="hook-title" id="hook-title">DIGIGIT ULAR?</h1>
+      <div class="hook-pill" id="hook-pill">JANGAN DIIKAT KENCANG!</div>
+    </div>
+
+    <div id="step-tracker">
+      <div class="step-pill" id="step-pill-box">
+        <span class="step-num" id="tr-badge">1</span>
+        <span class="step-title" id="tr-title">Jangan gerak &amp; jangan jalan</span>
+      </div>
+      <div class="progress" id="prog-wrap"><i id="seg1" class="on"></i><i id="seg2"></i><i id="seg3"></i><i id="seg4"></i></div>
+    </div>
+
+    <div class="callout danger" id="call1"><span id="call1-text">risiko diamputasi!</span></div>
+    <div class="callout danger" id="call2"><span id="call2-text">bukan lewat darah!</span></div>
+    <div class="callout safe"   id="call3"><span id="call3-text">otot rileks = racun tertahan</span></div>
+    <div class="callout safe"   id="call4"><span id="call4-text">kunci sendi tetap lurus</span></div>
+
+    <div id="sub-wrap">
+      <div class="sub-card" id="sub-card"></div>
+    </div>
+  </div>
+
+  <div id="outro-wipe">
+    <div class="wipe-ring" id="wipe-orange"></div>
+    <div class="wipe-ring" id="wipe-indigo"></div>
+    <div class="wipe-ring" id="wipe-white"></div>
+    <div id="outro-circle-badge"></div>
+  </div>
+  <div id="outro-ui">
+    <div id="outro-bar">
+      <div class="outro-avatar-wrap">
+        <img class="outro-avatar" id="outro-avatar-img" src="./pp_janganpanikdulu_final.png" alt="@janganpanikdulu">
+      </div>
+      <div class="outro-meta">
+        <div class="outro-handle-txt">@janganpanikdulu</div>
+        <div class="outro-sub-txt">Sains &amp; Tips Darurat</div>
+      </div>
+      <div id="outro-follow-btn">
+        <span id="outro-btn-label">+ Ikuti</span>
+        <span id="outro-ripple"></span>
+      </div>
+      <svg id="outro-cursor" viewBox="0 0 36 36" fill="none">
+        <path d="M7 4L29 17.5L18.5 20.5L13.5 30.5L7 4Z" fill="#FFFFFF" stroke="#261A66" stroke-width="3" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<audio id="vo-audio" src="audio_ep04_master.mp3" preload="auto"></audio>
+
+<div id="switcher">
+  <button id="btn-play" class="active">▶ Play Master + Audio</button>
+  <span id="time-readout">00.0s / 81.5s</span>
+  <div class="sw-label">25 Scenes:</div>
+  <button data-t="1.8">S01</button><button data-t="5.2">S02</button><button data-t="9.2">S03</button>
+  <button data-t="13.4">S04</button><button data-t="16.2">S05</button><button data-t="19.2">S06</button>
+  <button data-t="22.2">S07</button><button data-t="25.0">S08</button><button data-t="27.5">S09</button>
+  <button data-t="30.2">S10</button><button data-t="32.8">S11</button><button data-t="35.5">S12</button>
+  <button data-t="38.7">S13</button><button data-t="41.2">S14</button><button data-t="44.4">S15</button>
+  <button data-t="48.6">S16</button><button data-t="51.6">S17</button><button data-t="55.5">S18</button>
+  <button data-t="60.6">S19</button><button data-t="64.5">S20</button><button data-t="68.0">S21</button>
+  <button data-t="71.2">S22</button><button data-t="73.5">S23</button><button data-t="75.8">S24</button>
+  <button data-t="80.5">S25</button>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from './vendor/RoundedBoxGeometry.js';
+
+const $ = s => document.querySelector(s);
+const Q = new URLSearchParams(location.search);
+if (Q.has('clean') || Q.has('capture')) document.body.classList.add('clean-snap');
+
+/* ============ 1. RENDERER & LIGHTING ============ */
+const W = 1080, H = 1920;
+const renderer = new THREE.WebGLRenderer({
+  canvas: $('#gl'),
+  antialias: true,
+  alpha: true,
+  logarithmicDepthBuffer: true,
+  preserveDrawingBuffer: true
+});
+renderer.setPixelRatio(1);
+renderer.setSize(W, H, false);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.08;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(24, W / H, 0.15, 180);
+
+const hemi = new THREE.HemisphereLight(0xFFFDF9, 0xCBD5E1, 1.75);
+hemi.position.set(0, 20, 0);
+scene.add(hemi);
+
+const sun = new THREE.DirectionalLight(0xFFF7EA, 2.30);
+sun.position.set(7.5, 14.0, 9.5);
+sun.castShadow = true;
+sun.shadow.mapSize.set(1024, 1024);
+const sd = 7.5;
+sun.shadow.camera.left = -sd;
+sun.shadow.camera.right = sd;
+sun.shadow.camera.top = sd;
+sun.shadow.camera.bottom = -sd;
+sun.shadow.bias = -0.0005;
+scene.add(sun);
+
+const rim = new THREE.DirectionalLight(0x90E0EF, 0.90);
+rim.position.set(-8, 7, -6);
+scene.add(rim);
+
+const heroAccentLight = new THREE.PointLight(0xFFFFFF, 1.4, 8.0);
+heroAccentLight.position.set(0, 1.8, 3.2);
+scene.add(heroAccentLight);
+
+const mat = (hex, rough = 0.42, metal = 0.05, emissive = 0x000000, emInt = 0) =>
+  new THREE.MeshStandardMaterial({ color: hex, roughness: rough, metalness: metal, emissive, emissiveIntensity: emInt });
+
+const outlineMat = new THREE.MeshBasicMaterial({ color: 0x181E26, side: THREE.BackSide });
+function withOutline(mesh, scale = 1.055) {
+  const out = new THREE.Mesh(mesh.geometry, outlineMat);
+  out.scale.setScalar(scale);
+  mesh.add(out);
+  return mesh;
+}
+
+function makeBadgeCanvasTex(text, bgHex = '#EF5F18', fgHex = '#FFFFFF', subText = '') {
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 256;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = bgHex;
+  ctx.beginPath();
+  ctx.roundRect(12, 12, 488, 232, 44);
+  ctx.fill();
+  ctx.lineWidth = 10;
+  ctx.strokeStyle = '#FFFFFF';
+  ctx.stroke();
+  ctx.fillStyle = fgHex;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = subText ? '800 72px "Plus Jakarta Sans",sans-serif' : '800 92px "Plus Jakarta Sans",sans-serif';
+  ctx.fillText(text, 256, subText ? 105 : 128);
+  if (subText) {
+    ctx.font = '700 42px "Plus Jakarta Sans",sans-serif';
+    ctx.fillText(subText, 256, 182);
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function makeCrossMark3D(color = 0xDC2626, size = 0.32) {
+  const g = new THREE.Group();
+  const m = new THREE.MeshBasicMaterial({ color });
+  [-Math.PI / 4, Math.PI / 4].forEach(ang => {
+    const bar = withOutline(new THREE.Mesh(new RoundedBoxGeometry(size, size * 0.24, size * 0.16, 3, 0.02), m), 1.06);
+    bar.rotation.z = ang;
+    g.add(bar);
+  });
+  return g;
+}
+
+/* ============ 2. STAGE A: WET HOUSE TERRACE, GARDEN, BENCH & 3D SNAKE ============ */
+const terraceGroup = new THREE.Group();
+scene.add(terraceGroup);
+
+// Terrace floor tiles + yard grass border
+const porchSlab = new THREE.Mesh(
+  new RoundedBoxGeometry(9.6, 0.40, 10.5, 4, 0.06),
+  mat(0xDCE4EC, 0.35, 0.08)
+);
+porchSlab.position.set(0, -0.20, 0.2);
+porchSlab.receiveShadow = true;
+terraceGroup.add(porchSlab);
+
+// Wet sheen tile lines
+for (let gx = -3.6; gx <= 3.6; gx += 1.2) {
+  const line = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.01, 10.2), mat(0x94A3B8, 0.5));
+  line.position.set(gx, 0.004, 0.2);
+  terraceGroup.add(line);
+}
+for (let gz = -4.2; gz <= 4.2; gz += 1.2) {
+  const line = new THREE.Mesh(new THREE.BoxGeometry(9.2, 0.01, 0.025), mat(0x94A3B8, 0.5));
+  line.position.set(0, 0.004, gz);
+  terraceGroup.add(line);
+}
+
+// Wet rain puddles on terrace floor
+const puddleMat = new THREE.MeshStandardMaterial({ color: 0x9CC4E4, roughness: 0.08, metalness: 0.25, transparent: true, opacity: 0.72 });
+[[0.95, 0.55, 0.65], [-0.45, 1.35, 0.48], [1.65, -0.40, 0.55]].forEach(([px, pz, pr]) => {
+  const p = new THREE.Mesh(new THREE.CylinderGeometry(pr, pr * 1.05, 0.012, 24), puddleMat);
+  p.scale.set(1.3, 1.0, 0.85);
+  p.position.set(px, 0.008, pz);
+  terraceGroup.add(p);
+});
+
+// Lush green garden bed along right edge (+X) & rear wall
+const gardenBed = new THREE.Mesh(
+  new RoundedBoxGeometry(3.4, 0.44, 10.5, 4, 0.08),
+  mat(0x4EA847, 0.78, 0.02)
+);
+gardenBed.position.set(3.2, -0.18, 0.2);
+gardenBed.receiveShadow = true;
+terraceGroup.add(gardenBed);
+
+const backWall = new THREE.Mesh(
+  new RoundedBoxGeometry(11.5, 4.2, 0.45, 4, 0.06),
+  mat(0xF1F5F9, 0.72, 0.02)
+);
+backWall.position.set(0, 1.9, -3.6);
+backWall.receiveShadow = true;
+terraceGroup.add(backWall);
+
+const backTrim = new THREE.Mesh(
+  new RoundedBoxGeometry(11.5, 0.55, 0.50, 3, 0.03),
+  mat(0x261A66, 0.55, 0.05)
+);
+backTrim.position.set(0, 0.28, -3.58);
+terraceGroup.add(backTrim);
+
+// Wooden Terrace Bench (Mas Raka sits here facing +Z)
+const benchGroup = new THREE.Group();
+benchGroup.position.set(-0.48, 0, -0.45);
+terraceGroup.add(benchGroup);
+
+const woodMat = mat(0xB46B38, 0.52, 0.04);
+const benchSeat = withOutline(new THREE.Mesh(new RoundedBoxGeometry(1.75, 0.14, 0.74, 4, 0.04), woodMat), 1.04);
+benchSeat.position.set(0, 0.46, 0);
+benchSeat.castShadow = true;
+benchSeat.receiveShadow = true;
+benchGroup.add(benchSeat);
+[-0.70, 0.70].forEach(bx => {
+  [-0.24, 0.24].forEach(bz => {
+    const bLeg = new THREE.Mesh(new RoundedBoxGeometry(0.11, 0.44, 0.11, 3, 0.02), mat(0x261A66, 0.45));
+    bLeg.position.set(bx, 0.22, bz);
+    bLeg.castShadow = true;
+    benchGroup.add(bLeg);
+  });
+});
+
+// Footrest Cushion / Low Stool (appears cleanly in Step 1-3 S17-S19)
+const footRestGroup = new THREE.Group();
+footRestGroup.position.set(-0.65, 0, 0.70);
+terraceGroup.add(footRestGroup);
+const footRestBox = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.62, 0.34, 0.72, 4, 0.06), mat(0xE2E8F0, 0.45)), 1.05);
+footRestBox.position.y = 0.17;
+footRestBox.castShadow = true;
+footRestGroup.add(footRestBox);
+
+// Terracotta Plant Pot with Tropical Leaves (near garden edge at +X)
+function buildPottedPlant(px, pz, scale = 1.0) {
+  const g = new THREE.Group();
+  g.position.set(px, 0, pz);
+  g.scale.setScalar(scale);
+  const pot = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.27, 0.62, 18), mat(0xD95D39, 0.60)), 1.05);
+  pot.position.y = 0.31;
+  pot.castShadow = true;
+  g.add(pot);
+  const rimPot = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.41, 0.41, 0.09, 18), mat(0xB84627, 0.55)), 1.05);
+  rimPot.position.y = 0.62;
+  g.add(rimPot);
+  const leafMat = mat(0x2E8540, 0.52);
+  for (let i = 0; i < 7; i++) {
+    const a = (i / 7) * Math.PI * 2;
+    const leaf = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.18, 0.03, 0.55, 3, 0.012), leafMat), 1.06);
+    leaf.position.set(Math.cos(a) * 0.25, 0.72 + (i % 2) * 0.14, Math.sin(a) * 0.25);
+    leaf.rotation.set(-0.45, -a + Math.PI / 2, 0);
+    leaf.castShadow = true;
+    g.add(leaf);
+  }
+  return g;
+}
+terraceGroup.add(buildPottedPlant(1.38, 0.85, 1.05));
+terraceGroup.add(buildPottedPlant(1.85, -1.35, 1.20));
+
+// Stylized 3D Venomous Snake (Charcoal-Indigo with Signal Orange Warning Bands)
+const snakeGroup = new THREE.Group();
+terraceGroup.add(snakeGroup);
+
+const snakeCurve = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(-0.35, 0.06, 0.12),
+  new THREE.Vector3(-0.08, 0.07, -0.06),
+  new THREE.Vector3(0.22, 0.09, 0.08),
+  new THREE.Vector3(0.45, 0.15, -0.10),
+  new THREE.Vector3(0.58, 0.28, -0.22)
+]);
+const snakeBodyMesh = withOutline(
+  new THREE.Mesh(new THREE.TubeGeometry(snakeCurve, 28, 0.062, 12, false), mat(0x1E293B, 0.35, 0.12)),
+  1.07
+);
+snakeBodyMesh.castShadow = true;
+snakeGroup.add(snakeBodyMesh);
+
+// Orange warning stripes along the snake
+[0.2, 0.4, 0.6, 0.8].forEach(u => {
+  const pt = snakeCurve.getPointAt(u);
+  const ring = new THREE.Mesh(new THREE.SphereGeometry(0.068, 12, 12), mat(0xEF5F18, 0.32));
+  ring.scale.set(0.9, 1.0, 0.9);
+  ring.position.copy(pt);
+  snakeGroup.add(ring);
+});
+
+const snakeHead = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(0.16, 0.11, 0.21, 5, 0.045), mat(0x1E293B, 0.32, 0.12)),
+  1.07
+);
+snakeHead.position.set(0.62, 0.31, -0.27);
+snakeHead.rotation.set(0.20, -0.55, 0);
+snakeGroup.add(snakeHead);
+
+[-0.055, 0.055].forEach(ex => {
+  const eye = new THREE.Mesh(new THREE.SphereGeometry(0.022, 10, 10), new THREE.MeshBasicMaterial({ color: 0xF59E0B }));
+  eye.position.set(ex, 0.02, 0.075);
+  snakeHead.add(eye);
+});
+const tongue = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.008, 0.09), new THREE.MeshBasicMaterial({ color: 0xEF4444 }));
+tongue.position.set(0, -0.015, 0.14);
+snakeHead.add(tongue);
+
+// S20 Smartphone Photo Focus Ring around Snake
+const snakePhotoFrame = new THREE.Group();
+snakePhotoFrame.position.set(0.28, 0.25, -0.10);
+snakeGroup.add(snakePhotoFrame);
+const frameMat = new THREE.MeshBasicMaterial({ color: 0x0FA968, transparent: true, opacity: 0.0 });
+const photoBorder = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.025, 10, 4), frameMat);
+photoBorder.rotation.z = Math.PI / 4;
+snakePhotoFrame.add(photoBorder);
+
+// Detached Right Shoe & Black Watch on Terrace Floor/Bench when removed in Step 2 (S18+)
+const detachedItemsGroup = new THREE.Group();
+terraceGroup.add(detachedItemsGroup);
+const dShoe = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.15, 0.38, 4, 0.05), mat(0xF8FAFC, 0.30)), 1.07);
+dShoe.position.set(-1.12, 0.08, 0.65); dShoe.rotation.y = 0.45; dShoe.castShadow = true;
+const dWatch = withOutline(new THREE.Mesh(new THREE.TorusGeometry(0.085, 0.025, 10, 20), mat(0x181E26, 0.30)), 1.06);
+dWatch.rotation.x = Math.PI / 2;
+dWatch.position.set(-1.10, 0.56, -0.25);
+detachedItemsGroup.add(dShoe, dWatch);
+
+// Running Motion Ground Stripes (visible during S09 panic run)
+const runLinesGroup = new THREE.Group();
+terraceGroup.add(runLinesGroup);
+const runLines = [];
+for (let i = 0; i < 8; i++) {
+  const rl = new THREE.Mesh(new RoundedBoxGeometry(0.08, 0.02, 0.75, 2, 0.01), new THREE.MeshBasicMaterial({ color: 0xEF5F18, transparent: true, opacity: 0.55 }));
+  rl.position.set((i % 2 === 0 ? -1.4 : 1.1), 0.04, -3 + i * 1.1);
+  rl.userData.baseZ = rl.position.z;
+  runLinesGroup.add(rl);
+  runLines.push(rl);
+}
+
+/* ============ 3. RIG KARAKTER EKSPRESIF: MAS RAKA (FULL ARTIKULASI + PROPS KAKI EP04) ============ */
+const faceCanvas = document.createElement('canvas');
+faceCanvas.width = 512; faceCanvas.height = 512;
+const faceCtx = faceCanvas.getContext('2d');
+const faceTexture = new THREE.CanvasTexture(faceCanvas);
+faceTexture.colorSpace = THREE.SRGBColorSpace;
+let lastFaceKey = '';
+
+function updateRakaFace(mood = 'alert', isBlinking = false) {
+  const key = `${mood}_${isBlinking ? 1 : 0}`;
+  if (key === lastFaceKey) return;
+  lastFaceKey = key;
+
+  const ctx = faceCtx;
+  ctx.clearRect(0, 0, 512, 512);
+  ctx.fillStyle = '#181E26';
+  ctx.strokeStyle = '#181E26';
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  ctx.lineWidth = 20;
+  ctx.beginPath();
+  if (mood === 'panic') {
+    ctx.moveTo(108, 182); ctx.quadraticCurveTo(156, 145, 206, 152);
+    ctx.moveTo(306, 152); ctx.quadraticCurveTo(356, 145, 404, 182);
+  } else if (mood === 'focused') {
+    ctx.moveTo(110, 162); ctx.quadraticCurveTo(158, 158, 208, 176);
+    ctx.moveTo(304, 176); ctx.quadraticCurveTo(354, 158, 402, 162);
+  } else if (mood === 'smile') {
+    ctx.moveTo(112, 174); ctx.quadraticCurveTo(156, 156, 204, 170);
+    ctx.moveTo(308, 170); ctx.quadraticCurveTo(356, 156, 400, 174);
+  } else {
+    ctx.moveTo(110, 168); ctx.quadraticCurveTo(156, 146, 204, 164);
+    ctx.moveTo(308, 164); ctx.quadraticCurveTo(356, 146, 402, 168);
+  }
+  ctx.stroke();
+
+  [158, 354].forEach(cx => {
+    if (isBlinking) {
+      ctx.lineWidth = 16;
+      ctx.beginPath();
+      ctx.moveTo(cx - 24, 252);
+      ctx.quadraticCurveTo(cx, 260, cx + 24, 252);
+      ctx.stroke();
+    } else {
+      const eyeH = mood === 'panic' ? 64 : 56;
+      const eyeW = mood === 'panic' ? 48 : 44;
+      ctx.fillStyle = '#181E26';
+      ctx.beginPath();
+      ctx.roundRect(cx - eyeW / 2, 222, eyeW, eyeH, 21);
+      ctx.fill();
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.arc(cx - 7, 240, mood === 'panic' ? 10.5 : 9, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  });
+
+  ctx.strokeStyle = 'rgba(145, 92, 58, 0.78)';
+  ctx.lineWidth = 10;
+  ctx.beginPath();
+  ctx.moveTo(256, 238); ctx.lineTo(248, 288); ctx.lineTo(268, 292);
+  ctx.stroke();
+
+  ctx.strokeStyle = '#181E26';
+  ctx.fillStyle = '#181E26';
+  ctx.lineWidth = 14;
+  ctx.beginPath();
+  if (mood === 'panic') {
+    ctx.roundRect(228, 328, 56, 42, 20);
+    ctx.fill();
+  } else if (mood === 'alert') {
+    ctx.moveTo(214, 352); ctx.quadraticCurveTo(256, 336, 298, 352); ctx.stroke();
+  } else if (mood === 'focused') {
+    ctx.moveTo(212, 346); ctx.quadraticCurveTo(256, 352, 302, 342); ctx.stroke();
+  } else {
+    ctx.moveTo(204, 344); ctx.quadraticCurveTo(258, 376, 312, 334); ctx.stroke();
+  }
+  faceTexture.needsUpdate = true;
+}
+updateRakaFace('alert', false);
+
+function buildMasRaka() {
+  const root = new THREE.Group();
+  const bodyPivot = new THREE.Group();
+  bodyPivot.position.y = 0.72;
+  root.add(bodyPivot);
+
+  const skinMat = mat(0xF1C29B, 0.36);
+
+  const innerTee = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.68, 0.82, 0.44, 6, 0.11), mat(0xFFFFFF, 0.32)), 1.07
+  );
+  innerTee.position.y = 0.41;
+  innerTee.castShadow = true;
+  bodyPivot.add(innerTee);
+
+  [-0.21, 0.21].forEach(px => {
+    const panel = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.28, 0.83, 0.47, 5, 0.07), mat(0xD95D39, 0.38)), 1.06
+    );
+    panel.position.set(px, 0.41, 0.01);
+    panel.castShadow = true;
+    bodyPivot.add(panel);
+  });
+
+  const backPanel = new THREE.Mesh(new RoundedBoxGeometry(0.70, 0.83, 0.24, 5, 0.07), mat(0xD95D39, 0.38));
+  backPanel.position.set(0, 0.41, -0.12);
+  bodyPivot.add(backPanel);
+
+  [-0.16, 0.16].forEach((cx, idx) => {
+    const collar = withOutline(
+      new THREE.Mesh(new RoundedBoxGeometry(0.20, 0.12, 0.26, 4, 0.03), mat(0xD95D39, 0.36)), 1.06
+    );
+    collar.position.set(cx, 0.81, 0.12);
+    collar.rotation.z = idx === 0 ? 0.35 : -0.35;
+    bodyPivot.add(collar);
+  });
+
+  const pocket = new THREE.Mesh(new RoundedBoxGeometry(0.16, 0.18, 0.04, 3, 0.015), mat(0xB84627, 0.4));
+  pocket.position.set(-0.22, 0.56, 0.245);
+  bodyPivot.add(pocket);
+
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 0.22, 16), skinMat);
+  neck.position.set(0, 0.86, 0);
+  bodyPivot.add(neck);
+
+  const headPivot = new THREE.Group();
+  headPivot.position.y = 0.90;
+  bodyPivot.add(headPivot);
+
+  const head = withOutline(
+    new THREE.Mesh(new RoundedBoxGeometry(0.74, 0.74, 0.70, 8, 0.21), skinMat), 1.065
+  );
+  head.position.y = 0.37;
+  head.castShadow = true;
+  headPivot.add(head);
+
+  const facePlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.64, 0.64),
+    new THREE.MeshBasicMaterial({ map: faceTexture, transparent: true })
+  );
+  facePlane.position.set(0, 0.37, 0.356);
+  headPivot.add(facePlane);
+
+  // 360° Sculpted Side-Part Quiff Hair
+  const hairGroup = new THREE.Group();
+  headPivot.add(hairGroup);
+  const hairDark = mat(0x241A14, 0.36, 0.04);
+  const hairMid  = mat(0x2E221A, 0.34, 0.05);
+
+  const hairBase = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.785, 0.27, 0.72, 10, 0.13), hairDark), 1.045);
+  hairBase.position.set(0, 0.65, -0.035); hairBase.rotation.x = -0.05; hairGroup.add(hairBase);
+  const sideBackTaper = new THREE.Mesh(new RoundedBoxGeometry(0.762, 0.28, 0.58, 10, 0.11), hairDark);
+  sideBackTaper.position.set(0, 0.535, -0.075); sideBackTaper.rotation.x = 0.04; hairGroup.add(sideBackTaper);
+  const waveRightMain = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.47, 0.20, 0.70, 10, 0.095), hairMid), 1.045);
+  waveRightMain.position.set(0.135, 0.735, 0.015); waveRightMain.rotation.set(-0.09, -0.06, -0.13); hairGroup.add(waveRightMain);
+  const frontCommaR = new THREE.Mesh(new RoundedBoxGeometry(0.38, 0.165, 0.36, 8, 0.08), hairMid);
+  frontCommaR.position.set(0.155, 0.705, 0.22); frontCommaR.rotation.set(-0.20, -0.14, -0.18); hairGroup.add(frontCommaR);
+  const waveLeftPart = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.27, 0.16, 0.67, 10, 0.078), hairDark), 1.045);
+  waveLeftPart.position.set(-0.235, 0.70, 0.005); waveLeftPart.rotation.set(-0.06, 0.05, 0.15); hairGroup.add(waveLeftPart);
+  const topStrand = new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.11, 0.48, 8, 0.052), hairMid);
+  topStrand.position.set(0.05, 0.785, 0.06); topStrand.rotation.set(-0.12, -0.10, -0.08); hairGroup.add(topStrand);
+
+  // Arms + Removable Watch + Phone Prop
+  const sleeveMat = mat(0xD95D39, 0.36);
+  let watchMesh = null;
+  let phoneGroup = null;
+
+  function makeArm(side) {
+    const p = new THREE.Group();
+    p.position.set(side * 0.42, 0.72, 0.02);
+
+    const upperSleeve = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.44, 0.25, 5, 0.08), sleeveMat), 1.08);
+    upperSleeve.position.y = -0.18; p.add(upperSleeve);
+    const cuffRoll = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.08, 0.27, 4, 0.03), sleeveMat), 1.07);
+    cuffRoll.position.y = -0.38; p.add(cuffRoll);
+
+    const forearmPivot = new THREE.Group();
+    forearmPivot.position.set(0, -0.40, 0);
+    p.add(forearmPivot);
+
+    const forearm = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.20, 0.40, 0.21, 5, 0.07), skinMat), 1.08);
+    forearm.position.y = -0.20;
+    forearmPivot.add(forearm);
+
+    if (side === -1) {
+      watchMesh = new THREE.Mesh(new RoundedBoxGeometry(0.225, 0.065, 0.235, 4, 0.02), mat(0x181E26, 0.3));
+      watchMesh.position.y = -0.32;
+      forearmPivot.add(watchMesh);
+    }
+
+    const handPivot = new THREE.Group();
+    handPivot.position.set(0, -0.42, 0);
+    forearmPivot.add(handPivot);
+
+    const hand = withOutline(new THREE.Mesh(new THREE.SphereGeometry(0.115, 16, 16), skinMat), 1.08);
+    handPivot.add(hand);
+
+    if (side === -1) {
+      phoneGroup = new THREE.Group();
+      phoneGroup.position.set(0, -0.02, 0.14);
+      const bodyP = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.22, 0.38, 0.03, 3, 0.015), mat(0x181E26, 0.25, 0.4)), 1.06);
+      phoneGroup.add(bodyP);
+      const scrP = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.32), new THREE.MeshBasicMaterial({ map: makeBadgeCanvasTex('ZOOM', '#0F172A', '#22D3EE', 'FOTO ULAR') }));
+      scrP.position.z = 0.017;
+      phoneGroup.add(scrP);
+      phoneGroup.visible = false;
+      handPivot.add(phoneGroup);
+    }
+
+    bodyPivot.add(p);
+    return { root: p, forearmPivot, handPivot };
+  }
+  const armL = makeArm(1);
+  const armR = makeArm(-1);
+
+  // Articulated Legs + Right Calf EP04 Interactive Props (Fang Marks, Red Tie, Removable Shoe, Wood Splint)
+  const pantsMat = mat(0x1E293B, 0.45);
+  const shoeMat  = mat(0xF8FAFC, 0.30);
+
+  let fangMarksR, calfTourniquetR, tourniquetRingMat, dangerGlowR, shoeRGroup, swellHaloR, splintGroupR;
+
+  function makeLeg(side) {
+    const hip = new THREE.Group();
+    hip.position.set(side * 0.17, 0.72, 0);
+
+    const thigh = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.34, 0.29, 5, 0.07), pantsMat), 1.07);
+    thigh.position.y = -0.15;
+    thigh.castShadow = true;
+    hip.add(thigh);
+
+    const knee = new THREE.Group();
+    knee.position.set(0, -0.32, 0);
+    hip.add(knee);
+
+    // Rolled up trouser hem for Right Leg so calf bite / tie / splint are clearly visible!
+    const calfHeight = 0.32;
+    const calfMesh = withOutline(
+      new THREE.Mesh(
+        new THREE.CylinderGeometry(0.115, 0.095, calfHeight, 18),
+        side === -1 ? skinMat : pantsMat
+      ),
+      1.07
+    );
+    calfMesh.position.y = -0.16;
+    calfMesh.castShadow = true;
+    knee.add(calfMesh);
+
+    const shoeGroup = new THREE.Group();
+    shoeGroup.position.set(0, -0.35, 0.05);
+    const shoeMesh = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.15, 0.38, 4, 0.05), shoeMat), 1.07);
+    shoeMesh.castShadow = true;
+    shoeGroup.add(shoeMesh);
+    knee.add(shoeGroup);
+
+    if (side === -1) {
+      shoeRGroup = shoeGroup;
+
+      // Two crisp red fang bite marks on front-outer right calf
+      fangMarksR = new THREE.Group();
+      fangMarksR.position.set(-0.075, -0.17, 0.078);
+      fangMarksR.rotation.y = -0.55;
+      [-0.022, 0.022].forEach(fx => {
+        const dot = new THREE.Mesh(new THREE.SphereGeometry(0.017, 10, 10), new THREE.MeshBasicMaterial({ color: 0xEF4444 }));
+        dot.position.set(fx, 0, 0);
+        fangMarksR.add(dot);
+      });
+      knee.add(fangMarksR);
+
+      // Red Tourniquet cloth + knot around upper calf (just above bite marks)
+      calfTourniquetR = new THREE.Group();
+      calfTourniquetR.position.set(0, -0.095, 0);
+      tourniquetRingMat = new THREE.MeshStandardMaterial({ color: 0xDC2626, roughness: 0.45 });
+      const strapBand = withOutline(new THREE.Mesh(new THREE.TorusGeometry(0.118, 0.028, 12, 24), tourniquetRingMat), 1.06);
+      strapBand.rotation.x = Math.PI / 2;
+      calfTourniquetR.add(strapBand);
+      const knot = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.08, 0.07, 0.07, 3, 0.02), tourniquetRingMat), 1.06);
+      knot.position.set(-0.11, 0, 0.06);
+      calfTourniquetR.add(knot);
+      const tail1 = new THREE.Mesh(new RoundedBoxGeometry(0.03, 0.14, 0.04, 2, 0.01), tourniquetRingMat);
+      tail1.position.set(-0.13, -0.07, 0.07); tail1.rotation.z = -0.35;
+      calfTourniquetR.add(tail1);
+      knee.add(calfTourniquetR);
+
+      // Dark red danger pulse below tourniquet
+      dangerGlowR = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.116, 0.100, 0.16, 18),
+        new THREE.MeshBasicMaterial({ color: 0xDC2626, transparent: true, opacity: 0.0 })
+      );
+      dangerGlowR.position.set(0, -0.22, 0);
+      knee.add(dangerGlowR);
+
+      // Subtle ankle swelling indicator for S18
+      swellHaloR = new THREE.Mesh(
+        new THREE.TorusGeometry(0.135, 0.018, 10, 24),
+        new THREE.MeshBasicMaterial({ color: 0xEF5F18, transparent: true, opacity: 0.0 })
+      );
+      swellHaloR.rotation.x = Math.PI / 2;
+      swellHaloR.position.set(0, -0.24, 0);
+      knee.add(swellHaloR);
+
+      // Dual Wood/Cardboard Splint (Bidai) locking knee & calf straight (S19-S21, S24)
+      splintGroupR = new THREE.Group();
+      const plankMat = mat(0xD4A373, 0.65);
+      [-0.145, 0.145].forEach(sx => {
+        const plank = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.038, 0.56, 0.14, 3, 0.012), plankMat), 1.06);
+        plank.position.set(sx, -0.04, 0);
+        splintGroupR.add(plank);
+      });
+      const strapMat = mat(0xFFFFFF, 0.45);
+      const tieAccentMat = new THREE.MeshBasicMaterial({ color: 0x0FA968 });
+      [-0.20, 0.12].forEach(ty => {
+        const wrap = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.32, 0.055, 0.19, 3, 0.02), strapMat), 1.05);
+        wrap.position.set(0, ty, 0);
+        splintGroupR.add(wrap);
+        const strip = new THREE.Mesh(new RoundedBoxGeometry(0.326, 0.018, 0.196, 2, 0.008), tieAccentMat);
+        strip.position.set(0, ty, 0);
+        splintGroupR.add(strip);
+      });
+      splintGroupR.visible = false;
+      knee.add(splintGroupR);
+    }
+
+    root.add(hip);
+    return { hip, knee, shoeGroup };
+  }
+  const legL = makeLeg(1);
+  const legR = makeLeg(-1);
+
+  return {
+    root, bodyPivot, headPivot, armL, armR, legL, legR,
+    watchMesh, phoneGroup, fangMarksR, calfTourniquetR, tourniquetRingMat,
+    dangerGlowR, shoeRGroup, swellHaloR, splintGroupR
+  };
+}
+
+const RAKA = buildMasRaka();
+scene.add(RAKA.root);
+
+// Terrace Fake Red Tie Object in Mas Raka's left hand for S01 Hook
+const handTieProp = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.05, 0.07, 3, 0.018), mat(0xDC2626, 0.45)), 1.06);
+handTieProp.position.set(0, -0.06, 0.08);
+RAKA.armL.handPivot.add(handTieProp);
+
+// Also create Mini X-Ray Lens Floating cleanly beside Mas Raka in S17 (Step 1: otot rileks = racun tertahan)
+const miniXrayGroup = new THREE.Group();
+miniXrayGroup.position.set(-0.15, 1.16, 0.55);
+scene.add(miniXrayGroup);
+
+const miniGlass = new THREE.Mesh(
+  new RoundedBoxGeometry(0.72, 0.92, 0.18, 6, 0.08),
+  new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.12, transparent: true, opacity: 0.72 })
+);
+miniXrayGroup.add(miniGlass);
+const miniRim = new THREE.Mesh(
+  new RoundedBoxGeometry(0.76, 0.96, 0.15, 6, 0.09),
+  new THREE.MeshBasicMaterial({ color: 0x0FA968, wireframe: false, transparent: true, opacity: 0.88 })
+);
+miniRim.position.z = -0.02;
+miniXrayGroup.add(miniRim);
+const miniTube = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.058, 0.058, 0.68, 14),
+  new THREE.MeshStandardMaterial({ color: 0x06B6D4, transparent: true, opacity: 0.68 })
+);
+miniTube.position.z = 0.08;
+miniXrayGroup.add(miniTube);
+const miniVenomBalls = [];
+[-0.18, -0.06, 0.06].forEach(vy => {
+  const vb = new THREE.Mesh(new THREE.SphereGeometry(0.042, 12, 12), mat(0xEF5F18, 0.25, 0.05, 0xEF5F18, 0.4));
+  vb.position.set(0, vy, 0.08);
+  miniXrayGroup.add(vb);
+  miniVenomBalls.push({ mesh: vb, baseY: vy });
+});
+
+/* ============ 4. STAGE B: DEDICATED 3D ANATOMICAL X-RAY CUTAWAY STAGE ============ */
+const xrayGroup = new THREE.Group();
+scene.add(xrayGroup);
+
+// Cutaway Leg Outer Shell (upper & lower halves so tourniquet cinch pinches visibly!)
+const upperTissueMat = new THREE.MeshStandardMaterial({ color: 0xF1C29B, roughness: 0.38, transparent: true, opacity: 0.34 });
+const lowerTissueMat = new THREE.MeshStandardMaterial({ color: 0xF1C29B, roughness: 0.38, transparent: true, opacity: 0.38 });
+
+const xrayUpperShell = new THREE.Mesh(new THREE.CylinderGeometry(0.56, 0.56, 0.72, 28), upperTissueMat);
+xrayUpperShell.position.set(0, 1.80, 0);
+xrayGroup.add(xrayUpperShell);
+
+const xrayLowerShell = new THREE.Mesh(new THREE.CylinderGeometry(0.56, 0.48, 0.88, 28), lowerTissueMat);
+xrayLowerShell.position.set(0, 1.00, 0);
+xrayGroup.add(xrayLowerShell);
+
+// Solid crisp outline ring around epidermis top + fang puncture channels
+const skinTopRim = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.57, 0.57, 0.06, 28), mat(0xF1C29B, 0.42)), 1.03);
+skinTopRim.position.set(0, 2.15, 0);
+xrayGroup.add(skinTopRim);
+
+// Two dramatic 3D Viper Fangs entering from top right skin surface (above sub-dermal lymph channel)
+const fangGroupX = new THREE.Group();
+fangGroupX.position.set(0.28, 2.18, 0.02);
+[-0.08, 0.08].forEach(fx => {
+  const fang = withOutline(new THREE.Mesh(new THREE.ConeGeometry(0.042, 0.28, 12), mat(0xFFFDF9, 0.2)), 1.07);
+  fang.rotation.z = Math.PI;
+  fang.position.set(fx, 0.05, 0);
+  fangGroupX.add(fang);
+});
+xrayGroup.add(fangGroupX);
+
+// Deep Red Blood Vessel (Left column x = -0.26)
+const bloodVesselMat = new THREE.MeshStandardMaterial({ color: 0xDC2626, roughness: 0.25, transparent: true, opacity: 0.48 });
+const bloodVesselMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.115, 0.115, 1.48, 20), bloodVesselMat);
+bloodVesselMesh.position.set(-0.26, 1.38, 0.08);
+xrayGroup.add(bloodVesselMesh);
+
+// Red Blood Cells inside blood vessel
+const bloodDiscs = [];
+const rbcMat = mat(0xEF4444, 0.28, 0.05, 0xDC2626, 0.25);
+for (let i = 0; i < 12; i++) {
+  const rbc = new THREE.Mesh(new THREE.CylinderGeometry(0.058, 0.058, 0.026, 14), rbcMat);
+  rbc.rotation.x = Math.PI / 2;
+  xrayGroup.add(rbc);
+  bloodDiscs.push({ mesh: rbc, phase: i / 12 });
+}
+
+// 3D stylized Pumping Heart (S07) connected to bottom of blood vessel
+const heartPumpGroup = new THREE.Group();
+heartPumpGroup.position.set(-0.28, 0.88, 0.24);
+const heartLobeL = withOutline(new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 16), mat(0xE11D48, 0.30, 0.05, 0xE11D48, 0.25)), 1.06);
+heartLobeL.position.set(-0.08, 0.06, 0);
+const heartLobeR = withOutline(new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 16), mat(0xE11D48, 0.30, 0.05, 0xE11D48, 0.25)), 1.06);
+heartLobeR.position.set(0.08, 0.06, 0);
+const heartTip = withOutline(new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.30, 16), mat(0xE11D48, 0.30, 0.05, 0xE11D48, 0.25)), 1.06);
+heartTip.rotation.z = Math.PI;
+heartTip.position.set(0, -0.09, 0);
+heartPumpGroup.add(heartLobeL, heartLobeR, heartTip);
+xrayGroup.add(heartPumpGroup);
+
+// Sub-Dermal Cyan Lymphatic Vessel (Right column x = +0.28, tepat di bawah kulit!)
+const lymphVesselMat = new THREE.MeshStandardMaterial({ color: 0x06B6D4, roughness: 0.22, transparent: true, opacity: 0.52, emissive: 0x0891B2, emissiveIntensity: 0.22 });
+const lymphVesselMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.095, 1.48, 20), lymphVesselMat);
+lymphVesselMesh.position.set(0.28, 1.38, 0.08);
+xrayGroup.add(lymphVesselMesh);
+
+// Valve rings on cyan lymphatic channel
+for (let vy = 0.85; vy <= 1.95; vy += 0.27) {
+  const vRing = new THREE.Mesh(new THREE.TorusGeometry(0.098, 0.015, 10, 20), mat(0x22D3EE, 0.25));
+  vRing.rotation.x = Math.PI / 2;
+  vRing.position.set(0.28, vy, 0.08);
+  xrayGroup.add(vRing);
+}
+
+// 0 POMPA Dial Badge (S08)
+const zeroPumpBadge = new THREE.Mesh(
+  new RoundedBoxGeometry(0.56, 0.30, 0.05, 4, 0.02),
+  new THREE.MeshBasicMaterial({ map: makeBadgeCanvasTex('0 POMPA', '#261A66', '#FFFFFF', 'GETAH BENING') })
+);
+zeroPumpBadge.position.set(0.30, 0.90, 0.34);
+xrayGroup.add(zeroPumpBadge);
+
+// 3D Question Mark Badge (S04) & Blood Vessel Red X Cross (S05)
+const qMarkBadge = new THREE.Mesh(
+  new RoundedBoxGeometry(0.34, 0.34, 0.06, 4, 0.03),
+  new THREE.MeshBasicMaterial({ map: makeBadgeCanvasTex('?', '#EF5F18', '#FFFFFF') })
+);
+qMarkBadge.position.set(-0.26, 1.72, 0.38);
+xrayGroup.add(qMarkBadge);
+
+const bloodCrossX = makeCrossMark3D(0xDC2626, 0.34);
+bloodCrossX.position.set(-0.22, 1.45, 0.40);
+xrayGroup.add(bloodCrossX);
+
+// Large Orange Venom Enzyme Particles (S05 bouncing off blood wall, S06-S10 & S22 inside lymph/tissue)
+const venomOrbs = [];
+const venomMat = mat(0xEF5F18, 0.22, 0.05, 0xEF5F18, 0.45);
+for (let i = 0; i < 14; i++) {
+  const vOrb = withOutline(new THREE.Mesh(new THREE.SphereGeometry(0.052, 14, 14), venomMat), 1.07);
+  xrayGroup.add(vOrb);
+  venomOrbs.push({ mesh: vOrb, phase: i / 14 });
+}
+
+// Striated Calf Muscles Squeezing Cyan Lymphatic Channel (S10)
+const muscleGroup = new THREE.Group();
+const muscleMat = mat(0xE05A47, 0.45, 0.04);
+const muscleL = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.18, 0.96, 0.26, 6, 0.085), muscleMat), 1.06);
+muscleL.position.set(0.08, 1.38, 0.08);
+const muscleR = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.16, 0.96, 0.26, 6, 0.075), muscleMat), 1.06);
+muscleR.position.set(0.47, 1.38, 0.08);
+muscleGroup.add(muscleL, muscleR);
+xrayGroup.add(muscleGroup);
+
+// Tight Tourniquet Cutaway Strap & Amputation Cut Ring (S11-S13)
+const xrayStrapGroup = new THREE.Group();
+xrayStrapGroup.position.set(0, 1.46, 0);
+const xrayStrapBand = withOutline(new THREE.Mesh(new THREE.TorusGeometry(0.57, 0.075, 14, 32), mat(0xDC2626, 0.38)), 1.05);
+xrayStrapBand.rotation.x = Math.PI / 2;
+xrayStrapGroup.add(xrayStrapBand);
+xrayGroup.add(xrayStrapGroup);
+
+const amputationPlaneRing = new THREE.Mesh(
+  new THREE.TorusGeometry(0.56, 0.022, 10, 32),
+  new THREE.MeshBasicMaterial({ color: 0xEF5F18, transparent: true, opacity: 0.95 })
+);
+amputationPlaneRing.rotation.x = Math.PI / 2;
+amputationPlaneRing.position.set(0, 1.34, 0);
+xrayGroup.add(amputationPlaneRing);
+
+// Oxygenated Bright Red Blood Orbs Blocked Above Tourniquet (S12)
+const oxyOrbs = [];
+for (let i = 0; i < 8; i++) {
+  const oOrb = new THREE.Mesh(new THREE.SphereGeometry(0.048, 12, 12), mat(0xFF4757, 0.25, 0.05, 0xFF4757, 0.35));
+  xrayGroup.add(oOrb);
+  oxyOrbs.push({ mesh: oOrb, phase: i / 8 });
+}
+
+// Mouth Suction Cup & Oral Bacteria Invasion (S14-S15, S22)
+const suctionGroup = new THREE.Group();
+suctionGroup.position.set(0.28, 2.34, 0.12);
+const suctionCone = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.28, 0.24, 18, 1, true), mat(0xFCA5A5, 0.45)), 1.05);
+suctionGroup.add(suctionCone);
+const suctionCross = makeCrossMark3D(0xDC2626, 0.32);
+suctionCross.position.set(0, 0.04, 0.30);
+suctionGroup.add(suctionCross);
+xrayGroup.add(suctionGroup);
+
+const bacteriaOrbs = [];
+const bactMat1 = mat(0x84CC16, 0.30, 0.05, 0x84CC16, 0.40);
+const bactMat2 = mat(0x9333EA, 0.30, 0.05, 0x9333EA, 0.40);
+for (let i = 0; i < 12; i++) {
+  const b = withOutline(new THREE.Mesh(new THREE.DodecahedronGeometry(0.044, 0), i % 2 === 0 ? bactMat1 : bactMat2), 1.07);
+  xrayGroup.add(b);
+  bacteriaOrbs.push({ mesh: b, phase: i / 12, xOff: (i % 3 - 1) * 0.09 });
+}
+
+const infectionGlow = new THREE.Mesh(
+  new THREE.SphereGeometry(0.26, 16, 16),
+  new THREE.MeshBasicMaterial({ color: 0xDC2626, transparent: true, opacity: 0.0 })
+);
+infectionGlow.position.set(0.28, 2.02, 0.10);
+xrayGroup.add(infectionGlow);
+
+/* ============ 5. STAGE C: HOSPITAL STRETCHER EVACUATION & SERUM ANTIBISA (S21) ============ */
+const hospitalGroup = new THREE.Group();
+scene.add(hospitalGroup);
+
+const hospFloor = new THREE.Mesh(new RoundedBoxGeometry(10.0, 0.4, 8.0, 4, 0.06), mat(0xE2E8F0, 0.45));
+hospFloor.position.set(0, -0.20, 0); hospFloor.receiveShadow = true; hospitalGroup.add(hospFloor);
+
+// Stylized Hospital Entrance Arch (IGD Rumah Sakit)
+const igdArch = new THREE.Group();
+igdArch.position.set(-0.28, 0, -1.65);
+hospitalGroup.add(igdArch);
+const igdWall = withOutline(new THREE.Mesh(new RoundedBoxGeometry(2.5, 2.5, 0.55, 4, 0.06), mat(0xFFFFFF, 0.35)), 1.03);
+igdWall.position.y = 1.25; igdArch.add(igdWall);
+const igdDoor = new THREE.Mesh(new RoundedBoxGeometry(1.4, 1.8, 0.58, 3, 0.03), mat(0x93C5FD, 0.25));
+igdDoor.position.y = 0.92; igdArch.add(igdDoor);
+const igdSign = new THREE.Mesh(new RoundedBoxGeometry(1.55, 0.42, 0.14, 4, 0.04), new THREE.MeshBasicMaterial({ map: makeBadgeCanvasTex('IGD RS', '#261A66', '#FFFFFF') }));
+igdSign.position.set(-0.1, 2.15, 0.32); igdArch.add(igdSign);
+
+// Cross emblem on arch
+const redCross = new THREE.Group();
+redCross.position.set(0.86, 2.15, 0.34);
+redCross.add(new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.085, 0.06, 2, 0.01), new THREE.MeshBasicMaterial({ color: 0xDC2626 })));
+redCross.add(new THREE.Mesh(new RoundedBoxGeometry(0.085, 0.26, 0.06, 2, 0.01), new THREE.MeshBasicMaterial({ color: 0xDC2626 })));
+igdArch.add(redCross);
+
+// Medical Stretcher / Brankar
+const stretcherGroup = new THREE.Group();
+stretcherGroup.position.set(-0.15, 0.56, 0.25);
+hospitalGroup.add(stretcherGroup);
+const bedDeck = withOutline(new THREE.Mesh(new RoundedBoxGeometry(1.85, 0.14, 0.85, 4, 0.05), mat(0xFFFFFF, 0.35)), 1.04);
+bedDeck.castShadow = true; stretcherGroup.add(bedDeck);
+const mattress = new THREE.Mesh(new RoundedBoxGeometry(1.75, 0.10, 0.78, 4, 0.04), mat(0x0FA968, 0.55));
+mattress.position.y = 0.10; stretcherGroup.add(mattress);
+[-0.72, 0.72].forEach(sx => {
+  [-0.32, 0.32].forEach(sz => {
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.44, 10), mat(0x64748B, 0.35, 0.5));
+    leg.position.set(sx, -0.26, sz); stretcherGroup.add(leg);
+    const wheel = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.05, 14), mat(0x1E293B, 0.5)), 1.07);
+    wheel.rotation.x = Math.PI / 2;
+    wheel.position.set(sx, -0.48, sz); stretcherGroup.add(wheel);
+  });
+});
+
+// Hero Floating 3D Vial: SERUM ANTIBISA (SABU)
+const serumVialGroup = new THREE.Group();
+serumVialGroup.position.set(0.68, 1.55, 0.95);
+serumVialGroup.scale.setScalar(0.76);
+hospitalGroup.add(serumVialGroup);
+
+const vialBody = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.64, 24), new THREE.MeshStandardMaterial({ color: 0xE0F2FE, roughness: 0.12, transparent: true, opacity: 0.75 })), 1.04);
+serumVialGroup.add(vialBody);
+const vialLiquid = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.40, 22), mat(0x0FA968, 0.2, 0.05, 0x0FA968, 0.42));
+vialLiquid.position.y = -0.09; serumVialGroup.add(vialLiquid);
+const vialCap = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.20, 0.22, 0.16, 20), mat(0x0FA968, 0.3)), 1.06);
+vialCap.position.y = 0.39; serumVialGroup.add(vialCap);
+const vialLabel = new THREE.Mesh(new THREE.PlaneGeometry(0.42, 0.24), new THREE.MeshBasicMaterial({ map: makeBadgeCanvasTex('SABU', '#261A66', '#FFFFFF', 'ANTIBISA') }));
+vialLabel.position.set(0, -0.02, 0.245); serumVialGroup.add(vialLabel);
+const vialAura = new THREE.Mesh(new THREE.TorusGeometry(0.48, 0.022, 10, 32), new THREE.MeshBasicMaterial({ color: 0x0FA968, transparent: true, opacity: 0.85 }));
+serumVialGroup.add(vialAura);
+
+/* ============ 6. STAGE D: SPLIT 3D COMPARISON (S23: PANIK LARI vs DIAM DIBIDAI) ============ */
+const splitCompareGroup = new THREE.Group();
+scene.add(splitCompareGroup);
+
+const splitDivider = new THREE.Mesh(new RoundedBoxGeometry(0.035, 1.95, 0.06, 2, 0.01), mat(0x261A66, 0.4));
+splitDivider.position.set(0, 1.35, 0.15);
+splitCompareGroup.add(splitDivider);
+
+// Left Side: PANIK & LARI (Squeezing Muscle & Rapid Venom Rise)
+const splitLeft = new THREE.Group();
+splitLeft.position.set(-0.44, 1.35, 0);
+splitCompareGroup.add(splitLeft);
+const slShell = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.24, 1.25, 20), new THREE.MeshStandardMaterial({ color: 0xEF5F18, transparent: true, opacity: 0.24 }));
+splitLeft.add(slShell);
+const slTube = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 1.15, 16), new THREE.MeshStandardMaterial({ color: 0x06B6D4, transparent: true, opacity: 0.58 }));
+splitLeft.add(slTube);
+const slMuscL = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.11, 0.72, 0.16, 4, 0.05), mat(0xE05A47, 0.45)), 1.06);
+slMuscL.position.x = -0.14; splitLeft.add(slMuscL);
+const slMuscR = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.11, 0.72, 0.16, 4, 0.05), mat(0xE05A47, 0.45)), 1.06);
+slMuscR.position.x = 0.14; splitLeft.add(slMuscR);
+const slBadge = new THREE.Mesh(new RoundedBoxGeometry(0.62, 0.24, 0.04, 3, 0.02), new THREE.MeshBasicMaterial({ map: makeBadgeCanvasTex('PANIK', '#EF5F18', '#FFFFFF') }));
+slBadge.position.set(0, 0.80, 0.15); splitLeft.add(slBadge);
+const slOrbs = [];
+for (let i = 0; i < 6; i++) {
+  const o = new THREE.Mesh(new THREE.SphereGeometry(0.044, 12, 12), venomMat);
+  splitLeft.add(o); slOrbs.push({ mesh: o, phase: i / 6 });
+}
+
+// Right Side: DIAM & DIBIDAI (Splinted Straight, Venom Stationary)
+const splitRight = new THREE.Group();
+splitRight.position.set(0.44, 1.35, 0);
+splitCompareGroup.add(splitRight);
+const srShell = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.24, 1.25, 20), new THREE.MeshStandardMaterial({ color: 0x0FA968, transparent: true, opacity: 0.22 }));
+splitRight.add(srShell);
+const srTube = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 1.15, 16), new THREE.MeshStandardMaterial({ color: 0x06B6D4, transparent: true, opacity: 0.58 }));
+splitRight.add(srTube);
+[-0.31, 0.31].forEach(px => {
+  const sp = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.06, 1.20, 0.22, 3, 0.015), woodMat), 1.06);
+  sp.position.x = px; splitRight.add(sp);
+});
+[-0.35, 0.35].forEach(by => {
+  const tie = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.66, 0.08, 0.28, 3, 0.02), mat(0xFFFFFF, 0.45)), 1.04);
+  tie.position.y = by; splitRight.add(tie);
+});
+const srBadge = new THREE.Mesh(new RoundedBoxGeometry(0.62, 0.24, 0.04, 3, 0.02), new THREE.MeshBasicMaterial({ map: makeBadgeCanvasTex('DIBIDAI', '#0FA968', '#FFFFFF') }));
+srBadge.position.set(0, 0.80, 0.15); splitRight.add(srBadge);
+const srOrbs = [];
+[-0.36, -0.25, -0.14].forEach(y => {
+  const o = new THREE.Mesh(new THREE.SphereGeometry(0.044, 12, 12), venomMat);
+  o.position.set(0, y, 0); splitRight.add(o); srOrbs.push({ mesh: o, baseY: y });
+});
+
+/* ============ 7. TIMELINE & CHOREOGRAPHY (25 SCENES | 81.51s) ============ */
+const OUTRO_START = 77.322;
+const DURATION = 81.51;
+
+const S = {
+  // Stage mode selector ('terrace' | 'xray' | 'hospital' | 'split') — interpolated via threshold in render(t)
+  stageIdx: 0, // 0=terrace, 1=xray, 2=hospital, 3=split
+  camX: -2.4, camY: 2.05, camZ: 5.2,
+  lookX: -0.05, lookY: 0.85, lookZ: 0.10,
+  fov: 24,
+
+  // Terrace & Mas Raka states
+  rakaPose: 0,      // 0=seated, 1=running, 2=lying stretcher, 3=outro stand
+  rakaMood: 0,      // 0=alert, 1=panic, 2=focused, 3=smile
+  rakaHeadPitch: 0, rakaHeadYaw: 0, rakaHeadRoll: 0,
+  rakaWave: 0,
+  rakaLegStraight: 0, // 0=bent seated, 1=extended straight
+  rakaReachTie: 1,    // 1=left hand holding tie near calf
+  rakaHoldPhone: 0,   // 1=holding phone taking photo of snake (S20)
+  handTieVis: 0,
+  legTieVis: 0,
+  tieDangerGlow: 0,
+  shoeOffProg: 0,     // 0=shoe on, 1=shoe slid off & watch off (S18)
+  swellAlpha: 0,
+  splintVis: 0,
+  splintProg: 0,      // 0..1 slide-in animation (S19)
+  footRestVis: 0,
+  miniXrayAlpha: 0,
+  snakePhotoAlpha: 0,
+  snakeZOff: 0,
+
+  // X-Ray Anatomical Stage states
+  xrayYOffset: 0,
+  bloodFlowSpeed: 0.35,
+  heartActive: 0,
+  qMarkAlpha: 0,
+  bloodCrossAlpha: 0,
+  venomMode: 0,       // 0=bounce blood wall, 1=enter lymph, 2=still in lymph, 3=squeeze fast up, 4=deep under wound
+  muscleSqueeze: 0,
+  zeroPumpAlpha: 0,
+  strapTight: 0,      // 0..1 tourniquet strap tightening (S11-S13)
+  ischemiaLevel: 0,   // 0..1 pale blue hypoxia (S12)
+  necrosisLevel: 0,   // 0..1 black necrosis + amputation ring (S13)
+  suctionAlpha: 0,    // S14 & S22
+  bacteriaAlpha: 0,   // S15
+
+  // Hospital S21 states
+  stretcherX: 0.8,
+  vialBob: 0,
+
+  // Callout Alphas
+  c1Alpha: 0, c2Alpha: 0, c3Alpha: 0, c4Alpha: 0,
+
+  // Outro States
+  outroWipeO: 0, outroWipeI: 0, outroWipeW: 0,
+  outroCircleScale: 0, outroHeadTilt: 0,
+  outroBarProg: 0, outroCursorProg: 0, outroClickProg: 0, outroNod: 0,
+  outroLiftY: -1.05
+};
+
+const tl = gsap.timeline({ paused: true });
+
+// S01 (00.00 - 03.75s): Hook — "Hal pertama yang hampir semua orang lakuin pas digigit ular ini,"
+tl.fromTo(S, {
+  stageIdx: 0, camX: -2.85, camY: 2.35, camZ: 7.45, lookX: -0.22, lookY: 1.05, lookZ: 0.35, fov: 25,
+  rakaPose: 0, rakaMood: 1, rakaHeadPitch: 0.16, rakaHeadYaw: -0.14,
+  rakaLegStraight: 0, rakaReachTie: 1, handTieVis: 1, legTieVis: 0, tieDangerGlow: 0,
+  shoeOffProg: 0, swellAlpha: 0, splintVis: 0, footRestVis: 0, miniXrayAlpha: 0, snakePhotoAlpha: 0,
+  snakeZOff: 0, c1Alpha: 0, c2Alpha: 0, c3Alpha: 0, c4Alpha: 0
+}, {
+  camX: -2.55, camY: 2.20, camZ: 6.95, lookX: -0.24, lookY: 1.00, lookZ: 0.35,
+  snakeZOff: -0.14, rakaHeadPitch: 0.22, duration: 3.70, ease: 'sine.inOut'
+}, 0);
+
+// S02 (03.75 - 06.80s): "justru sering bikin kakinya berakhir diamputasi."
+tl.to(S, {
+  stageIdx: 0, camX: -2.65, camY: 0.92, camZ: 1.65, lookX: -0.66, lookY: 0.38, lookZ: 0.05, fov: 21,
+  handTieVis: 0, legTieVis: 1, tieDangerGlow: 1.0, rakaReachTie: 0.4, c1Alpha: 1.0,
+  duration: 0.75, ease: 'power3.inOut'
+}, 3.75);
+tl.to(S, { c1Alpha: 0, duration: 0.25 }, 6.50);
+
+// S03 (06.80 - 11.90s): "Biasanya orang langsung ngikat kakinya kencang-kencang, biar racunnya nggak naik lewat darah."
+tl.to(S, {
+  stageIdx: 0, camX: -2.45, camY: 1.00, camZ: 1.45, lookX: -0.66, lookY: 0.40, lookZ: 0.04, fov: 21,
+  legTieVis: 1, tieDangerGlow: 0.65, rakaReachTie: 1.0, c1Alpha: 1.0,
+  duration: 0.85, ease: 'sine.inOut'
+}, 6.80);
+tl.to(S, { c1Alpha: 0, duration: 0.25 }, 11.60);
+
+// S04 (11.90 - 14.85s): "Bentar, emangnya racun ular nyebar lewat darah?"
+tl.set(S, {
+  stageIdx: 1, camX: 0, camY: 1.42, camZ: 6.45, lookX: 0, lookY: 1.40, lookZ: 0.08, fov: 23,
+  heartActive: 0, qMarkAlpha: 1, bloodCrossAlpha: 0, venomMode: 0, muscleSqueeze: 0, zeroPumpAlpha: 0,
+  strapTight: 0, ischemiaLevel: 0, necrosisLevel: 0, suctionAlpha: 0, bacteriaAlpha: 0,
+  c1Alpha: 0, c2Alpha: 0
+}, 11.90);
+tl.to(S, { camZ: 6.05, duration: 2.85, ease: 'sine.inOut' }, 11.92);
+
+// S05 (14.85 - 17.50s): "Ternyata sebagian besar bukan lewat darah!"
+tl.to(S, {
+  stageIdx: 1, camX: -0.10, camY: 1.42, camZ: 5.95, lookX: -0.06, lookY: 1.40, lookZ: 0.08,
+  qMarkAlpha: 0, bloodCrossAlpha: 1, venomMode: 0, c2Alpha: 1.0,
+  duration: 0.55, ease: 'power2.out'
+}, 14.85);
+tl.to(S, { c2Alpha: 0, bloodCrossAlpha: 0, duration: 0.25 }, 17.20);
+
+// S06 (17.50 - 20.85s): "Dia masuk lewat saluran getah bening, tepat di bawah kulit."
+tl.to(S, {
+  stageIdx: 1, camX: 0.14, camY: 1.44, camZ: 5.95, lookX: 0.12, lookY: 1.42, lookZ: 0.08,
+  venomMode: 1, c1Alpha: 1.0,
+  duration: 0.65, ease: 'power2.inOut'
+}, 17.50);
+tl.to(S, { c1Alpha: 0, duration: 0.25 }, 20.55);
+
+// S07 (20.85 - 23.60s): "Bedanya, darah dipompa sama jantung."
+tl.to(S, {
+  stageIdx: 1, camX: -0.14, camY: 1.38, camZ: 6.35, lookX: -0.10, lookY: 1.36, lookZ: 0.10,
+  heartActive: 1, bloodFlowSpeed: 1.4, venomMode: 2, c1Alpha: 1.0,
+  duration: 0.60, ease: 'power2.inOut'
+}, 20.85);
+tl.to(S, { c1Alpha: 0, duration: 0.25 }, 23.30);
+
+// S08 (23.60 - 26.35s): "Saluran getah bening nggak punya pompa sama sekali."
+tl.to(S, {
+  stageIdx: 1, camX: 0.14, camY: 1.38, camZ: 6.35, lookX: 0.12, lookY: 1.36, lookZ: 0.10,
+  heartActive: 0, zeroPumpAlpha: 1, venomMode: 2, c2Alpha: 1.0,
+  duration: 0.60, ease: 'power2.inOut'
+}, 23.60);
+tl.to(S, { c2Alpha: 0, zeroPumpAlpha: 0, duration: 0.25 }, 26.05);
+
+// S09 (26.35 - 28.65s): "Jadi tiap kali kamu panik dan lari,"
+tl.set(S, {
+  stageIdx: 0, camX: -5.35, camY: 2.15, camZ: 5.35, lookX: -0.30, lookY: 1.15, lookZ: 0.0, fov: 25,
+  rakaPose: 1, rakaMood: 1, rakaReachTie: 0, handTieVis: 0, legTieVis: 0, tieDangerGlow: 0, c1Alpha: 1.0
+}, 26.35);
+tl.to(S, { camZ: 4.85, duration: 2.25, ease: 'sine.inOut' }, 26.36);
+tl.to(S, { c1Alpha: 0, duration: 0.20 }, 28.42);
+
+// S10 (28.65 - 31.85s): "otot kaki kamu sendiri yang memompa racunnya naik ke tubuh!"
+tl.set(S, {
+  stageIdx: 1, camX: 0.12, camY: 1.42, camZ: 6.10, lookX: 0.12, lookY: 1.40, lookZ: 0.08, fov: 23,
+  muscleSqueeze: 1, venomMode: 3, c1Alpha: 1.0
+}, 28.65);
+tl.to(S, { camY: 1.50, duration: 3.10, ease: 'sine.inOut' }, 28.66);
+tl.to(S, { c1Alpha: 0, muscleSqueeze: 0, duration: 0.25 }, 31.55);
+
+// S11 (31.85 - 33.85s): "Terus kalau diikat kencang gimana?"
+tl.set(S, {
+  stageIdx: 1, camX: 0.0, camY: 1.40, camZ: 6.25, lookX: 0, lookY: 1.38, lookZ: 0.08,
+  venomMode: 2, strapTight: 0.25, ischemiaLevel: 0, necrosisLevel: 0, c1Alpha: 0
+}, 31.85);
+tl.to(S, { strapTight: 1.0, camZ: 5.95, duration: 1.85, ease: 'power2.inOut' }, 31.90);
+
+// S12 (33.85 - 37.10s): "Darah bersih jadi ketahan, kaki kehabisan oksigen,"
+tl.to(S, {
+  stageIdx: 1, camX: 0.0, camY: 1.32, camZ: 6.15, lookX: 0, lookY: 1.30, lookZ: 0.08,
+  ischemiaLevel: 1.0, c1Alpha: 1.0, duration: 0.70, ease: 'power2.inOut'
+}, 33.85);
+tl.to(S, { c1Alpha: 0, duration: 0.25 }, 36.80);
+
+// S13 (37.10 - 40.35s): "terus jaringan di bawahnya mulai mati sampai harus diamputasi."
+tl.to(S, {
+  stageIdx: 1, camX: 0.0, camY: 1.28, camZ: 6.20, lookX: 0, lookY: 1.26, lookZ: 0.08,
+  necrosisLevel: 1.0, c1Alpha: 1.0, duration: 0.85, ease: 'power2.inOut'
+}, 37.10);
+tl.to(S, { c1Alpha: 0, strapTight: 0, ischemiaLevel: 0, necrosisLevel: 0, duration: 0.25 }, 40.05);
+
+// S14 (40.35 - 42.00s): "Nyedot luka juga percuma."
+tl.set(S, {
+  stageIdx: 1, camX: 0.16, camY: 1.78, camZ: 5.55, lookX: 0.14, lookY: 1.76, lookZ: 0.10,
+  venomMode: 4, suctionAlpha: 1.0, bacteriaAlpha: 0.0, c2Alpha: 0
+}, 40.35);
+
+// S15 (42.00 - 46.80s): "Racunnya udah keburu masuk ke dalam, yang ada bakteri dari mulut malah bikin infeksi."
+tl.to(S, {
+  stageIdx: 1, camX: 0.16, camY: 1.75, camZ: 5.65, lookX: 0.14, lookY: 1.72, lookZ: 0.10,
+  venomMode: 4, suctionAlpha: 0.45, bacteriaAlpha: 1.0, c2Alpha: 1.0,
+  duration: 0.85, ease: 'power2.out'
+}, 42.00);
+tl.to(S, { c2Alpha: 0, suctionAlpha: 0, bacteriaAlpha: 0, duration: 0.25 }, 46.50);
+
+// S16 (46.80 - 50.45s): "Jadi kalau digigit ular, perlakukan kayak lagi patah tulang!"
+tl.set(S, {
+  stageIdx: 0, camX: -3.55, camY: 2.20, camZ: 5.75, lookX: -0.45, lookY: 1.04, lookZ: 0.08, fov: 25,
+  rakaPose: 0, rakaMood: 2, rakaHeadPitch: 0.06, rakaHeadYaw: -0.22,
+  rakaLegStraight: 1, rakaReachTie: 0, handTieVis: 0, legTieVis: 0, tieDangerGlow: 0,
+  footRestVis: 1, shoeOffProg: 0, swellAlpha: 0, splintVis: 0, splintProg: 0,
+  miniXrayAlpha: 0, snakePhotoAlpha: 0, rakaHoldPhone: 0, c3Alpha: 0, c4Alpha: 0
+}, 46.80);
+tl.to(S, { camX: -3.35, camZ: 5.45, duration: 3.45, ease: 'sine.inOut' }, 46.85);
+
+// S17 (50.45 - 52.80s): Step 1 — "Jangan digerakkan, jangan dipakai jalan."
+tl.to(S, {
+  stageIdx: 0, camX: -3.45, camY: 2.15, camZ: 5.65, lookX: -0.35, lookY: 1.02, lookZ: 0.16, fov: 25,
+  miniXrayAlpha: 1.0, c3Alpha: 1.0,
+  duration: 0.45, ease: 'power2.out'
+}, 50.45);
+tl.to(S, { c3Alpha: 0, miniXrayAlpha: 0, duration: 0.25 }, 52.50);
+
+// S18 (52.80 - 58.30s): Step 2 — "Segera lepas sepatu, jam tangan, atau cincin sebelum area gigitan membengkak dan menjepit kulit."
+tl.to(S, {
+  stageIdx: 0, camX: -2.95, camY: 1.38, camZ: 2.95, lookX: -0.78, lookY: 0.56, lookZ: 0.28, fov: 23,
+  shoeOffProg: 1.0, swellAlpha: 1.0, c3Alpha: 1.0,
+  duration: 1.10, ease: 'power2.inOut'
+}, 52.80);
+tl.to(S, { c3Alpha: 0, swellAlpha: 0, duration: 0.25 }, 58.00);
+
+// S19 (58.30 - 63.05s): Step 3 — "Lalu pasang penyangga dari kayu atau kardus biar kakinya nggak bisa ditekuk sama sekali."
+tl.to(S, {
+  stageIdx: 0, camX: -3.10, camY: 1.42, camZ: 3.05, lookX: -0.68, lookY: 0.58, lookZ: 0.24, fov: 23,
+  splintVis: 1, splintProg: 1.0, c4Alpha: 1.0,
+  duration: 1.00, ease: 'back.out(1.4)'
+}, 58.30);
+tl.to(S, { c4Alpha: 0, duration: 0.25 }, 62.75);
+
+// S20 (63.05 - 66.00s): Step 4A — "Kalau aman, foto ularnya dari jauh buat dokter,"
+tl.to(S, {
+  stageIdx: 0, camX: -3.15, camY: 2.28, camZ: 7.15, lookX: -0.05, lookY: 1.02, lookZ: 0.30, fov: 26,
+  rakaHoldPhone: 1, snakePhotoAlpha: 1.0, c3Alpha: 1.0,
+  duration: 0.70, ease: 'power2.inOut'
+}, 63.05);
+tl.to(S, { c3Alpha: 0, snakePhotoAlpha: 0, rakaHoldPhone: 0, duration: 0.25 }, 65.72);
+
+// S21 (66.00 - 69.95s): Step 4B — "lalu bawa ke rumah sakit tanpa jalan kaki untuk dapat serum antibisa."
+tl.set(S, {
+  stageIdx: 2, camX: 0.0, camY: 2.15, camZ: 8.75, lookX: -0.05, lookY: 1.25, lookZ: 0.0, fov: 25,
+  rakaPose: 2, rakaMood: 2, splintVis: 1, shoeOffProg: 1, stretcherX: 0.35, vialBob: 0, c3Alpha: 1.0
+}, 66.00);
+tl.to(S, { stretcherX: -0.35, vialBob: 1, duration: 3.65, ease: 'power1.out' }, 66.05);
+tl.to(S, { c3Alpha: 0, duration: 0.25 }, 69.65);
+
+// S22 (69.95 - 72.60s): Contrast Payoff A — "Yang bikin racun cepat nyebar bukan telat disedot,"
+tl.set(S, {
+  stageIdx: 1, camX: 0.16, camY: 1.76, camZ: 5.55, lookX: 0.14, lookY: 1.74, lookZ: 0.10, fov: 23,
+  venomMode: 4, suctionAlpha: 1.0, bacteriaAlpha: 0.0, c2Alpha: 0
+}, 69.95);
+tl.to(S, { suctionAlpha: 0.85, camZ: 5.25, duration: 2.55, ease: 'sine.inOut' }, 69.96);
+
+// S23 (72.60 - 74.55s): Contrast Payoff B — "tapi gerakan saat kita panik."
+tl.set(S, {
+  stageIdx: 3, camX: 0, camY: 1.40, camZ: 6.95, lookX: 0, lookY: 1.38, lookZ: 0.05, fov: 24,
+  suctionAlpha: 0, c1Alpha: 1.0
+}, 72.60);
+tl.to(S, { camZ: 6.65, duration: 1.85, ease: 'sine.inOut' }, 72.62);
+tl.to(S, { c1Alpha: 0, duration: 0.20 }, 74.32);
+
+// S24 (74.55 - 77.322s): Sign-Off — "Jadi... jangan panik dulu."
+tl.set(S, {
+  stageIdx: 0, camX: -2.25, camY: 2.25, camZ: 6.85, lookX: -0.62, lookY: 1.08, lookZ: 0.05, fov: 25,
+  rakaPose: 0, rakaMood: 3, rakaWave: 1, rakaHeadPitch: 0, rakaHeadYaw: -0.22,
+  rakaLegStraight: 1, footRestVis: 1, splintVis: 1, shoeOffProg: 1,
+  snakePhotoAlpha: 0, miniXrayAlpha: 0, handTieVis: 0, legTieVis: 0, tieDangerGlow: 0, c1Alpha: 0, c3Alpha: 0
+}, 74.55);
+tl.to(S, { camX: -2.05, camZ: 6.55, duration: 2.70, ease: 'power2.out' }, 74.58);
+
+// S25 (77.322 - 81.51s): Outro CTA (Exact standard Triple Circle Wipe + Mas Raka Pop-Out + Follow Click)
+function buildOutroTimeline(tl, t0) {
+  tl.to(S, { outroWipeO: 1.15, duration: 0.65, ease: 'expo.inOut' }, t0 + 0.45);
+  tl.to(S, { outroWipeI: 1.15, duration: 0.65, ease: 'expo.inOut' }, t0 + 0.57);
+  tl.to(S, { outroWipeW: 1.15, duration: 0.65, ease: 'expo.inOut' }, t0 + 0.69);
+
+  tl.set(S, {
+    camX: 0, camY: 1.65, camZ: 15.6, lookX: 0, lookY: 1.15, lookZ: 0, fov: 22,
+    rakaPose: 3, rakaMood: 3, rakaWave: 0, splintVis: 0, shoeOffProg: 0,
+    outroHeadTilt: 0.12, outroLiftY: -1.05
+  }, t0 + 1.05);
+  tl.to(S, { outroCircleScale: 1, duration: 0.50, ease: 'power3.out' }, t0 + 1.05);
+
+  tl.to(S, { outroLiftY: 0.0, duration: 0.65, ease: 'power4.out' }, t0 + 1.30);
+  tl.to(S, { outroHeadTilt: 0, duration: 0.50, ease: 'power2.out' }, t0 + 1.36);
+  tl.to(S, { rakaWave: 1.0, duration: 0.55, ease: 'power3.out' }, t0 + 1.38);
+
+  tl.to(S, { outroBarProg: 1, duration: 0.50, ease: 'power3.out' }, t0 + 1.75);
+  tl.to(S, { outroCursorProg: 1, duration: 0.48, ease: 'power2.inOut' }, t0 + 2.25);
+  tl.to(S, { outroClickProg: 1, duration: 0.38, ease: 'power2.out' }, t0 + 2.73);
+  tl.to(S, { outroNod: 1, duration: 0.45, ease: 'sine.inOut' }, t0 + 2.73);
+}
+buildOutroTimeline(tl, OUTRO_START);
+tl.to({}, { duration: 0.01 }, DURATION);
+
+/* ============ 8. HUD, SUBTITLES & 3D CALLOUT ANCHORS ============ */
+function easeOutBack(x) { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); }
+function easeInQuad(x) { return x * x; }
+function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
+
+function getWindowMotion(t, tIn, tOut, enterDur = 0.32, exitDur = 0.24) {
+  if (t < tIn || t > tOut) return { alpha: 0, y: -22, scale: 0.90 };
+  if (t - tIn < enterDur) {
+    const p = Math.max(0, Math.min(1, (t - tIn) / enterDur));
+    const eb = easeOutBack(p);
+    return { alpha: Math.min(1, p * 1.35), y: (1 - eb) * -22, scale: 0.88 + 0.12 * eb };
+  }
+  if (tOut - t < exitDur) {
+    const p = Math.max(0, Math.min(1, (tOut - t) / exitDur));
+    const eq = 1 - easeInQuad(1 - p);
+    return { alpha: eq, y: (1 - eq) * -18, scale: 0.94 + 0.06 * eq };
+  }
+  return { alpha: 1, y: 0, scale: 1 };
+}
+
+// 100% VERBATIM ACOUSTIC-ALIGNED CAPTION CHUNKS (vo_ep04.mp3 = 77.322s)
+const CAPTION_CHUNKS = [
+  { s: 0.04, e: 1.92, words: ['Hal', 'pertama', 'yang', 'hampir', 'semua', 'orang', 'lakuin'] },
+  { s: 1.92, e: 3.72, words: ['pas', 'digigit', 'ular', 'ini,'] },
+  { s: 3.86, e: 6.68, words: ['justru', 'sering', 'bikin', 'kakinya', 'berakhir', 'diamputasi.'] },
+  { s: 7.00, e: 9.80, words: ['Biasanya', 'orang', 'langsung', 'ngikat', 'kakinya', 'kencang-kencang,'] },
+  { s: 9.94, e: 11.82, words: ['biar', 'racunnya', 'nggak', 'naik', 'lewat', 'darah.'] },
+  {
+    s: 12.06, e: 14.74,
+    words: ['Bentar,', 'emangnya', 'racun', 'ular', 'nyebar', 'lewat', 'darah?'],
+    customTimes: [
+      { word: 'Bentar,', ws: 12.06, we: 12.42 },
+      { word: 'emangnya', ws: 12.75, we: 13.15 },
+      { word: 'racun', ws: 13.15, we: 13.48 },
+      { word: 'ular', ws: 13.48, we: 13.80 },
+      { word: 'nyebar', ws: 13.80, we: 14.12 },
+      { word: 'lewat', ws: 14.12, we: 14.38 },
+      { word: 'darah?', ws: 14.38, we: 14.74 }
+    ]
+  },
+  { s: 15.00, e: 17.40, words: ['Ternyata', 'sebagian', 'besar', 'bukan', 'lewat', 'darah!'] },
+  { s: 17.64, e: 19.52, words: ['Dia', 'masuk', 'lewat', 'saluran', 'getah', 'bening,'] },
+  { s: 19.65, e: 20.75, words: ['tepat', 'di', 'bawah', 'kulit.'] },
+  { s: 21.02, e: 23.45, words: ['Bedanya,', 'darah', 'dipompa', 'sama', 'jantung.'] },
+  { s: 23.72, e: 26.25, words: ['Saluran', 'getah', 'bening', 'nggak', 'punya', 'pompa', 'sama', 'sekali.'] },
+  { s: 26.44, e: 28.56, words: ['Jadi', 'tiap', 'kali', 'kamu', 'panik', 'dan', 'lari,'] },
+  { s: 28.75, e: 31.68, words: ['otot', 'kaki', 'kamu', 'sendiri', 'yang', 'memompa', 'racunnya', 'naik', 'ke', 'tubuh!'] },
+  { s: 32.02, e: 33.76, words: ['Terus', 'kalau', 'diikat', 'kencang', 'gimana?'] },
+  { s: 34.00, e: 35.52, words: ['Darah', 'bersih', 'jadi', 'ketahan,'] },
+  { s: 35.64, e: 37.04, words: ['kaki', 'kehabisan', 'oksigen,'] },
+  { s: 37.18, e: 40.25, words: ['terus', 'jaringan', 'di', 'bawahnya', 'mulai', 'mati', 'sampai', 'harus', 'diamputasi.'] },
+  { s: 40.48, e: 41.90, words: ['Nyedot', 'luka', 'juga', 'percuma.'] },
+  { s: 42.10, e: 43.88, words: ['Racunnya', 'udah', 'keburu', 'masuk', 'ke', 'dalam,'] },
+  { s: 44.00, e: 46.70, words: ['yang', 'ada', 'bakteri', 'dari', 'mulut', 'malah', 'bikin', 'infeksi.'] },
+  { s: 46.94, e: 50.38, words: ['Jadi', 'kalau', 'digigit', 'ular,', 'perlakukan', 'kayak', 'lagi', 'patah', 'tulang!'] },
+  { s: 50.54, e: 52.70, words: ['Jangan', 'digerakkan,', 'jangan', 'dipakai', 'jalan.'] },
+  { s: 52.95, e: 55.60, words: ['Segera', 'lepas', 'sepatu,', 'jam', 'tangan,', 'atau', 'cincin'] },
+  { s: 55.60, e: 58.20, words: ['sebelum', 'area', 'gigitan', 'membengkak', 'dan', 'menjepit', 'kulit.'] },
+  { s: 58.44, e: 60.65, words: ['Lalu', 'pasang', 'penyangga', 'dari', 'kayu', 'atau', 'kardus'] },
+  { s: 60.65, e: 62.94, words: ['biar', 'kakinya', 'nggak', 'bisa', 'ditekuk', 'sama', 'sekali.'] },
+  { s: 63.22, e: 65.92, words: ['Kalau', 'aman,', 'foto', 'ularnya', 'dari', 'jauh', 'buat', 'dokter,'] },
+  { s: 66.04, e: 68.82, words: ['lalu', 'bawa', 'ke', 'rumah', 'sakit', 'tanpa', 'jalan', 'kaki'] },
+  { s: 68.85, e: 69.80, words: ['untuk', 'dapat', 'serum', 'antibisa.'] },
+  { s: 70.14, e: 72.52, words: ['Yang', 'bikin', 'racun', 'cepat', 'nyebar', 'bukan', 'telat', 'disedot,'] },
+  { s: 72.72, e: 74.44, words: ['tapi', 'gerakan', 'saat', 'kita', 'panik.'] },
+  {
+    s: 74.70, e: 77.15,
+    words: ['Jadi...', 'jangan', 'panik', 'dulu.'],
+    customTimes: [
+      { word: 'Jadi...', ws: 74.70, we: 75.48 },
+      { word: 'jangan', ws: 75.64, we: 76.10 },
+      { word: 'panik', ws: 76.10, we: 76.55 },
+      { word: 'dulu.', ws: 76.55, we: 77.15 }
+    ]
+  }
+];
+
+CAPTION_CHUNKS.forEach(ch => {
+  if (ch.customTimes) { ch.wordTimes = ch.customTimes; return; }
+  const weights = ch.words.map(w => Math.max(2, w.replace(/[^a-zA-Z0-9]/g, '').length));
+  const totalW = weights.reduce((a, b) => a + b, 0);
+  const span = (ch.e - ch.s) * 0.94;
+  let cursor = ch.s + 0.02;
+  ch.wordTimes = ch.words.map((w, idx) => {
+    const dur = (weights[idx] / totalW) * span;
+    const wt = { word: w, ws: cursor, we: cursor + dur };
+    cursor += dur;
+    return wt;
+  });
+});
+
+const capOpt = Q.get('caption') || '1';
+document.body.classList.add(`cap-opt-${capOpt}`);
+
+const TOP_SEGMENTS = [
+  { s: 0.00, e: 3.85, type: 'hook', hTitle: 'DIGIGIT ULAR?', hPill: 'JANGAN DIIKAT KENCANG!' },
+  { s: 11.90, e: 14.85, type: 'metric', badge: '', title: 'Jalur racun: lewat darah?', showDots: false },
+  { s: 17.50, e: 20.85, type: 'metric', badge: '', title: 'Saluran getah bening (bawah kulit)', showDots: false },
+  { s: 23.60, e: 26.35, type: 'metric', badge: '', title: 'Getah bening: 0 pompa', showDots: false },
+  { s: 28.65, e: 31.85, type: 'metric', badge: '', title: 'Otot gerak = pompa racun', showDots: false },
+  { s: 31.85, e: 33.85, type: 'metric', badge: '', title: 'Efek diikat kencang', showDots: false },
+  { s: 40.35, e: 42.00, type: 'metric', badge: '', title: 'Mitos: menyedot luka', showDots: false },
+  { s: 46.80, e: 50.45, type: 'metric', badge: '', title: 'Perlakukan kayak patah tulang', showDots: false },
+  { s: 50.45, e: 52.80, type: 'step', badge: '1', title: 'Jangan gerak & jangan jalan', showDots: true, prog: 1 },
+  { s: 52.80, e: 58.30, type: 'step', badge: '2', title: 'Lepas sepatu, jam & cincin', showDots: true, prog: 2 },
+  { s: 58.30, e: 63.05, type: 'step', badge: '3', title: 'Pasang penyangga kayu / kardus', showDots: true, prog: 3 },
+  { s: 63.05, e: 66.00, type: 'step', badge: '4', title: 'Foto ular dari jauh', showDots: true, prog: 4 },
+  { s: 66.00, e: 69.95, type: 'step', badge: '4', title: 'Ke rumah sakit tanpa jalan', showDots: true, prog: 4 }
+];
+
+function setCalloutLine(lineId, dotId, callEl, worldTarget, offsetX, offsetY, alpha) {
+  const line = $(lineId), dot = $(dotId);
+  if (alpha <= 0.01) {
+    callEl.style.opacity = '0';
+    line.setAttribute('opacity', '0');
+    dot.setAttribute('opacity', '0');
+    return;
+  }
+  const v = worldTarget.clone().project(camera);
+  const px = (v.x * 0.5 + 0.5) * W;
+  const py = (-v.y * 0.5 + 0.5) * H;
+  const cx = Math.max(240, Math.min(840, px + offsetX));
+  const cy = Math.max(360, Math.min(1240, py + offsetY));
+
+  const lineProg = easeOutCubic(Math.min(1, alpha * 1.35));
+  const badgeProg = easeOutBack(Math.max(0, Math.min(1, (alpha - 0.18) / 0.82)));
+  const badgeAlpha = Math.max(0, Math.min(1, (alpha - 0.15) / 0.65));
+
+  line.setAttribute('x1', px.toFixed(1));
+  line.setAttribute('y1', py.toFixed(1));
+  line.setAttribute('x2', (px + (cx - px) * lineProg).toFixed(1));
+  line.setAttribute('y2', (py + (cy - py) * lineProg).toFixed(1));
+  line.setAttribute('opacity', Math.min(1, alpha * 1.4).toFixed(2));
+
+  dot.setAttribute('cx', px.toFixed(1));
+  dot.setAttribute('cy', py.toFixed(1));
+  dot.setAttribute('r', (7 * Math.min(1.12, easeOutBack(Math.min(1, alpha * 1.5)))).toFixed(1));
+  dot.setAttribute('opacity', Math.min(1, alpha * 1.5).toFixed(2));
+
+  callEl.style.left = `${cx}px`;
+  callEl.style.top = `${cy}px`;
+  callEl.style.opacity = badgeAlpha.toFixed(2);
+  const sc = (0.85 + 0.15 * badgeProg).toFixed(3);
+  const ty = ((1 - badgeProg) * 12).toFixed(1);
+  callEl.style.transform = `translate(-50%, calc(-50% + ${ty}px)) scale(${sc})`;
+}
+
+function updateHUD(t) {
+  const hook = $('#hook-card'), tracker = $('#step-tracker'), subCard = $('#sub-card');
+  const hookTitle = $('#hook-title'), hookPill = $('#hook-pill');
+  const pillBox = $('#step-pill-box'), badgeEl = $('#tr-badge'), titleEl = $('#tr-title');
+  const progWrap = $('#prog-wrap');
+  const segs = [$('#seg1'), $('#seg2'), $('#seg3'), $('#seg4')];
+
+  const seg = TOP_SEGMENTS.find(x => t >= x.s && t <= x.e);
+  if (!seg) {
+    hook.style.opacity = '0';
+    tracker.style.opacity = '0';
+  } else if (seg.type === 'hook') {
+    const m = getWindowMotion(t, seg.s, seg.e, 0.36, 0.26);
+    tracker.style.opacity = '0';
+    hook.style.opacity = m.alpha.toFixed(3);
+    hook.style.transform = `translate3d(0, ${m.y.toFixed(1)}px, 0) scale(${m.scale.toFixed(3)})`;
+    hookTitle.textContent = seg.hTitle;
+    hookPill.textContent = seg.hPill;
+  } else {
+    const m = getWindowMotion(t, seg.s, seg.e, 0.32, 0.22);
+    hook.style.opacity = '0';
+    tracker.style.opacity = m.alpha.toFixed(3);
+    tracker.style.transform = `translate3d(0, ${m.y.toFixed(1)}px, 0) scale(${m.scale.toFixed(3)})`;
+    if (seg.badge) {
+      badgeEl.style.display = 'flex';
+      badgeEl.textContent = seg.badge;
+      pillBox.classList.remove('text-only');
+    } else {
+      badgeEl.style.display = 'none';
+      pillBox.classList.add('text-only');
+    }
+    titleEl.textContent = seg.title;
+    progWrap.style.display = seg.showDots ? 'flex' : 'none';
+    if (seg.showDots) segs.forEach((el, i) => el.classList.toggle('on', i < seg.prog));
+  }
+
+  // Callout copy per scene
+  if (t < 6.80) $('#call1-text').textContent = 'risiko diamputasi!';
+  else if (t < 11.90) $('#call1-text').textContent = 'ikat kencang = tahan darah?';
+  else if (t < 17.50) $('#call2-text').textContent = 'bukan lewat pembuluh darah!';
+  else if (t < 20.85) $('#call1-text').textContent = 'jalur utama racun';
+  else if (t < 23.60) $('#call1-text').textContent = 'darah = dipompa jantung';
+  else if (t < 26.35) $('#call2-text').textContent = 'diam saat kaki tenang';
+  else if (t < 28.65) $('#call1-text').textContent = 'panik & dipakai lari';
+  else if (t < 31.85) $('#call1-text').textContent = 'racun terpompa naik!';
+  else if (t < 37.10) $('#call1-text').textContent = 'darah & oksigen terputus';
+  else if (t < 40.35) $('#call1-text').textContent = 'jaringan mati (nekrosis)';
+  else if (t < 46.80) $('#call2-text').textContent = 'bakteri mulut -> infeksi luka';
+  else if (t < 52.80) $('#call3-text').textContent = 'otot rileks = racun tertahan';
+  else if (t < 58.30) $('#call3-text').textContent = 'cegah kulit terjepit saat bengkak';
+  else if (t < 63.05) $('#call4-text').textContent = 'kunci sendi tetap lurus';
+  else if (t < 66.00) $('#call3-text').textContent = 'foto dari jarak aman';
+  else if (t < 69.95) $('#call3-text').textContent = 'evakuasi tanpa jalan -> serum antibisa';
+  else $('#call1-text').textContent = 'gerak panik = pompa racun';
+
+  // Verbatim Karaoke Subtitle Bar
+  let activeChunk = CAPTION_CHUNKS.find(c => t >= c.s && t <= c.e);
+  let gapAlpha = 1;
+  if (!activeChunk) {
+    activeChunk = CAPTION_CHUNKS.reduce((best, cur) => {
+      const dist = Math.min(Math.abs(t - cur.s), Math.abs(t - cur.e));
+      const bestDist = Math.min(Math.abs(t - best.s), Math.abs(t - best.e));
+      return dist < bestDist ? cur : best;
+    }, CAPTION_CHUNKS[0]);
+    const minDist = Math.min(Math.abs(t - activeChunk.s), Math.abs(t - activeChunk.e));
+    if (minDist > 0.14) gapAlpha = Math.max(0, 1 - (minDist - 0.14) / 0.18);
+  }
+
+  const dtChunk = Math.max(0, t - activeChunk.s);
+  const popEase = easeOutBack(Math.min(1, dtChunk / 0.16));
+  subCard.style.opacity = gapAlpha.toFixed(3);
+  subCard.style.transform = `translate3d(0, ${((1 - popEase) * 8 + (1 - gapAlpha) * 8).toFixed(1)}px, 0) scale(${(0.97 + 0.03 * popEase).toFixed(3)})`;
+
+  let activeIdx = 0;
+  for (let i = 0; i < activeChunk.wordTimes.length; i++) {
+    if (t >= activeChunk.wordTimes[i].ws) activeIdx = i;
+  }
+  subCard.innerHTML = activeChunk.wordTimes.map((wt, idx) => {
+    const cls = idx < activeIdx ? 'w past' : (idx === activeIdx ? 'w active' : 'w future');
+    return `<span class="${cls}">${wt.word}</span>`;
+  }).join(' ');
+}
+
+function getWorldAnchor(obj, localVec = new THREE.Vector3()) {
+  scene.updateMatrixWorld(true);
+  return localVec.clone().applyMatrix4(obj.matrixWorld);
+}
+
+function render(t) {
+  updateHUD(t);
+  const tr = $('#time-readout');
+  if (tr) tr.textContent = `${t.toFixed(1).padStart(4, '0')}s / 81.5s`;
+
+  const isOutroStage = S.outroWipeW > 0.72;
+  const stageIdx = Math.round(S.stageIdx);
+  stage.classList.toggle('outro-active', isOutroStage);
+  stage.classList.toggle('xray-bg', !isOutroStage && (stageIdx === 1 || stageIdx === 3));
+  stage.classList.toggle('safe-bg', !isOutroStage && ((t >= 46.80 && t < 69.95) || stageIdx === 2));
+
+  // Toggle Stage Groups cleanly so ZERO unwanted geometry intersects frame
+  terraceGroup.visible = !isOutroStage && stageIdx === 0;
+  xrayGroup.visible = !isOutroStage && stageIdx === 1;
+  hospitalGroup.visible = !isOutroStage && stageIdx === 2;
+  splitCompareGroup.visible = !isOutroStage && stageIdx === 3;
+  RAKA.root.visible = isOutroStage || stageIdx === 0 || stageIdx === 2;
+  miniXrayGroup.visible = !isOutroStage && stageIdx === 0 && S.miniXrayAlpha > 0.05;
+
+  // Outro DOM Updates
+  $('#wipe-orange').style.transform = `translate(-50%,-50%) scale(${S.outroWipeO.toFixed(4)})`;
+  $('#wipe-indigo').style.transform = `translate(-50%,-50%) scale(${S.outroWipeI.toFixed(4)})`;
+  $('#wipe-white').style.transform  = `translate(-50%,-50%) scale(${S.outroWipeW.toFixed(4)})`;
+  $('#outro-circle-badge').style.transform = `translate(-50%,-50%) scale(${S.outroCircleScale.toFixed(4)})`;
+  const barEl = $('#outro-bar'), btnEl = $('#outro-follow-btn');
+  const curEl = $('#outro-cursor'), ripEl = $('#outro-ripple');
+  const bp = S.outroBarProg, cp = S.outroCursorProg, kp = S.outroClickProg;
+  barEl.style.opacity = Math.min(1, bp * 1.4).toFixed(3);
+  barEl.style.transform = `translateY(${((1 - bp) * 36).toFixed(1)}px) scale(${(0.92 + 0.08 * bp).toFixed(3)})`;
+  curEl.style.opacity = Math.min(1, cp * 1.6).toFixed(3);
+  curEl.style.transform = `translate(${((1 - cp) * 95).toFixed(1)}px, ${((1 - cp) * 95).toFixed(1)}px) scale(${(kp > 0 && kp < 0.45) ? 0.86 : 1.0})`;
+  const isFollowed = kp >= 0.35;
+  btnEl.classList.toggle('followed', isFollowed);
+  $('#outro-btn-label').textContent = isFollowed ? '✓ Mengikuti' : '+ Ikuti';
+  btnEl.style.transform = `scale(${(kp > 0 ? (1 + Math.sin(Math.min(1, kp) * Math.PI) * 0.09) : 1).toFixed(3)})`;
+  ripEl.style.opacity = kp > 0.2 ? Math.max(0, 1 - (kp - 0.2) * 1.3).toFixed(3) : '0';
+  ripEl.style.transform = `scale(${(0.85 + kp * 0.55).toFixed(3)})`;
+
+  // Camera
+  camera.fov = S.fov;
+  camera.updateProjectionMatrix();
+  camera.position.set(S.camX, S.camY, S.camZ);
+  camera.lookAt(S.lookX, S.lookY, S.lookZ);
+
+  // Snake Animation (Terrace) — positioned cleanly in visible yard corner for S01 & S20
+  snakeGroup.position.set(0.32, 0, 0.72 + S.snakeZOff);
+  snakeGroup.rotation.y = 0.25 + Math.sin(t * 2.5) * 0.05;
+  photoBorder.rotation.z = Math.PI / 4 + Math.sin(t * 4.0) * 0.04;
+  frameMat.opacity = S.snakePhotoAlpha * (0.75 + 0.25 * Math.sin(t * 10));
+
+  // Hide bench during S09 running pose so legs never clip bench
+  benchGroup.visible = Math.round(S.rakaPose) !== 1;
+
+  // Running Lines Scroll (S09)
+  runLinesGroup.visible = Math.round(S.rakaPose) === 1;
+  runLines.forEach(rl => {
+    let z = rl.userData.baseZ - (t * 8.5);
+    z = ((z + 4.5) % 8.8 + 8.8) % 8.8 - 4.5;
+    rl.position.z = z;
+  });
+
+  // Mini X-Ray Lens (S17)
+  if (miniXrayGroup.visible) {
+    miniXrayGroup.scale.setScalar((0.85 + 0.15 * S.miniXrayAlpha) * 0.78);
+    miniVenomBalls.forEach((vb, i) => {
+      vb.mesh.position.y = vb.baseY + Math.sin(t * 2.0 + i) * 0.012;
+    });
+  }
+
+  // Hospital Stretcher & Vial (S21)
+  if (hospitalGroup.visible) {
+    stretcherGroup.position.x = S.stretcherX;
+    serumVialGroup.position.y = 1.62 + Math.sin(t * 3.5) * 0.05;
+    serumVialGroup.rotation.y = Math.sin(t * 1.8) * 0.18;
+    vialAura.scale.setScalar(1.0 + 0.08 * Math.sin(t * 6.0));
+  }
+
+  // Anatomical X-Ray Animation (S04-S15, S22)
+  if (xrayGroup.visible) {
+    const heartPulse = S.heartActive > 0.5 ? (1.0 + 0.22 * Math.pow(Math.max(0, Math.sin(t * 8.5)), 4)) : 1.0;
+    heartPumpGroup.visible = S.heartActive > 0.1;
+    heartPumpGroup.scale.setScalar(heartPulse);
+
+    qMarkBadge.visible = S.qMarkAlpha > 0.1;
+    qMarkBadge.position.y = 1.72 + Math.sin(t * 4.0) * 0.04;
+    bloodCrossX.visible = S.bloodCrossAlpha > 0.1;
+    bloodCrossX.scale.setScalar(0.8 + 0.2 * S.bloodCrossAlpha);
+    zeroPumpBadge.visible = S.zeroPumpAlpha > 0.1;
+
+    // Red Blood Cells inside blood vessel
+    const bf = S.heartActive > 0.5 ? 0.58 : (S.strapTight > 0.5 ? 0.05 : 0.28);
+    bloodDiscs.forEach(bd => {
+      const u = (bd.phase + t * bf) % 1.0;
+      const y = 0.94 + u * 1.14;
+      bd.mesh.visible = S.strapTight < 0.5;
+      bd.mesh.position.set(-0.26 + Math.sin(u * 12) * 0.018, y, 0.08);
+    });
+
+    // Tourniquet Tightening & Hypoxia/Necrosis (S11-S13)
+    xrayStrapGroup.visible = S.strapTight > 0.05;
+    const pinch = 1.0 - S.strapTight * 0.26;
+    xrayStrapGroup.scale.set(1.0 - S.strapTight * 0.18, 1.0, 1.0 - S.strapTight * 0.18);
+    xrayLowerShell.scale.set(pinch, 1.0, pinch);
+    amputationPlaneRing.visible = S.necrosisLevel > 0.45;
+    amputationPlaneRing.scale.setScalar(0.76 + 0.06 * Math.sin(t * 10));
+
+    const cHealthy = new THREE.Color(0xF1C29B);
+    const cIschemic = new THREE.Color(0x64748B);
+    const cNecrotic = new THREE.Color(0x1C1924);
+    const lowerCol = cHealthy.clone().lerp(cIschemic, S.ischemiaLevel).lerp(cNecrotic, S.necrosisLevel);
+    lowerTissueMat.color.copy(lowerCol);
+    lowerTissueMat.opacity = 0.38 + S.necrosisLevel * 0.48;
+
+    // Oxygen Blood Orbs Blocked Above Strap (S12-S13)
+    oxyOrbs.forEach((oo, idx) => {
+      oo.mesh.visible = S.strapTight > 0.5;
+      const cyc = (oo.phase + t * 0.45) % 1.0;
+      oo.mesh.position.set(-0.26 + (idx % 2 === 0 ? -0.05 : 0.05), 2.08 - cyc * 0.54, 0.10);
+    });
+
+    // Muscle Squeeze (S10)
+    const sq = S.muscleSqueeze > 0.5 ? (0.5 + 0.5 * Math.sin(t * 9.0)) : 0;
+    muscleGroup.visible = S.muscleSqueeze > 0.2 || S.venomMode === 3;
+    muscleL.position.x = 0.07 + sq * 0.10;
+    muscleR.position.x = 0.49 - sq * 0.10;
+    lymphVesselMesh.scale.set(1.0 - sq * 0.28, 1.0, 1.0 - sq * 0.28);
+
+    // Orange Venom Orbs across all X-Ray modes
+    venomOrbs.forEach((vo, idx) => {
+      vo.mesh.visible = true;
+      const mMode = Math.round(S.venomMode);
+      if (mMode === 0) {
+        // S04-S05: Scattered venom enzymes bouncing off the capillary wall
+        const cyc = (vo.phase + t * 0.72) % 1.0;
+        const spreadX = (idx % 3) * 0.065;
+        const xPos = 0.22 - Math.abs(Math.sin(cyc * Math.PI)) * 0.26 + spreadX * 0.4;
+        const yPos = 1.12 + (idx % 7) * 0.13 + Math.sin(cyc * Math.PI * 2 + idx) * 0.03;
+        vo.mesh.position.set(xPos, yPos, 0.14 + (idx % 2) * 0.04);
+      } else if (mMode === 1) {
+        // S06: Venom flows from top fang marks down/into cyan sub-dermal lymph channel
+        const u = (vo.phase + t * 0.26) % 1.0;
+        vo.mesh.position.set(0.28 + Math.sin(u * 10 + idx) * 0.022, 2.02 - u * 0.90, 0.10);
+      } else if (mMode === 2) {
+        // S08 & S11-S13: Venom floats nearly stationary inside cyan lymph channel
+        vo.mesh.position.set(0.28 + Math.sin(idx) * 0.022, 1.06 + (idx % 8) * 0.085 + Math.sin(t * 2.2 + idx) * 0.012, 0.10);
+      } else if (mMode === 3) {
+        // S10: Muscle squeezing rockets venom UPWARD rapidly
+        const u = (vo.phase + t * 0.95) % 1.0;
+        vo.mesh.position.set(0.28 + Math.sin(t * 8 + idx) * 0.02, 0.80 + u * 1.30, 0.10);
+      } else {
+        // S14-S15 & S22: Venom already settled deep below suction depth
+        vo.mesh.position.set(0.08 + ((idx % 5) - 2) * 0.09, 1.18 + Math.floor(idx / 5) * 0.14 + Math.sin(t * 2.5 + idx) * 0.012, 0.12);
+      }
+    });
+
+    // Suction Cup (X) & Oral Bacteria (S14-S15, S22)
+    suctionGroup.visible = S.suctionAlpha > 0.1;
+    suctionGroup.position.y = 2.34 + Math.sin(t * 5.0) * 0.04;
+    bacteriaOrbs.forEach((bo, idx) => {
+      bo.mesh.visible = S.bacteriaAlpha > 0.1;
+      const u = (bo.phase + t * 0.55) % 1.0;
+      bo.mesh.position.set(0.28 + bo.xOff + Math.sin(t * 6 + idx) * 0.02, 2.35 - u * 0.45, 0.14);
+    });
+    infectionGlow.material.opacity = S.bacteriaAlpha * (0.28 + 0.14 * Math.sin(t * 9.0));
+  }
+
+  // Split 3D Comparison (S23)
+  if (splitCompareGroup.visible) {
+    const sqL = 0.5 + 0.5 * Math.sin(t * 10.0);
+    slMuscL.position.x = -0.14 + sqL * 0.045;
+    slMuscR.position.x = 0.14 - sqL * 0.045;
+    slOrbs.forEach(o => {
+      const u = (o.phase + t * 0.90) % 1.0;
+      o.mesh.position.set(0, -0.52 + u * 1.04, 0.04);
+    });
+    srOrbs.forEach((o, i) => {
+      o.mesh.position.y = o.baseY + Math.sin(t * 2.0 + i) * 0.01;
+    });
+  }
+
+  // 4. Mas Raka Character Rig & Pose States
+  const moodNames = ['alert', 'panic', 'focused', 'smile'];
+  const curMood = isOutroStage ? 'smile' : (moodNames[Math.round(S.rakaMood)] || 'alert');
+  const blinkCycle = ((t + 0.85) % 3.4);
+  const isBlinking = curMood !== 'panic' && (blinkCycle > 3.18 && blinkCycle < 3.32);
+  updateRakaFace(curMood, isBlinking);
+
+  const breath = Math.sin(t * 3.2) * 0.008;
+  handTieProp.visible = !isOutroStage && S.handTieVis > 0.5;
+  RAKA.calfTourniquetR.visible = !isOutroStage && S.legTieVis > 0.5;
+  RAKA.dangerGlowR.material.opacity = S.tieDangerGlow * (0.35 + 0.25 * Math.sin(t * 10.0));
+  RAKA.swellHaloR.material.opacity = S.swellAlpha * (0.65 + 0.25 * Math.sin(t * 8.0));
+  RAKA.swellHaloR.scale.setScalar(1.0 + S.swellAlpha * (0.12 + 0.08 * Math.sin(t * 8.0)));
+  RAKA.splintGroupR.visible = !isOutroStage && S.splintVis > 0.5;
+  RAKA.splintGroupR.scale.setScalar(S.splintVis > 0.5 ? Math.max(0.01, S.splintProg) : 1);
+  footRestGroup.visible = S.footRestVis > 0.5;
+  RAKA.phoneGroup.visible = !isOutroStage && S.rakaHoldPhone > 0.5;
+
+  // Shoe & Watch Removal Animation (S18+)
+  const sp = S.shoeOffProg;
+  RAKA.shoeRGroup.position.set(sp * -0.18, -0.35 - sp * 0.14, 0.05 + sp * 0.25);
+  RAKA.shoeRGroup.rotation.set(sp * 0.25, sp * 0.35, 0);
+  RAKA.shoeRGroup.visible = sp < 0.85;
+  if (RAKA.watchMesh) {
+    RAKA.watchMesh.position.y = -0.32 - sp * 0.18;
+    RAKA.watchMesh.visible = sp < 0.85;
+  }
+  detachedItemsGroup.visible = !isOutroStage && sp > 0.75;
+
+  const pose = isOutroStage ? 3 : Math.round(S.rakaPose);
+  if (pose === 3) {
+    // Outro Stage: Centered inside Badge Circle — clean side wave away from face
+    RAKA.root.position.set(0, 0.42 + S.outroLiftY + breath, 0);
+    RAKA.root.rotation.set(0, 0, 0);
+    RAKA.bodyPivot.position.set(0, 0.72, 0);
+    RAKA.bodyPivot.rotation.set(0, 0, 0);
+    RAKA.legL.hip.rotation.set(0, 0, 0); RAKA.legL.knee.rotation.set(0, 0, 0);
+    RAKA.legR.hip.rotation.set(0, 0, 0); RAKA.legR.knee.rotation.set(0, 0, 0);
+    RAKA.armL.root.rotation.set(-0.25, 0, -0.14); RAKA.armL.forearmPivot.rotation.set(0, 0, 0); RAKA.armL.handPivot.rotation.set(0, 0, 0);
+    RAKA.armR.root.rotation.set(-0.30, 0, -2.25 - Math.sin(t * 7.5) * 0.10); RAKA.armR.forearmPivot.rotation.set(-0.22, 0, -0.18); RAKA.armR.handPivot.rotation.set(0, 0, 0);
+    RAKA.headPivot.rotation.set(Math.sin(S.outroNod * Math.PI) * 0.16, Math.sin(t * 2.2) * 0.04, S.outroHeadTilt);
+  } else if (pose === 2) {
+    // S21: Reclined calmly on Hospital Stretcher (head toward -X IGD door, right splinted leg in +Z foreground)
+    RAKA.root.position.set(S.stretcherX + 0.62, 0.72, 0.24);
+    RAKA.root.rotation.set(-1.18, 0, Math.PI / 2);
+    RAKA.bodyPivot.position.set(0, 0.72, 0);
+    RAKA.bodyPivot.rotation.set(0.22, 0, 0);
+    RAKA.legL.hip.rotation.set(-0.22, 0, 0); RAKA.legL.knee.rotation.set(0.20, 0, 0);
+    RAKA.legR.hip.rotation.set(-0.10, 0, 0); RAKA.legR.knee.rotation.set(0.05, 0, 0);
+    RAKA.armL.root.rotation.set(-0.20, 0, -0.15); RAKA.armL.forearmPivot.rotation.set(-0.35, 0, 0);
+    RAKA.armR.root.rotation.set(-0.20, 0, 0.15); RAKA.armR.forearmPivot.rotation.set(-0.35, 0, 0);
+    RAKA.headPivot.rotation.set(0.25, 0.15, 0);
+  } else if (pose === 1) {
+    // S09: Panic Running in place with rapid pumping legs!
+    const stride = Math.sin(t * 14.0);
+    RAKA.root.position.set(-0.35, 0.08 + Math.abs(Math.cos(t * 14.0)) * 0.10, 0);
+    RAKA.root.rotation.set(0.18, 0.35, 0);
+    RAKA.bodyPivot.position.set(0, 0.72, 0);
+    RAKA.bodyPivot.rotation.set(0.22, 0, 0);
+    RAKA.legL.hip.rotation.set(stride * 0.75, 0, 0); RAKA.legL.knee.rotation.set(Math.max(0, -stride) * 0.85, 0, 0);
+    RAKA.legR.hip.rotation.set(-stride * 0.75, 0, 0); RAKA.legR.knee.rotation.set(Math.max(0, stride) * 0.85, 0, 0);
+    RAKA.armL.root.rotation.set(-stride * 0.85 - 0.3, 0, -0.15); RAKA.armL.forearmPivot.rotation.set(-0.85, 0, 0);
+    RAKA.armR.root.rotation.set(stride * 0.85 - 0.3, 0, 0.15); RAKA.armR.forearmPivot.rotation.set(-0.85, 0, 0);
+    RAKA.headPivot.rotation.set(0.12, -0.15, 0);
+  } else {
+    // Seated on Terrace Bench (S01-S03, S16-S20, S24)
+    RAKA.root.position.set(-0.48, 0.0 + breath, -0.45);
+    RAKA.root.rotation.set(0, 0, 0);
+    RAKA.bodyPivot.position.set(0, 0.56, 0);
+    const leanFwd = S.rakaReachTie * 0.25;
+    RAKA.bodyPivot.rotation.set(leanFwd, 0, 0);
+
+    // Legs: Left leg always comfortably bent on terrace floor; Right leg extends straight forward in S16-S20 & S24!
+    RAKA.legL.hip.rotation.set(-1.35, 0.08, 0); RAKA.legL.knee.rotation.set(1.25, 0, 0);
+    const st = S.rakaLegStraight;
+    RAKA.legR.hip.rotation.set(-1.35 * (1 - st) + (-1.52) * st, -0.06, 0);
+    RAKA.legR.knee.rotation.set(1.18 * (1 - st) + 0.06 * st, 0, 0);
+
+    // Arms
+    if (S.rakaHoldPhone > 0.5) {
+      // S20 holding phone toward foreground snake
+      RAKA.armR.root.rotation.set(-1.15, 0.42, 0.12);
+      RAKA.armR.forearmPivot.rotation.set(-0.45, 0, 0);
+      RAKA.armR.handPivot.rotation.set(0.35, -0.25, 0);
+      RAKA.armL.root.rotation.set(-0.35, 0, -0.15); RAKA.armL.forearmPivot.rotation.set(-0.45, 0, 0);
+    } else if (S.rakaReachTie > 0.5) {
+      // S01-S03 leaning forward reaching red tie onto right calf
+      RAKA.armL.root.rotation.set(-0.88, -0.28, -0.12);
+      RAKA.armL.forearmPivot.rotation.set(-0.55, 0, 0);
+      RAKA.armR.root.rotation.set(-0.72, 0.15, 0.12);
+      RAKA.armR.forearmPivot.rotation.set(-0.65, 0, 0);
+    } else if (S.rakaWave > 0.5 && t >= 74.5) {
+      // S24 warm wave / calm seated sign-off (arm opened cleanly out to side away from face)
+      RAKA.armL.root.rotation.set(-0.28, 0, -0.16); RAKA.armL.forearmPivot.rotation.set(-0.35, 0, 0);
+      RAKA.armR.root.rotation.set(-0.32, 0, -2.05 - Math.sin(t * 5.5) * 0.09); RAKA.armR.forearmPivot.rotation.set(-0.24, 0, -0.18);
+    } else {
+      // Calm seated posture S16-S19
+      RAKA.armL.root.rotation.set(-0.32, 0, -0.16); RAKA.armL.forearmPivot.rotation.set(-0.42, 0, 0);
+      RAKA.armR.root.rotation.set(-0.32, 0, 0.16);  RAKA.armR.forearmPivot.rotation.set(-0.42, 0, 0);
+    }
+    RAKA.headPivot.rotation.set(S.rakaHeadPitch, S.rakaHeadYaw, S.rakaHeadRoll);
+  }
+
+  // 5. Dynamic 3D Callout Target Anchors
+  let c1T = new THREE.Vector3(), c1Ox = 165, c1Oy = -140;
+  let c2T = new THREE.Vector3(), c2Ox = 165, c2Oy = -140;
+  let c3T = new THREE.Vector3(), c3Ox = 165, c3Oy = -140;
+
+  if (t < 11.90) {
+    c1T = getWorldAnchor(RAKA.calfTourniquetR); c1Ox = 165; c1Oy = -145;
+  } else if (t < 20.85) {
+    c1T = getWorldAnchor(lymphVesselMesh, new THREE.Vector3(0, 0.25, 0)); c1Ox = -175; c1Oy = -130;
+  } else if (t < 23.60) {
+    c1T = getWorldAnchor(heartPumpGroup); c1Ox = 185; c1Oy = -125;
+  } else if (t < 28.65) {
+    c1T = getWorldAnchor(RAKA.legR.knee, new THREE.Vector3(0, -0.15, 0)); c1Ox = 165; c1Oy = -135;
+  } else if (t < 31.85) {
+    c1T = getWorldAnchor(muscleL, new THREE.Vector3(0, 0.15, 0)); c1Ox = -185; c1Oy = -120;
+  } else if (t < 40.35) {
+    c1T = getWorldAnchor(xrayLowerShell); c1Ox = 175; c1Oy = -125;
+  } else {
+    c1T = getWorldAnchor(splitLeft); c1Ox = -110; c1Oy = -155;
+  }
+
+  if (t < 17.50) {
+    c2T = getWorldAnchor(bloodVesselMesh, new THREE.Vector3(0, 0.15, 0)); c2Ox = 185; c2Oy = -125;
+  } else if (t < 26.35) {
+    c2T = getWorldAnchor(lymphVesselMesh, new THREE.Vector3(0, 0.25, 0)); c2Ox = -175; c2Oy = -125;
+  } else {
+    c2T = getWorldAnchor(infectionGlow); c2Ox = -185; c2Oy = -120;
+  }
+
+  if (t < 52.80) {
+    c3T = getWorldAnchor(miniXrayGroup); c3Ox = -175; c3Oy = -135;
+  } else if (t < 58.30) {
+    c3T = getWorldAnchor(RAKA.swellHaloR); c3Ox = 185; c3Oy = -140;
+  } else if (t < 66.00) {
+    c3T = getWorldAnchor(snakeHead); c3Ox = -175; c3Oy = -145;
+  } else {
+    c3T = getWorldAnchor(serumVialGroup); c3Ox = -225; c3Oy = 215;
+  }
+
+  const c4T = getWorldAnchor(RAKA.splintGroupR);
+  setCalloutLine('#line-c1', '#dot-c1', $('#call1'), c1T, c1Ox, c1Oy, S.c1Alpha);
+  setCalloutLine('#line-c2', '#dot-c2', $('#call2'), c2T, c2Ox, c2Oy, S.c2Alpha);
+  setCalloutLine('#line-c3', '#dot-c3', $('#call3'), c3T, c3Ox, c3Oy, S.c3Alpha);
+  setCalloutLine('#line-c4', '#dot-c4', $('#call4'), c4T, 185, -145, S.c4Alpha);
+
+  renderer.render(scene, camera);
+}
+
+/* ============ 9. STAGE SCALE & DETERMINISTIC CAPTURE HOOKS ============ */
+const stage = $('#stage');
+const fit = () => {
+  const s = Math.min(innerWidth / W, innerHeight / H);
+  stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+};
+addEventListener('resize', fit);
+fit();
+
+const audioEl = $('#vo-audio');
+let isPlaying = false;
+const isDeterministicCapture = Q.has('clean') || Q.has('capture');
+
+if (!isDeterministicCapture) {
+  (function frame() {
+    if (!window.THUMB_LOCK) {
+      if (isPlaying && !audioEl.paused) tl.time(audioEl.currentTime, false);
+      render(tl.time());
+    }
+    requestAnimationFrame(frame);
+  })();
+}
+
+$('#btn-play').onclick = () => {
+  if (audioEl.paused) {
+    isPlaying = true; audioEl.play(); tl.play(audioEl.currentTime);
+    $('#btn-play').textContent = '⏸ Pause';
+  } else {
+    isPlaying = false; audioEl.pause(); tl.pause();
+    $('#btn-play').textContent = '▶ Play Master + Audio';
+  }
+};
+
+document.querySelectorAll('#switcher button[data-t]').forEach(btn => {
+  btn.onclick = () => {
+    const t = parseFloat(btn.dataset.t);
+    isPlaying = false; audioEl.pause(); audioEl.currentTime = t;
+    tl.pause(t); render(t);
+    $('#btn-play').textContent = '▶ Play Master + Audio';
+  };
+});
+
+const seek = (t) => {
+  document.body.classList.add('clean-snap');
+  isPlaying = false;
+  tl.pause();
+  tl.time(t, false);
+  if (gsap.ticker.tick) gsap.ticker.tick();
+  render(t);
+  const gl = renderer.getContext();
+  if (gl && gl.finish) gl.finish();
+  return new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve(true))));
+};
+
+window.OPENER = { tl, DURATION, W, H, seek, S, render, RAKA, renderer, scene, camera, ready: false };
+
+const avatarImg = $('#outro-avatar-img');
+const avatarReady = avatarImg && avatarImg.decode ? avatarImg.decode().catch(() => {}) : Promise.resolve();
+Promise.all([document.fonts.ready, avatarReady]).then(() => {
+  window.OPENER.ready = true;
+  if (!Q.has('clean')) render(0);
+});
+</script>
+</body>
+</html>
