@@ -21,7 +21,7 @@ const SRV_PORT = 8775;
 const USER_DATA = path.join(RENDER_TMP, 'chrome_prev4');
 
 const SHOTS = [
-  { t: 1.80, out: 'ep04_s01_hook.png',          label: 'S01 Hook' },
+  { t: 2.65, out: 'ep04_s01_hook.png',          label: 'S01 Hook' },
   { t: 5.20, out: 'ep04_s02_amputasi.png',      label: 'S02 Risiko Amputasi' },
   { t: 9.20, out: 'ep04_s03_ikat_darah.png',    label: 'S03 Ikat Kencang' },
   { t: 13.4, out: 'ep04_s04_xray_darah.png',    label: 'S04 Lewat Darah?' },
@@ -41,11 +41,16 @@ const SHOTS = [
   { t: 55.5, out: 'ep04_s18_step2_lepas.png',   label: 'S18 Step 2 Lepas Benda' },
   { t: 60.6, out: 'ep04_s19_step3_bidai.png',   label: 'S19 Step 3 Bidai' },
   { t: 64.5, out: 'ep04_s20_step4a_foto.png',   label: 'S20 Step 4A Foto' },
-  { t: 68.0, out: 'ep04_s21_step4b_rs_sabu.png',label: 'S21 Step 4B RS & SABU' },
+  { t: 68.90, out: 'ep04_s21_step4b_rs_sabu.png',label: 'S21 Step 4B RS & SABU' },
   { t: 71.2, out: 'ep04_s22_payoff_sedot.png',  label: 'S22 Payoff Sedot' },
   { t: 73.5, out: 'ep04_s23_payoff_gerak.png',  label: 'S23 Payoff Gerak' },
   { t: 75.8, out: 'ep04_s24_signoff.png',       label: 'S24 Sign-Off' },
   { t: 80.5, out: 'ep04_s25_outro.png',         label: 'S25 Outro CTA' }
+];
+
+const EXTRA_SHOTS = [
+  { t: 0.72,  out: 'ep04_s01a_strike.png',      label: 'S01A Snake Strike' },
+  { t: 66.85, out: 'ep04_s21a_ambulance.png',   label: 'S21A Ambulance' }
 ];
 
 let chromeBin = 'google-chrome';
@@ -190,7 +195,7 @@ function stitchSheet(inputs, cols, rows, tileW, tileH, outFile) {
 
   fs.mkdirSync(VAULT_ASSETS, { recursive: true });
 
-  for (const s of SHOTS) {
+  for (const s of [...SHOTS, ...EXTRA_SHOTS]) {
     const evRes = await send('Runtime.evaluate', {
       expression: `(async () => {
         document.body.classList.remove('cap-opt-1','cap-opt-2','cap-opt-3');

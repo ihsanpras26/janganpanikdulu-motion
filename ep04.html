@@ -42,7 +42,7 @@ html,body{
 #stage{
   position:fixed;left:50%;top:50%;width:1080px;height:1920px;
   transform:translate(-50%,-50%) scale(1);overflow:hidden;
-  background:linear-gradient(180deg,#CBE4FB 0%,#E8F3FF 48%,#DCEBD5 100%);
+  background:linear-gradient(180deg,#B7E2FB 0%,#DCF1E3 46%,#C3DFC0 100%);
 }
 #stage.xray-bg{
   background:linear-gradient(180deg,#E2ECF8 0%,#F4F8FD 52%,#E6EEF7 100%);
@@ -476,180 +476,460 @@ function makeCrossMark3D(color = 0xDC2626, size = 0.32) {
   return g;
 }
 
-/* ============ 2. STAGE A: WET HOUSE TERRACE, GARDEN, BENCH & 3D SNAKE ============ */
+/* ============ 2. STAGE A: OUTDOOR FOREST HIKING TRAIL, LOG BENCH & 3D SNAKE ============ */
 const terraceGroup = new THREE.Group();
 scene.add(terraceGroup);
 
-// Terrace floor tiles + yard grass border
-const porchSlab = new THREE.Mesh(
-  new RoundedBoxGeometry(9.6, 0.40, 10.5, 4, 0.06),
-  mat(0xDCE4EC, 0.35, 0.08)
+// Forest earth floor + central dirt hiking trail
+const grassFloor = new THREE.Mesh(
+  new RoundedBoxGeometry(16.0, 0.44, 15.0, 4, 0.08),
+  mat(0x4EA847, 0.84, 0.02)
 );
-porchSlab.position.set(0, -0.20, 0.2);
-porchSlab.receiveShadow = true;
-terraceGroup.add(porchSlab);
+grassFloor.position.set(0, -0.22, -0.4);
+grassFloor.receiveShadow = true;
+terraceGroup.add(grassFloor);
 
-// Wet sheen tile lines
-for (let gx = -3.6; gx <= 3.6; gx += 1.2) {
-  const line = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.01, 10.2), mat(0x94A3B8, 0.5));
-  line.position.set(gx, 0.004, 0.2);
-  terraceGroup.add(line);
-}
-for (let gz = -4.2; gz <= 4.2; gz += 1.2) {
-  const line = new THREE.Mesh(new THREE.BoxGeometry(9.2, 0.01, 0.025), mat(0x94A3B8, 0.5));
-  line.position.set(0, 0.004, gz);
-  terraceGroup.add(line);
-}
+const dirtTrail = new THREE.Mesh(
+  new RoundedBoxGeometry(3.4, 0.46, 13.5, 4, 0.08),
+  mat(0xA67B5B, 0.90, 0.01)
+);
+dirtTrail.position.set(-0.25, -0.21, 0.1);
+dirtTrail.rotation.y = 0.06;
+dirtTrail.receiveShadow = true;
+terraceGroup.add(dirtTrail);
 
-// Wet rain puddles on terrace floor
-const puddleMat = new THREE.MeshStandardMaterial({ color: 0x9CC4E4, roughness: 0.08, metalness: 0.25, transparent: true, opacity: 0.72 });
-[[0.95, 0.55, 0.65], [-0.45, 1.35, 0.48], [1.65, -0.40, 0.55]].forEach(([px, pz, pr]) => {
-  const p = new THREE.Mesh(new THREE.CylinderGeometry(pr, pr * 1.05, 0.012, 24), puddleMat);
-  p.scale.set(1.3, 1.0, 0.85);
-  p.position.set(px, 0.008, pz);
-  terraceGroup.add(p);
+const trailEdgeRocks = [
+  [1.25, 0.04, 1.35, 0.22], [1.45, 0.05, 0.35, 0.28], [1.15, 0.03, -0.75, 0.18],
+  [-1.75, 0.05, 0.95, 0.26], [-1.95, 0.04, -0.35, 0.22], [2.15, 0.06, -1.65, 0.34]
+];
+const rockMat = mat(0x788591, 0.85, 0.04);
+const mossMat = mat(0x3E8E41, 0.82, 0.02);
+trailEdgeRocks.forEach(([rx, ry, rz, rs], idx) => {
+  const rk = withOutline(new THREE.Mesh(new THREE.DodecahedronGeometry(rs, 1), idx % 2 === 0 ? rockMat : mat(0x64748B, 0.85)), 1.05);
+  rk.scale.set(1.25, 0.65, 1.0);
+  rk.position.set(rx, ry, rz);
+  rk.rotation.y = idx * 0.9;
+  rk.castShadow = true; rk.receiveShadow = true;
+  terraceGroup.add(rk);
 });
 
-// Lush green garden bed along right edge (+X) & rear wall
-const gardenBed = new THREE.Mesh(
-  new RoundedBoxGeometry(3.4, 0.44, 10.5, 4, 0.08),
-  mat(0x4EA847, 0.78, 0.02)
-);
-gardenBed.position.set(3.2, -0.18, 0.2);
-gardenBed.receiveShadow = true;
-terraceGroup.add(gardenBed);
+// Stylized 3D Forest Trees & Lush Fern Bushes
+const trunkMat = mat(0x6D4C3D, 0.88, 0.02);
+const canopyDarkMat = mat(0x236B36, 0.72, 0.02);
+const canopyBrightMat = mat(0x359648, 0.68, 0.02);
 
-const backWall = new THREE.Mesh(
-  new RoundedBoxGeometry(11.5, 4.2, 0.45, 4, 0.06),
-  mat(0xF1F5F9, 0.72, 0.02)
-);
-backWall.position.set(0, 1.9, -3.6);
-backWall.receiveShadow = true;
-terraceGroup.add(backWall);
+function buildForestTree(tx, tz, sc = 1.0) {
+  const g = new THREE.Group();
+  g.position.set(tx, 0, tz);
+  g.scale.setScalar(sc);
+  const trunk = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.22, 1.75, 12), trunkMat), 1.04);
+  trunk.position.y = 0.88; trunk.castShadow = true; g.add(trunk);
 
-const backTrim = new THREE.Mesh(
-  new RoundedBoxGeometry(11.5, 0.55, 0.50, 3, 0.03),
-  mat(0x261A66, 0.55, 0.05)
-);
-backTrim.position.set(0, 0.28, -3.58);
-terraceGroup.add(backTrim);
+  [[0, 2.05, 0, 0.95, 1.25], [0, 2.75, 0, 0.74, 1.05], [0, 3.30, 0, 0.50, 0.85]].forEach(([cx, cy, cz, cr, ch], idx) => {
+    const cone = withOutline(new THREE.Mesh(new THREE.ConeGeometry(cr, ch, 12), idx === 1 ? canopyBrightMat : canopyDarkMat), 1.03);
+    cone.position.set(cx, cy, cz); cone.castShadow = true; g.add(cone);
+  });
+  return g;
+}
 
-// Wooden Terrace Bench (Mas Raka sits here facing +Z)
+function buildFernBush(fx, fz, sc = 1.0) {
+  const g = new THREE.Group();
+  g.position.set(fx, 0, fz);
+  g.scale.setScalar(sc);
+  const m1 = mat(0x2E8540, 0.62);
+  const m2 = mat(0x45A852, 0.58);
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * Math.PI * 2;
+    const frond = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.20, 0.04, 0.62, 3, 0.015), i % 2 === 0 ? m1 : m2), 1.05);
+    frond.position.set(Math.cos(a) * 0.24, 0.16 + (i % 2) * 0.08, Math.sin(a) * 0.24);
+    frond.rotation.set(-0.42, -a + Math.PI / 2, 0);
+    frond.castShadow = true; g.add(frond);
+  }
+  return g;
+}
+
+terraceGroup.add(buildForestTree(-2.75, -2.55, 1.15));
+terraceGroup.add(buildForestTree(-0.95, -3.45, 1.32));
+terraceGroup.add(buildForestTree(1.45, -3.15, 1.22));
+terraceGroup.add(buildForestTree(2.95, -2.15, 1.10));
+terraceGroup.add(buildForestTree(2.85, -0.35, 1.00));
+terraceGroup.add(buildForestTree(-3.45, -1.95, 0.95));
+
+terraceGroup.add(buildFernBush(1.22, 0.85, 1.05));
+terraceGroup.add(buildFernBush(1.78, -1.05, 1.22));
+terraceGroup.add(buildFernBush(-2.10, -1.25, 1.15));
+terraceGroup.add(buildFernBush(-1.85, 1.35, 0.95));
+
+// Fallen Mossy Wooden Log Bench (Mas Raka sits here facing +Z on trail)
 const benchGroup = new THREE.Group();
 benchGroup.position.set(-0.48, 0, -0.45);
 terraceGroup.add(benchGroup);
 
-const woodMat = mat(0xB46B38, 0.52, 0.04);
-const benchSeat = withOutline(new THREE.Mesh(new RoundedBoxGeometry(1.75, 0.14, 0.74, 4, 0.04), woodMat), 1.04);
-benchSeat.position.set(0, 0.46, 0);
-benchSeat.castShadow = true;
-benchSeat.receiveShadow = true;
-benchGroup.add(benchSeat);
-[-0.70, 0.70].forEach(bx => {
-  [-0.24, 0.24].forEach(bz => {
-    const bLeg = new THREE.Mesh(new RoundedBoxGeometry(0.11, 0.44, 0.11, 3, 0.02), mat(0x261A66, 0.45));
-    bLeg.position.set(bx, 0.22, bz);
-    bLeg.castShadow = true;
-    benchGroup.add(bLeg);
-  });
+const woodMat = mat(0x8C5332, 0.72, 0.03);
+const logBody = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.27, 1.95, 16), woodMat), 1.04);
+logBody.rotation.z = Math.PI / 2;
+logBody.position.set(0, 0.26, 0);
+logBody.castShadow = true; logBody.receiveShadow = true;
+benchGroup.add(logBody);
+
+// Flat carved seat top pad + moss patches on log
+const logTopPad = new THREE.Mesh(new RoundedBoxGeometry(1.55, 0.08, 0.44, 3, 0.03), mat(0xA4643D, 0.68));
+logTopPad.position.set(0, 0.47, 0);
+logTopPad.receiveShadow = true;
+benchGroup.add(logTopPad);
+
+[-0.82, 0.82].forEach(lx => {
+  const mossPatch = new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.08, 0.32, 3, 0.03), mossMat);
+  mossPatch.position.set(lx, 0.46, -0.05);
+  benchGroup.add(mossPatch);
 });
 
-// Footrest Cushion / Low Stool (appears cleanly in Step 1-3 S17-S19)
+// Footrest Mossy Flat Forest Boulder (supports Mas Raka's extended right leg & ankle cleanly in S16-S20, S24)
 const footRestGroup = new THREE.Group();
-footRestGroup.position.set(-0.65, 0, 0.70);
+footRestGroup.position.set(-0.65, 0, 0.22);
 terraceGroup.add(footRestGroup);
-const footRestBox = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.62, 0.34, 0.72, 4, 0.06), mat(0xE2E8F0, 0.45)), 1.05);
+const footRestBox = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.58, 0.34, 0.64, 5, 0.10), rockMat), 1.05);
 footRestBox.position.y = 0.17;
-footRestBox.castShadow = true;
+footRestBox.castShadow = true; footRestBox.receiveShadow = true;
 footRestGroup.add(footRestBox);
+const footRestMoss = new THREE.Mesh(new RoundedBoxGeometry(0.46, 0.05, 0.52, 3, 0.02), mossMat);
+footRestMoss.position.y = 0.35;
+footRestGroup.add(footRestMoss);
 
-// Terracotta Plant Pot with Tropical Leaves (near garden edge at +X)
-function buildPottedPlant(px, pz, scale = 1.0) {
-  const g = new THREE.Group();
-  g.position.set(px, 0, pz);
-  g.scale.setScalar(scale);
-  const pot = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.27, 0.62, 18), mat(0xD95D39, 0.60)), 1.05);
-  pot.position.y = 0.31;
-  pot.castShadow = true;
-  g.add(pot);
-  const rimPot = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.41, 0.41, 0.09, 18), mat(0xB84627, 0.55)), 1.05);
-  rimPot.position.y = 0.62;
-  g.add(rimPot);
-  const leafMat = mat(0x2E8540, 0.52);
-  for (let i = 0; i < 7; i++) {
-    const a = (i / 7) * Math.PI * 2;
-    const leaf = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.18, 0.03, 0.55, 3, 0.012), leafMat), 1.06);
-    leaf.position.set(Math.cos(a) * 0.25, 0.72 + (i % 2) * 0.14, Math.sin(a) * 0.25);
-    leaf.rotation.set(-0.45, -a + Math.PI / 2, 0);
-    leaf.castShadow = true;
-    g.add(leaf);
-  }
-  return g;
-}
-terraceGroup.add(buildPottedPlant(1.38, 0.85, 1.05));
-terraceGroup.add(buildPottedPlant(1.85, -1.35, 1.20));
-
-// Stylized 3D Venomous Snake (Charcoal-Indigo with Signal Orange Warning Bands)
+// Detailed 3D Pit Viper Snake (Procedural Diamond Scale UV Mesh + Continuous Gap-Free Neck + Sculpted Head & Hinged Fangs)
 const snakeGroup = new THREE.Group();
 terraceGroup.add(snakeGroup);
 
-const snakeCurve = new THREE.CatmullRomCurve3([
-  new THREE.Vector3(-0.35, 0.06, 0.12),
-  new THREE.Vector3(-0.08, 0.07, -0.06),
-  new THREE.Vector3(0.22, 0.09, 0.08),
-  new THREE.Vector3(0.45, 0.15, -0.10),
-  new THREE.Vector3(0.58, 0.28, -0.22)
-]);
-const snakeBodyMesh = withOutline(
-  new THREE.Mesh(new THREE.TubeGeometry(snakeCurve, 28, 0.062, 12, false), mat(0x1E293B, 0.35, 0.12)),
-  1.07
-);
-snakeBodyMesh.castShadow = true;
-snakeGroup.add(snakeBodyMesh);
+function makeViperSkinTex() {
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 1024;
+  const ctx = c.getContext('2d');
 
-// Orange warning stripes along the snake
-[0.2, 0.4, 0.6, 0.8].forEach(u => {
-  const pt = snakeCurve.getPointAt(u);
-  const ring = new THREE.Mesh(new THREE.SphereGeometry(0.068, 12, 12), mat(0xEF5F18, 0.32));
-  ring.scale.set(0.9, 1.0, 0.9);
-  ring.position.copy(pt);
-  snakeGroup.add(ring);
-});
+  // Deep forest-slate dorsal base
+  ctx.fillStyle = '#1D2B28';
+  ctx.fillRect(0, 0, 512, 1024);
 
-const snakeHead = withOutline(
-  new THREE.Mesh(new RoundedBoxGeometry(0.16, 0.11, 0.21, 5, 0.045), mat(0x1E293B, 0.32, 0.12)),
-  1.07
-);
-snakeHead.position.set(0.62, 0.31, -0.27);
-snakeHead.rotation.set(0.20, -0.55, 0);
-snakeGroup.add(snakeHead);
+  // Subtle overlapping reptile hex/diamond scales across dorsal & flanks
+  const rows = 44, cols = 22;
+  const cw = 512 / cols, ch = 1024 / rows;
+  for (let r = 0; r < rows; r++) {
+    const off = (r % 2) * (cw * 0.5);
+    for (let col = -1; col <= cols; col++) {
+      const cx = col * cw + off;
+      const cy = r * ch;
+      ctx.fillStyle = (r + col) % 2 === 0 ? '#243632' : '#192623';
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - ch * 0.52);
+      ctx.lineTo(cx + cw * 0.52, cy);
+      ctx.lineTo(cx, cy + ch * 0.52);
+      ctx.lineTo(cx - cw * 0.52, cy);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(10, 15, 20, 0.55)';
+      ctx.lineWidth = 2.0;
+      ctx.stroke();
+    }
+  }
 
-[-0.055, 0.055].forEach(ex => {
-  const eye = new THREE.Mesh(new THREE.SphereGeometry(0.022, 10, 10), new THREE.MeshBasicMaterial({ color: 0xF59E0B }));
-  eye.position.set(ex, 0.02, 0.075);
-  snakeHead.add(eye);
-});
-const tongue = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.008, 0.09), new THREE.MeshBasicMaterial({ color: 0xEF4444 }));
-tongue.position.set(0, -0.015, 0.14);
-snakeHead.add(tongue);
+  // Signal Orange + Gold-Amber Viper Diamond Dorsal Saddles centered along spine seam (x=0 & x=512 -> dorsal u=0/1!)
+  for (let y = 64; y < 1024; y += 128) {
+    [0, 512].forEach(sx => {
+      ctx.fillStyle = '#F59E0B';
+      ctx.beginPath();
+      ctx.moveTo(sx, y - 48);
+      ctx.lineTo(sx + 84, y);
+      ctx.lineTo(sx, y + 48);
+      ctx.lineTo(sx - 84, y);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#EF5F18';
+      ctx.beginPath();
+      ctx.moveTo(sx, y - 38);
+      ctx.lineTo(sx + 68, y);
+      ctx.lineTo(sx, y + 38);
+      ctx.lineTo(sx - 68, y);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#181E26';
+      ctx.beginPath();
+      ctx.moveTo(sx, y - 16);
+      ctx.lineTo(sx + 26, y);
+      ctx.lineTo(sx, y + 16);
+      ctx.lineTo(sx - 26, y);
+      ctx.closePath();
+      ctx.fill();
+    });
+  }
+
+  // Pale Warm Cream Ventral Belly Scutes centered along underside (x = 256 -> u = 0.5!)
+  const bellyGrad = ctx.createLinearGradient(156, 0, 356, 0);
+  bellyGrad.addColorStop(0.0, 'rgba(254, 243, 199, 0)');
+  bellyGrad.addColorStop(0.16, '#FDE68A');
+  bellyGrad.addColorStop(0.50, '#FEF3C7');
+  bellyGrad.addColorStop(0.84, '#FDE68A');
+  bellyGrad.addColorStop(1.0, 'rgba(254, 243, 199, 0)');
+  ctx.fillStyle = bellyGrad;
+  ctx.fillRect(156, 0, 200, 1024);
+
+  // Horizontal ribbed belly plate seams
+  ctx.strokeStyle = 'rgba(180, 110, 40, 0.45)';
+  ctx.lineWidth = 3;
+  for (let y = 0; y < 1024; y += 22) {
+    ctx.beginPath();
+    ctx.moveTo(176, y);
+    ctx.quadraticCurveTo(256, y + 5, 336, y);
+    ctx.stroke();
+  }
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function buildTaperedViperBodyGeo(curve, tubularSegs = 68, radialSegs = 20) {
+  const geo = new THREE.BufferGeometry();
+  const positions = [], normals = [], uvs = [], indices = [];
+  const upHint = new THREE.Vector3(0, 1, 0);
+
+  for (let i = 0; i <= tubularSegs; i++) {
+    const u = i / tubularSegs;
+    const pt = curve.getPointAt(u);
+    const tangent = curve.getTangentAt(u).normalize();
+    const binormal = new THREE.Vector3().crossVectors(tangent, upHint);
+    if (binormal.lengthSq() < 1e-5) binormal.set(1, 0, 0);
+    binormal.normalize();
+    const normal = new THREE.Vector3().crossVectors(binormal, tangent).normalize();
+
+    let taper;
+    if (u < 0.16) taper = 0.08 + Math.pow(u / 0.16, 0.72) * 0.80;
+    else if (u < 0.72) taper = 0.88 + Math.sin(((u - 0.16) / 0.56) * Math.PI) * 0.24;
+    else taper = 0.88 - ((u - 0.72) / 0.28) * 0.24;
+    const r = 0.068 * taper;
+
+    for (let j = 0; j <= radialSegs; j++) {
+      const phi = (j / radialSegs) * Math.PI * 2;
+      const cosP = Math.cos(phi);
+      const sinP = Math.sin(phi);
+      const nx = normal.x * cosP * 0.88 + binormal.x * sinP * 1.12;
+      const ny = normal.y * cosP * 0.88 + binormal.y * sinP * 1.12;
+      const nz = normal.z * cosP * 0.88 + binormal.z * sinP * 1.12;
+
+      positions.push(pt.x + nx * r, pt.y + ny * r, pt.z + nz * r);
+      const nVec = new THREE.Vector3(nx, ny, nz).normalize();
+      normals.push(nVec.x, nVec.y, nVec.z);
+      uvs.push(j / radialSegs, u * 4.2);
+    }
+  }
+
+  for (let i = 0; i < tubularSegs; i++) {
+    for (let j = 0; j < radialSegs; j++) {
+      const a = i * (radialSegs + 1) + j;
+      const b = (i + 1) * (radialSegs + 1) + j;
+      const c = (i + 1) * (radialSegs + 1) + (j + 1);
+      const d = i * (radialSegs + 1) + (j + 1);
+      // CCW outward winding so FrontSide shows viperSkinTex and BackSide stays strictly the outer ink outline!
+      indices.push(a, d, b, b, d, c);
+    }
+  }
+
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geo.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+  geo.setIndex(indices);
+  return geo;
+}
+
+const viperSkinTex = makeViperSkinTex();
+const viperSkinMat = new THREE.MeshStandardMaterial({ map: viperSkinTex, roughness: 0.36, metalness: 0.08 });
+const snakeBodyDarkMat   = mat(0x1D2B28, 0.34, 0.12);
+const snakeScaleAltMat   = mat(0x283A35, 0.38, 0.10);
+const snakeDiamondMat    = mat(0xEF5F18, 0.32, 0.08);
+const snakeAmberRimMat   = mat(0xF59E0B, 0.32, 0.05);
+const snakeBellyMat      = mat(0xFDE68A, 0.48, 0.02);
+const snakeMouthMat      = mat(0xFB7185, 0.32, 0.04);
+const snakeFangMat       = mat(0xFFFFFF, 0.14, 0.15);
+const snakeVenomTipMat   = new THREE.MeshBasicMaterial({ color: 0xEF5F18 });
+
+function buildDetailedSnake() {
+  const root = new THREE.Group();
+
+  // S-coiled attack posture curve resting on forest floor & arching seamlessly into neck joint at (0, 0.305, 0.02)
+  const coilCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3( 0.56, 0.015,  0.42),
+    new THREE.Vector3( 0.64, 0.042,  0.12),
+    new THREE.Vector3( 0.40, 0.058, -0.14),
+    new THREE.Vector3( 0.10, 0.068,  0.10),
+    new THREE.Vector3( 0.32, 0.075,  0.34),
+    new THREE.Vector3( 0.16, 0.145,  0.22),
+    new THREE.Vector3( 0.05, 0.255,  0.09),
+    new THREE.Vector3( 0.00, 0.305,  0.02)
+  ]);
+
+  const bodyGeo = buildTaperedViperBodyGeo(coilCurve, 72, 20);
+  const bodyMesh = withOutline(new THREE.Mesh(bodyGeo, viperSkinMat), 1.045);
+  bodyMesh.castShadow = true;
+  bodyMesh.receiveShadow = true;
+  root.add(bodyMesh);
+
+  // Articulated Neck & Sculpted Viper Head attached flush at (0, 0.305, 0.02) — NO detachment gap!
+  const strikeNeckPivot = new THREE.Group();
+  strikeNeckPivot.position.set(0.0, 0.305, 0.02);
+  root.add(strikeNeckPivot);
+
+  const neckCap = withOutline(new THREE.Mesh(new THREE.SphereGeometry(0.046, 12, 12), snakeBodyDarkMat), 1.06);
+  strikeNeckPivot.add(neckCap);
+
+  const upperNeck = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.046, 0.115, 14), snakeBodyDarkMat), 1.06);
+  upperNeck.rotation.x = Math.PI / 2;
+  upperNeck.position.set(0, 0.006, -0.055);
+  strikeNeckPivot.add(upperNeck);
+
+  // Orange neck chevron collar ring transitioning smoothly into the sculpted head
+  const neckBand = new THREE.Mesh(new THREE.TorusGeometry(0.044, 0.009, 8, 16), snakeDiamondMat);
+  neckBand.position.set(0, 0.008, -0.055);
+  strikeNeckPivot.add(neckBand);
+
+  const headPivot = new THREE.Group();
+  headPivot.position.set(0, 0.010, -0.105);
+  strikeNeckPivot.add(headPivot);
+
+  const upperHeadPivot = new THREE.Group();
+  headPivot.add(upperHeadPivot);
+
+  const craniumCore = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.110, 0.068, 0.155, 5, 0.032), snakeBodyDarkMat), 1.065);
+  craniumCore.position.set(0, 0.024, -0.095);
+  craniumCore.castShadow = true;
+  upperHeadPivot.add(craniumCore);
+
+  const snoutTip = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.072, 0.046, 0.075, 4, 0.020), snakeBodyDarkMat), 1.065);
+  snoutTip.position.set(0, 0.018, -0.172);
+  upperHeadPivot.add(snoutTip);
+
+  [-1, 1].forEach(side => {
+    const gland = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.088, 0.064, 0.115, 5, 0.028), snakeBodyDarkMat), 1.065);
+    gland.position.set(side * 0.052, 0.020, -0.035);
+    gland.rotation.y = side * 0.44;
+    upperHeadPivot.add(gland);
+
+    const brow = new THREE.Mesh(new RoundedBoxGeometry(0.036, 0.018, 0.072, 3, 0.008), snakeScaleAltMat);
+    brow.position.set(side * 0.052, 0.052, -0.100);
+    brow.rotation.set(0.10, side * 0.18, -side * 0.24);
+    upperHeadPivot.add(brow);
+
+    const iris = new THREE.Mesh(new THREE.SphereGeometry(0.021, 12, 12), snakeAmberRimMat);
+    iris.position.set(side * 0.054, 0.032, -0.105);
+    upperHeadPivot.add(iris);
+
+    const pupil = new THREE.Mesh(new RoundedBoxGeometry(0.009, 0.028, 0.009, 2, 0.003), new THREE.MeshBasicMaterial({ color: 0x090D16 }));
+    pupil.position.set(side * 0.068, 0.032, -0.108);
+    upperHeadPivot.add(pupil);
+
+    const nostril = new THREE.Mesh(new THREE.SphereGeometry(0.008, 8, 8), new THREE.MeshBasicMaterial({ color: 0x090D16 }));
+    nostril.position.set(side * 0.030, 0.024, -0.185);
+    upperHeadPivot.add(nostril);
+  });
+
+  const crownPlate = new THREE.Mesh(new RoundedBoxGeometry(0.042, 0.006, 0.052, 2, 0.003), snakeDiamondMat);
+  crownPlate.rotation.y = Math.PI / 4;
+  crownPlate.position.set(0, 0.056, -0.058);
+  upperHeadPivot.add(crownPlate);
+
+  const upperPalate = new THREE.Mesh(new RoundedBoxGeometry(0.088, 0.016, 0.145, 2, 0.006), snakeMouthMat);
+  upperPalate.position.set(0, -0.006, -0.102);
+  upperHeadPivot.add(upperPalate);
+
+  const venomDrops = [];
+  [-0.032, 0.032].forEach(fx => {
+    const fangPivot = new THREE.Group();
+    fangPivot.position.set(fx, -0.008, -0.160);
+    const fang = withOutline(new THREE.Mesh(new THREE.ConeGeometry(0.013, 0.082, 12), snakeFangMat), 1.07);
+    fang.rotation.x = Math.PI + 0.14;
+    fang.position.y = -0.036;
+    fangPivot.add(fang);
+
+    const drop = new THREE.Mesh(new THREE.ConeGeometry(0.005, 0.016, 8), snakeVenomTipMat);
+    drop.rotation.x = Math.PI;
+    drop.position.set(0, -0.078, 0.005);
+    fangPivot.add(drop);
+    venomDrops.push(drop);
+
+    upperHeadPivot.add(fangPivot);
+  });
+
+  const lowerJawPivot = new THREE.Group();
+  lowerJawPivot.position.set(0, -0.008, -0.014);
+  headPivot.add(lowerJawPivot);
+
+  const lowerJawMesh = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.094, 0.032, 0.165, 4, 0.014), snakeBellyMat), 1.065);
+  lowerJawMesh.position.set(0, -0.015, -0.086);
+  lowerJawPivot.add(lowerJawMesh);
+
+  const lowerOralBed = new THREE.Mesh(new RoundedBoxGeometry(0.072, 0.014, 0.138, 2, 0.005), snakeMouthMat);
+  lowerOralBed.position.set(0, -0.002, -0.084);
+  lowerJawPivot.add(lowerOralBed);
+
+  [-0.022, 0.022].forEach(tx => {
+    const lt = new THREE.Mesh(new THREE.ConeGeometry(0.006, 0.020, 8), snakeFangMat);
+    lt.position.set(tx, 0.009, -0.155);
+    lowerJawPivot.add(lt);
+  });
+
+  const tongueGroup = new THREE.Group();
+  tongueGroup.position.set(0, 0.002, -0.165);
+  const tMat = new THREE.MeshBasicMaterial({ color: 0xEF4444 });
+  const tStem = new THREE.Mesh(new THREE.BoxGeometry(0.014, 0.006, 0.072), tMat);
+  tStem.position.z = -0.036;
+  tongueGroup.add(tStem);
+  [-1, 1].forEach(ts => {
+    const fork = new THREE.Mesh(new THREE.BoxGeometry(0.009, 0.005, 0.038), tMat);
+    fork.position.set(ts * 0.013, 0, -0.082);
+    fork.rotation.y = -ts * 0.45;
+    tongueGroup.add(fork);
+  });
+  lowerJawPivot.add(tongueGroup);
+
+  return {
+    root, strikeNeckPivot, headPivot, upperHeadPivot, lowerJawPivot, tongueGroup, venomDrops
+  };
+}
+
+const SNAKE_RIG = buildDetailedSnake();
+snakeGroup.add(SNAKE_RIG.root);
+const snakeHead = SNAKE_RIG.headPivot;
 
 // S20 Smartphone Photo Focus Ring around Snake
 const snakePhotoFrame = new THREE.Group();
-snakePhotoFrame.position.set(0.28, 0.25, -0.10);
+snakePhotoFrame.position.set(0.24, 0.20, 0.18);
 snakeGroup.add(snakePhotoFrame);
 const frameMat = new THREE.MeshBasicMaterial({ color: 0x0FA968, transparent: true, opacity: 0.0 });
-const photoBorder = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.025, 10, 4), frameMat);
+const photoBorder = new THREE.Mesh(new THREE.TorusGeometry(0.45, 0.025, 10, 4), frameMat);
 photoBorder.rotation.z = Math.PI / 4;
 snakePhotoFrame.add(photoBorder);
 
-// Detached Right Shoe & Black Watch on Terrace Floor/Bench when removed in Step 2 (S18+)
+// Sharp Crisp 3D Comic Impact Sparks at Calf Bite Spot (replaces flat clipping ring!)
+const biteFlashMat = new THREE.MeshBasicMaterial({ color: 0xEF5F18, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
+const biteFlashRing = new THREE.Group();
+for (let i = 0; i < 6; i++) {
+  const ang = (i / 6) * Math.PI * 2 + 0.3;
+  const spark = new THREE.Mesh(new THREE.ConeGeometry(0.016, 0.058, 4), biteFlashMat);
+  spark.position.set(Math.cos(ang) * 0.11, Math.sin(ang) * 0.11, 0);
+  spark.rotation.z = ang - Math.PI / 2;
+  biteFlashRing.add(spark);
+}
+terraceGroup.add(biteFlashRing);
+
+// Detached Right Hiking Boot & Black Watch on Forest Trail when removed in Step 2 (S18+)
 const detachedItemsGroup = new THREE.Group();
 terraceGroup.add(detachedItemsGroup);
-const dShoe = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.15, 0.38, 4, 0.05), mat(0xF8FAFC, 0.30)), 1.07);
-dShoe.position.set(-1.12, 0.08, 0.65); dShoe.rotation.y = 0.45; dShoe.castShadow = true;
+const dShoe = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.16, 0.38, 4, 0.05), mat(0x7C4A2D, 0.55)), 1.07);
+dShoe.position.set(-1.14, 0.09, 0.65); dShoe.rotation.y = 0.45; dShoe.castShadow = true;
 const dWatch = withOutline(new THREE.Mesh(new THREE.TorusGeometry(0.085, 0.025, 10, 20), mat(0x181E26, 0.30)), 1.06);
 dWatch.rotation.x = Math.PI / 2;
-dWatch.position.set(-1.10, 0.56, -0.25);
+dWatch.position.set(-1.15, 0.50, -0.35);
 detachedItemsGroup.add(dShoe, dWatch);
 
 // Running Motion Ground Stripes (visible during S09 panic run)
@@ -672,6 +952,52 @@ const faceTexture = new THREE.CanvasTexture(faceCanvas);
 faceTexture.colorSpace = THREE.SRGBColorSpace;
 let lastFaceKey = '';
 
+function makeCameraViewfinderTex() {
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 440;
+  const ctx = c.getContext('2d');
+  // Forest trail background preview
+  ctx.fillStyle = '#1E3A2F';
+  ctx.fillRect(0, 0, 256, 440);
+  ctx.fillStyle = '#365E42';
+  ctx.fillRect(0, 200, 256, 240);
+  // Stylized snake silhouette inside viewfinder
+  ctx.strokeStyle = '#1E293B';
+  ctx.lineWidth = 18;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(55, 290); ctx.bezierCurveTo(95, 220, 145, 295, 195, 210);
+  ctx.stroke();
+  ctx.strokeStyle = '#EF5F18';
+  ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.moveTo(95, 250); ctx.lineTo(108, 256); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(155, 248); ctx.lineTo(168, 242); ctx.stroke();
+  // Viewfinder green corner reticles
+  ctx.strokeStyle = '#0FA968';
+  ctx.lineWidth = 6;
+  [[46, 150, 1, 1], [210, 150, -1, 1], [46, 330, 1, -1], [210, 330, -1, -1]].forEach(([x, y, dx, dy]) => {
+    ctx.beginPath();
+    ctx.moveTo(x + dx * 28, y); ctx.lineTo(x, y); ctx.lineTo(x, y + dy * 28);
+    ctx.stroke();
+  });
+  // Top badge 2.0x & Bottom camera shutter UI
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fillRect(0, 0, 256, 54);
+  ctx.fillRect(0, 358, 256, 82);
+  ctx.fillStyle = '#F59E0B';
+  ctx.font = '800 22px "Plus Jakarta Sans",sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('2.0x ZOOM', 128, 34);
+  // White shutter ring
+  ctx.fillStyle = '#FFFFFF';
+  ctx.beginPath(); ctx.arc(128, 398, 26, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = '#EF5F18'; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.arc(128, 398, 20, 0, Math.PI * 2); ctx.stroke();
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
 function updateRakaFace(mood = 'alert', isBlinking = false) {
   const key = `${mood}_${isBlinking ? 1 : 0}`;
   if (key === lastFaceKey) return;
@@ -684,9 +1010,13 @@ function updateRakaFace(mood = 'alert', isBlinking = false) {
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
 
+  // Eyebrows
   ctx.lineWidth = 20;
   ctx.beginPath();
-  if (mood === 'panic') {
+  if (mood === 'pain') {
+    ctx.moveTo(106, 148); ctx.lineTo(208, 192);
+    ctx.moveTo(406, 148); ctx.lineTo(304, 192);
+  } else if (mood === 'panic') {
     ctx.moveTo(108, 182); ctx.quadraticCurveTo(156, 145, 206, 152);
     ctx.moveTo(306, 152); ctx.quadraticCurveTo(356, 145, 404, 182);
   } else if (mood === 'focused') {
@@ -701,8 +1031,19 @@ function updateRakaFace(mood = 'alert', isBlinking = false) {
   }
   ctx.stroke();
 
-  [158, 354].forEach(cx => {
-    if (isBlinking) {
+  // Eyes
+  [158, 354].forEach((cx, idx) => {
+    if (mood === 'pain') {
+      // Tightly winced > < pain eyes
+      ctx.lineWidth = 18;
+      ctx.beginPath();
+      if (idx === 0) {
+        ctx.moveTo(cx - 28, 224); ctx.lineTo(cx + 22, 250); ctx.lineTo(cx - 28, 276);
+      } else {
+        ctx.moveTo(cx + 28, 224); ctx.lineTo(cx - 22, 250); ctx.lineTo(cx + 28, 276);
+      }
+      ctx.stroke();
+    } else if (isBlinking) {
       ctx.lineWidth = 16;
       ctx.beginPath();
       ctx.moveTo(cx - 24, 252);
@@ -722,6 +1063,17 @@ function updateRakaFace(mood = 'alert', isBlinking = false) {
     }
   });
 
+  // Sweat drop on temple for pain/panic
+  if (mood === 'pain' || mood === 'panic') {
+    ctx.fillStyle = '#38BDF8';
+    ctx.beginPath();
+    ctx.moveTo(432, 195);
+    ctx.quadraticCurveTo(452, 232, 432, 246);
+    ctx.quadraticCurveTo(412, 232, 432, 195);
+    ctx.fill();
+    ctx.strokeStyle = '#261A66'; ctx.lineWidth = 5; ctx.stroke();
+  }
+
   ctx.strokeStyle = 'rgba(145, 92, 58, 0.78)';
   ctx.lineWidth = 10;
   ctx.beginPath();
@@ -732,7 +1084,21 @@ function updateRakaFace(mood = 'alert', isBlinking = false) {
   ctx.fillStyle = '#181E26';
   ctx.lineWidth = 14;
   ctx.beginPath();
-  if (mood === 'panic') {
+  if (mood === 'pain') {
+    // Clenched wavy grimace mouth
+    ctx.fillStyle = '#FFFFFF';
+    ctx.strokeStyle = '#181E26';
+    ctx.lineWidth = 13;
+    ctx.beginPath();
+    ctx.roundRect(198, 330, 116, 44, 18);
+    ctx.fill();
+    ctx.stroke();
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.moveTo(208, 352);
+    ctx.bezierCurveTo(232, 342, 280, 362, 304, 350);
+    ctx.stroke();
+  } else if (mood === 'panic') {
     ctx.roundRect(228, 328, 56, 42, 20);
     ctx.fill();
   } else if (mood === 'alert') {
@@ -774,6 +1140,31 @@ function buildMasRaka() {
   backPanel.position.set(0, 0.41, -0.12);
   bodyPivot.add(backPanel);
 
+  // Adventurer Utility Straps & Chest Pockets (keeps Terracotta identity + outdoor explorer vibe)
+  [-0.20, 0.20].forEach(sx => {
+    const strap = new THREE.Mesh(new RoundedBoxGeometry(0.085, 0.84, 0.50, 3, 0.02), mat(0x261A66, 0.52));
+    strap.position.set(sx, 0.41, 0.01);
+    bodyPivot.add(strap);
+    const chestPocket = new THREE.Mesh(new RoundedBoxGeometry(0.16, 0.18, 0.05, 3, 0.015), mat(0xB84627, 0.45));
+    chestPocket.position.set(sx, 0.42, 0.25);
+    bodyPivot.add(chestPocket);
+  });
+
+  // 3D Adventurer Hiking Backpack (hidden automatically in Outro so badge stays ultra-clean)
+  const backpackGroup = new THREE.Group();
+  backpackGroup.position.set(0, 0.44, -0.34);
+  const packBody = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.56, 0.66, 0.30, 5, 0.09), mat(0x2E6F40, 0.58)), 1.06);
+  packBody.castShadow = true;
+  backpackGroup.add(packBody);
+  const packFlap = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.58, 0.18, 0.32, 4, 0.06), mat(0xEF5F18, 0.45)), 1.05);
+  packFlap.position.set(0, 0.28, 0.01);
+  backpackGroup.add(packFlap);
+  const bedRoll = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.54, 14), mat(0xF8FAFC, 0.5)), 1.06);
+  bedRoll.rotation.z = Math.PI / 2;
+  bedRoll.position.set(0, 0.42, -0.02);
+  backpackGroup.add(bedRoll);
+  bodyPivot.add(backpackGroup);
+
   [-0.16, 0.16].forEach((cx, idx) => {
     const collar = withOutline(
       new THREE.Mesh(new RoundedBoxGeometry(0.20, 0.12, 0.26, 4, 0.03), mat(0xD95D39, 0.36)), 1.06
@@ -782,10 +1173,6 @@ function buildMasRaka() {
     collar.rotation.z = idx === 0 ? 0.35 : -0.35;
     bodyPivot.add(collar);
   });
-
-  const pocket = new THREE.Mesh(new RoundedBoxGeometry(0.16, 0.18, 0.04, 3, 0.015), mat(0xB84627, 0.4));
-  pocket.position.set(-0.22, 0.56, 0.245);
-  bodyPivot.add(pocket);
 
   const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 0.22, 16), skinMat);
   neck.position.set(0, 0.86, 0);
@@ -828,7 +1215,7 @@ function buildMasRaka() {
   const topStrand = new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.11, 0.48, 8, 0.052), hairMid);
   topStrand.position.set(0.05, 0.785, 0.06); topStrand.rotation.set(-0.12, -0.10, -0.08); hairGroup.add(topStrand);
 
-  // Arms + Removable Watch + Phone Prop
+  // Arms + Removable Watch + Camera Viewfinder Phone Prop
   const sleeveMat = mat(0xD95D39, 0.36);
   let watchMesh = null;
   let phoneGroup = null;
@@ -865,11 +1252,12 @@ function buildMasRaka() {
 
     if (side === -1) {
       phoneGroup = new THREE.Group();
-      phoneGroup.position.set(0, -0.02, 0.14);
-      const bodyP = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.22, 0.38, 0.03, 3, 0.015), mat(0x181E26, 0.25, 0.4)), 1.06);
+      phoneGroup.position.set(0.02, 0.02, 0.16);
+      phoneGroup.rotation.set(-0.18, -0.62, 0.08);
+      const bodyP = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.42, 0.032, 3, 0.015), mat(0x181E26, 0.25, 0.4)), 1.06);
       phoneGroup.add(bodyP);
-      const scrP = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.32), new THREE.MeshBasicMaterial({ map: makeBadgeCanvasTex('ZOOM', '#0F172A', '#22D3EE', 'FOTO ULAR') }));
-      scrP.position.z = 0.017;
+      const scrP = new THREE.Mesh(new THREE.PlaneGeometry(0.20, 0.36), new THREE.MeshBasicMaterial({ map: makeCameraViewfinderTex() }));
+      scrP.position.z = 0.018;
       phoneGroup.add(scrP);
       phoneGroup.visible = false;
       handPivot.add(phoneGroup);
@@ -881,9 +1269,12 @@ function buildMasRaka() {
   const armL = makeArm(1);
   const armR = makeArm(-1);
 
-  // Articulated Legs + Right Calf EP04 Interactive Props (Fang Marks, Red Tie, Removable Shoe, Wood Splint)
-  const pantsMat = mat(0x1E293B, 0.45);
-  const shoeMat  = mat(0xF8FAFC, 0.30);
+  // Articulated Adventurer Legs + Knee Joint Sphere + Intact Socked Foot + Removable Hiking Boots + Wood Branch Splint
+  const pantsMat = mat(0x3D4F3E, 0.56); // Outdoor olive cargo trousers
+  const pocketPantsMat = mat(0x2D3C2E, 0.60);
+  const sockMat  = mat(0xE2E8F0, 0.65);
+  const bootMat  = mat(0x7C4A2D, 0.55); // Sturdy brown hiking boot
+  const soleMat  = mat(0x1E293B, 0.72);
 
   let fangMarksR, calfTourniquetR, tourniquetRingMat, dangerGlowR, shoeRGroup, swellHaloR, splintGroupR;
 
@@ -896,9 +1287,26 @@ function buildMasRaka() {
     thigh.castShadow = true;
     hip.add(thigh);
 
+    // Cargo pocket on outer thigh
+    const cargoPocket = new THREE.Mesh(new RoundedBoxGeometry(0.05, 0.16, 0.18, 3, 0.015), pocketPantsMat);
+    cargoPocket.position.set(side * 0.135, -0.16, 0);
+    hip.add(cargoPocket);
+
     const knee = new THREE.Group();
     knee.position.set(0, -0.32, 0);
     hip.add(knee);
+
+    // Spherical Knee Joint Cap clad in trouser material — eliminates "broken leg" seam when knee bends or extends!
+    const kneeCap = withOutline(new THREE.Mesh(new THREE.SphereGeometry(0.132, 16, 16), pantsMat), 1.06);
+    knee.add(kneeCap);
+
+    // Rolled trouser cuff just below knee on right leg
+    if (side === -1) {
+      const cuff = withOutline(new THREE.Mesh(new THREE.TorusGeometry(0.118, 0.030, 10, 20), pantsMat), 1.06);
+      cuff.rotation.x = Math.PI / 2;
+      cuff.position.y = -0.055;
+      knee.add(cuff);
+    }
 
     // Rolled up trouser hem for Right Leg so calf bite / tie / splint are clearly visible!
     const calfHeight = 0.32;
@@ -913,11 +1321,25 @@ function buildMasRaka() {
     calfMesh.castShadow = true;
     knee.add(calfMesh);
 
+    // Permanent Socked Ankle & Foot inside knee — stays intact when boot is removed in S18+!
+    const ankleJoint = new THREE.Mesh(new THREE.SphereGeometry(0.092, 14, 14), sockMat);
+    ankleJoint.position.set(0, -0.31, 0);
+    knee.add(ankleJoint);
+
+    const footInner = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.19, 0.11, 0.30, 4, 0.045), sockMat), 1.06);
+    footInner.position.set(0, -0.355, 0.045);
+    footInner.castShadow = true;
+    knee.add(footInner);
+
+    // Removable Outer Hiking Boot Shell
     const shoeGroup = new THREE.Group();
     shoeGroup.position.set(0, -0.35, 0.05);
-    const shoeMesh = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.15, 0.38, 4, 0.05), shoeMat), 1.07);
-    shoeMesh.castShadow = true;
-    shoeGroup.add(shoeMesh);
+    const bootUpper = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.15, 0.38, 4, 0.05), bootMat), 1.07);
+    bootUpper.castShadow = true;
+    shoeGroup.add(bootUpper);
+    const bootSole = new THREE.Mesh(new RoundedBoxGeometry(0.27, 0.05, 0.395, 3, 0.015), soleMat);
+    bootSole.position.y = -0.06;
+    shoeGroup.add(bootSole);
     knee.add(shoeGroup);
 
     if (side === -1) {
@@ -966,13 +1388,18 @@ function buildMasRaka() {
       swellHaloR.position.set(0, -0.24, 0);
       knee.add(swellHaloR);
 
-      // Dual Wood/Cardboard Splint (Bidai) locking knee & calf straight (S19-S21, S24)
+      // Dual Natural Wood Branch Splint (Bidai ranting kayu) locking knee & calf straight (S19-S21, S24)
       splintGroupR = new THREE.Group();
-      const plankMat = mat(0xD4A373, 0.65);
+      const branchMat = mat(0x8C5332, 0.78);
       [-0.145, 0.145].forEach(sx => {
-        const plank = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.038, 0.56, 0.14, 3, 0.012), plankMat), 1.06);
-        plank.position.set(sx, -0.04, 0);
-        splintGroupR.add(plank);
+        const branch = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.034, 0.042, 0.62, 12), branchMat), 1.06);
+        branch.position.set(sx, -0.03, 0);
+        splintGroupR.add(branch);
+        // Small bark nub on branch for organic forest wood feel
+        const nub = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.020, 0.06, 8), branchMat);
+        nub.position.set(sx + (sx > 0 ? 0.03 : -0.03), 0.12, 0.02);
+        nub.rotation.z = sx > 0 ? -0.6 : 0.6;
+        splintGroupR.add(nub);
       });
       const strapMat = mat(0xFFFFFF, 0.45);
       const tieAccentMat = new THREE.MeshBasicMaterial({ color: 0x0FA968 });
@@ -996,7 +1423,7 @@ function buildMasRaka() {
 
   return {
     root, bodyPivot, headPivot, armL, armR, legL, legR,
-    watchMesh, phoneGroup, fangMarksR, calfTourniquetR, tourniquetRingMat,
+    backpackGroup, watchMesh, phoneGroup, fangMarksR, calfTourniquetR, tourniquetRingMat,
     dangerGlowR, shoeRGroup, swellHaloR, splintGroupR
   };
 }
@@ -1043,20 +1470,35 @@ const miniVenomBalls = [];
 const xrayGroup = new THREE.Group();
 scene.add(xrayGroup);
 
-// Cutaway Leg Outer Shell (upper & lower halves so tourniquet cinch pinches visibly!)
-const upperTissueMat = new THREE.MeshStandardMaterial({ color: 0xF1C29B, roughness: 0.38, transparent: true, opacity: 0.34 });
-const lowerTissueMat = new THREE.MeshStandardMaterial({ color: 0xF1C29B, roughness: 0.38, transparent: true, opacity: 0.38 });
+// Anatomical Calf Cutaway Outer Shell (calf bulge upper, tapered ankle lower + internal Tibia bone!)
+const upperTissueMat = new THREE.MeshStandardMaterial({ color: 0xF1C29B, roughness: 0.38, transparent: true, opacity: 0.32 });
+const lowerTissueMat = new THREE.MeshStandardMaterial({ color: 0xF1C29B, roughness: 0.38, transparent: true, opacity: 0.36 });
 
-const xrayUpperShell = new THREE.Mesh(new THREE.CylinderGeometry(0.56, 0.56, 0.72, 28), upperTissueMat);
+const xrayUpperShell = new THREE.Mesh(new THREE.CylinderGeometry(0.50, 0.59, 0.72, 28), upperTissueMat);
+xrayUpperShell.scale.set(1.02, 1.0, 0.90);
 xrayUpperShell.position.set(0, 1.80, 0);
 xrayGroup.add(xrayUpperShell);
 
-const xrayLowerShell = new THREE.Mesh(new THREE.CylinderGeometry(0.56, 0.48, 0.88, 28), lowerTissueMat);
+const xrayLowerShell = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.38, 0.88, 28), lowerTissueMat);
+xrayLowerShell.scale.set(1.02, 1.0, 0.90);
 xrayLowerShell.position.set(0, 1.00, 0);
 xrayGroup.add(xrayLowerShell);
 
+// Subtle Tibia Shin Bone inside cutaway so it unmistakably reads as a lower leg / calf!
+const boneMat = new THREE.MeshStandardMaterial({ color: 0xF8FAFC, roughness: 0.35, transparent: true, opacity: 0.62 });
+const tibiaShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.082, 0.068, 1.44, 16), boneMat);
+tibiaShaft.position.set(-0.02, 1.38, -0.15);
+xrayGroup.add(tibiaShaft);
+const tibiaKnobTop = new THREE.Mesh(new THREE.SphereGeometry(0.115, 14, 14), boneMat);
+tibiaKnobTop.position.set(-0.02, 2.08, -0.15);
+xrayGroup.add(tibiaKnobTop);
+const tibiaKnobBot = new THREE.Mesh(new THREE.SphereGeometry(0.095, 14, 14), boneMat);
+tibiaKnobBot.position.set(-0.02, 0.68, -0.15);
+xrayGroup.add(tibiaKnobBot);
+
 // Solid crisp outline ring around epidermis top + fang puncture channels
-const skinTopRim = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.57, 0.57, 0.06, 28), mat(0xF1C29B, 0.42)), 1.03);
+const skinTopRim = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.51, 0.51, 0.06, 28), mat(0xF1C29B, 0.42)), 1.03);
+skinTopRim.scale.set(1.02, 1.0, 0.90);
 skinTopRim.position.set(0, 2.15, 0);
 xrayGroup.add(skinTopRim);
 
@@ -1177,13 +1619,28 @@ for (let i = 0; i < 8; i++) {
   oxyOrbs.push({ mesh: oOrb, phase: i / 8 });
 }
 
-// Mouth Suction Cup & Oral Bacteria Invasion (S14-S15, S22)
+// 3D Stylized Lowered Face + Open Mouth Suctioning Bite & Oral Bacteria Invasion (S14-S15, S22)
 const suctionGroup = new THREE.Group();
-suctionGroup.position.set(0.28, 2.34, 0.12);
-const suctionCone = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.28, 0.24, 18, 1, true), mat(0xFCA5A5, 0.45)), 1.05);
-suctionGroup.add(suctionCone);
-const suctionCross = makeCrossMark3D(0xDC2626, 0.32);
-suctionCross.position.set(0, 0.04, 0.30);
+suctionGroup.position.set(0.28, 2.38, 0.14);
+
+const mouthSkinMat = mat(0xF1C29B, 0.38);
+const lipMat = mat(0xE07A7A, 0.40);
+const mouthJaw = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.42, 0.24, 0.32, 6, 0.09), mouthSkinMat), 1.05);
+mouthJaw.position.set(0, 0.22, -0.02);
+suctionGroup.add(mouthJaw);
+const noseTip = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.11, 0.12, 0.14, 4, 0.045), mouthSkinMat), 1.05);
+noseTip.position.set(0, 0.24, 0.16);
+suctionGroup.add(noseTip);
+const mouthOpening = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.13, 0.12, 18), mat(0x450A0A, 0.6));
+mouthOpening.position.set(0, 0.05, 0.04);
+suctionGroup.add(mouthOpening);
+const lipRing = withOutline(new THREE.Mesh(new THREE.TorusGeometry(0.135, 0.045, 12, 22), lipMat), 1.06);
+lipRing.rotation.x = Math.PI / 2;
+lipRing.position.set(0, 0.03, 0.04);
+suctionGroup.add(lipRing);
+
+const suctionCross = makeCrossMark3D(0xDC2626, 0.34);
+suctionCross.position.set(0, 0.18, 0.28);
 suctionGroup.add(suctionCross);
 xrayGroup.add(suctionGroup);
 
@@ -1203,16 +1660,62 @@ const infectionGlow = new THREE.Mesh(
 infectionGlow.position.set(0.28, 2.02, 0.10);
 xrayGroup.add(infectionGlow);
 
-/* ============ 5. STAGE C: HOSPITAL STRETCHER EVACUATION & SERUM ANTIBISA (S21) ============ */
+/* ============ 5. STAGE C: AMBULANCE EVACUATION -> HOSPITAL IGD & SERUM ANTIBISA (S21) ============ */
 const hospitalGroup = new THREE.Group();
 scene.add(hospitalGroup);
 
-const hospFloor = new THREE.Mesh(new RoundedBoxGeometry(10.0, 0.4, 8.0, 4, 0.06), mat(0xE2E8F0, 0.45));
-hospFloor.position.set(0, -0.20, 0); hospFloor.receiveShadow = true; hospitalGroup.add(hospFloor);
+const hospFloor = new THREE.Mesh(new RoundedBoxGeometry(20.0, 0.4, 9.0, 4, 0.06), mat(0xCBD5E1, 0.50));
+hospFloor.position.set(-1.0, -0.20, 0); hospFloor.receiveShadow = true; hospitalGroup.add(hospFloor);
 
-// Stylized Hospital Entrance Arch (IGD Rumah Sakit)
+// Asphalt ambulance lane + white curb stripe
+const roadLane = new THREE.Mesh(new RoundedBoxGeometry(19.5, 0.02, 3.6, 2, 0.01), mat(0x334155, 0.85));
+roadLane.position.set(-1.0, 0.01, 0.35); roadLane.receiveShadow = true; hospitalGroup.add(roadLane);
+const hospSidewalk = new THREE.Mesh(new RoundedBoxGeometry(11.0, 0.08, 3.2, 3, 0.02), mat(0xF1F5F9, 0.48));
+hospSidewalk.position.set(-3.2, 0.04, -2.0); hospSidewalk.receiveShadow = true; hospitalGroup.add(hospSidewalk);
+
+// 3D Emergency Ambulance parked on the right road entrance (S21A forest roadside -> hospital IGD)
+const ambulanceGroup = new THREE.Group();
+ambulanceGroup.position.set(1.15, 0, -0.45);
+ambulanceGroup.scale.setScalar(0.66);
+hospitalGroup.add(ambulanceGroup);
+
+const ambBody = withOutline(new THREE.Mesh(new RoundedBoxGeometry(2.65, 1.38, 1.32, 5, 0.08), mat(0xFFFFFF, 0.28)), 1.03);
+ambBody.position.set(0, 0.86, 0); ambBody.castShadow = true; ambulanceGroup.add(ambBody);
+const ambCab = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.88, 1.02, 1.24, 5, 0.08), mat(0xFFFFFF, 0.28)), 1.04);
+ambCab.position.set(1.52, 0.68, 0); ambCab.castShadow = true; ambulanceGroup.add(ambCab);
+const ambWindshield = new THREE.Mesh(new RoundedBoxGeometry(0.18, 0.48, 1.08, 3, 0.02), mat(0x38BDF8, 0.15, 0.2));
+ambWindshield.position.set(1.90, 0.90, 0); ambWindshield.rotation.z = 0.18; ambulanceGroup.add(ambWindshield);
+const ambStripe = new THREE.Mesh(new RoundedBoxGeometry(3.45, 0.22, 1.34, 2, 0.01), mat(0xDC2626, 0.35));
+ambStripe.position.set(0.22, 0.72, 0); ambulanceGroup.add(ambStripe);
+// Side Red Cross badge on Ambulance
+const ambCross = new THREE.Group();
+ambCross.position.set(-0.20, 1.15, 0.68);
+ambCross.add(new THREE.Mesh(new RoundedBoxGeometry(0.32, 0.10, 0.03, 2, 0.01), new THREE.MeshBasicMaterial({ color: 0xDC2626 })));
+ambCross.add(new THREE.Mesh(new RoundedBoxGeometry(0.10, 0.32, 0.03, 2, 0.01), new THREE.MeshBasicMaterial({ color: 0xDC2626 })));
+ambulanceGroup.add(ambCross);
+// Wheels
+[-0.85, 1.35].forEach(wx => {
+  [-0.64, 0.64].forEach(wz => {
+    const wh = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.14, 16), mat(0x181E26, 0.6)), 1.05);
+    wh.rotation.x = Math.PI / 2;
+    wh.position.set(wx, 0.28, wz);
+    ambulanceGroup.add(wh);
+  });
+});
+// Open Rear Door Flap on left side (-X) facing stretcher
+const ambRearDoor = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.08, 1.05, 0.60, 3, 0.02), mat(0xE2E8F0, 0.38)), 1.04);
+ambRearDoor.position.set(-1.50, 0.80, -0.58); ambRearDoor.rotation.y = 0.55; ambulanceGroup.add(ambRearDoor);
+// Flashing Red & Blue Siren Beacons on roof
+const ambBeaconRMat = new THREE.MeshBasicMaterial({ color: 0xEF4444 });
+const ambBeaconBMat = new THREE.MeshBasicMaterial({ color: 0x3B82F6 });
+const ambBeaconR = new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.16, 0.28, 3, 0.04), ambBeaconRMat);
+ambBeaconR.position.set(1.10, 1.62, 0.32); ambulanceGroup.add(ambBeaconR);
+const ambBeaconB = new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.16, 0.28, 3, 0.04), ambBeaconBMat);
+ambBeaconB.position.set(1.10, 1.62, -0.32); ambulanceGroup.add(ambBeaconB);
+
+// Stylized Hospital Entrance Arch (IGD Rumah Sakit on the left side, separate from S21A ambulance bay)
 const igdArch = new THREE.Group();
-igdArch.position.set(-0.28, 0, -1.65);
+igdArch.position.set(-3.45, 0, -1.75);
 hospitalGroup.add(igdArch);
 const igdWall = withOutline(new THREE.Mesh(new RoundedBoxGeometry(2.5, 2.5, 0.55, 4, 0.06), mat(0xFFFFFF, 0.35)), 1.03);
 igdWall.position.y = 1.25; igdArch.add(igdWall);
@@ -1230,7 +1733,7 @@ igdArch.add(redCross);
 
 // Medical Stretcher / Brankar
 const stretcherGroup = new THREE.Group();
-stretcherGroup.position.set(-0.15, 0.56, 0.25);
+stretcherGroup.position.set(0.15, 0.56, 0.35);
 hospitalGroup.add(stretcherGroup);
 const bedDeck = withOutline(new THREE.Mesh(new RoundedBoxGeometry(1.85, 0.14, 0.85, 4, 0.05), mat(0xFFFFFF, 0.35)), 1.04);
 bedDeck.castShadow = true; stretcherGroup.add(bedDeck);
@@ -1246,9 +1749,9 @@ mattress.position.y = 0.10; stretcherGroup.add(mattress);
   });
 });
 
-// Hero Floating 3D Vial: SERUM ANTIBISA (SABU)
+// Hero Floating 3D Vial: SERUM ANTIBISA (SABU) floating in front of IGD entrance
 const serumVialGroup = new THREE.Group();
-serumVialGroup.position.set(0.68, 1.55, 0.95);
+serumVialGroup.position.set(-2.55, 1.58, 1.05);
 serumVialGroup.scale.setScalar(0.76);
 hospitalGroup.add(serumVialGroup);
 
@@ -1328,7 +1831,7 @@ const S = {
 
   // Terrace & Mas Raka states
   rakaPose: 0,      // 0=seated, 1=running, 2=lying stretcher, 3=outro stand
-  rakaMood: 0,      // 0=alert, 1=panic, 2=focused, 3=smile
+  rakaMood: 0,      // 0=alert, 1=panic, 2=focused, 3=smile, 4=pain
   rakaHeadPitch: 0, rakaHeadYaw: 0, rakaHeadRoll: 0,
   rakaWave: 0,
   rakaLegStraight: 0, // 0=bent seated, 1=extended straight
@@ -1344,6 +1847,9 @@ const S = {
   footRestVis: 0,
   miniXrayAlpha: 0,
   snakePhotoAlpha: 0,
+  snakeStrikeProg: 0, // 0=coiled, 1=lunging at right calf (S01A strike)
+  snakeJawOpen: 0.2,  // 0=closed, 1=wide open fangs bared!
+  biteFlashAlpha: 0,
   snakeZOff: 0,
 
   // X-Ray Anatomical Stage states
@@ -1377,30 +1883,38 @@ const S = {
 
 const tl = gsap.timeline({ paused: true });
 
-// S01 (00.00 - 03.75s): Hook — "Hal pertama yang hampir semua orang lakuin pas digigit ular ini,"
+// S01 (00.00 - 03.75s): Hook — S01A Close-up Snakebite Strike (0.00-1.65s) -> S01B Pull-back Pain + Grab Tie (1.65-3.75s)
 tl.fromTo(S, {
-  stageIdx: 0, camX: -2.85, camY: 2.35, camZ: 7.45, lookX: -0.22, lookY: 1.05, lookZ: 0.35, fov: 25,
-  rakaPose: 0, rakaMood: 1, rakaHeadPitch: 0.16, rakaHeadYaw: -0.14,
-  rakaLegStraight: 0, rakaReachTie: 1, handTieVis: 1, legTieVis: 0, tieDangerGlow: 0,
+  stageIdx: 0, camX: -1.60, camY: 0.92, camZ: 3.45, lookX: -0.32, lookY: 0.30, lookZ: 0.08, fov: 24,
+  rakaPose: 0, rakaMood: 4, rakaHeadPitch: 0.22, rakaHeadYaw: -0.14,
+  rakaLegStraight: 0, rakaReachTie: 0, handTieVis: 0, legTieVis: 0, tieDangerGlow: 0,
   shoeOffProg: 0, swellAlpha: 0, splintVis: 0, footRestVis: 0, miniXrayAlpha: 0, snakePhotoAlpha: 0,
+  snakeStrikeProg: 0.15, snakeJawOpen: 0.85, biteFlashAlpha: 0.0,
   snakeZOff: 0, c1Alpha: 0, c2Alpha: 0, c3Alpha: 0, c4Alpha: 0
 }, {
-  camX: -2.55, camY: 2.20, camZ: 6.95, lookX: -0.24, lookY: 1.00, lookZ: 0.35,
-  snakeZOff: -0.14, rakaHeadPitch: 0.22, duration: 3.70, ease: 'sine.inOut'
+  snakeStrikeProg: 1.0, snakeJawOpen: 1.0, biteFlashAlpha: 0.95, duration: 0.55, ease: 'power3.out'
 }, 0);
-
-// S02 (03.75 - 06.80s): "justru sering bikin kakinya berakhir diamputasi."
+tl.to(S, { snakeStrikeProg: 0.96, snakeJawOpen: 0.75, duration: 0.55, ease: 'sine.inOut' }, 0.55);
 tl.to(S, {
-  stageIdx: 0, camX: -2.65, camY: 0.92, camZ: 1.65, lookX: -0.66, lookY: 0.38, lookZ: 0.05, fov: 21,
-  handTieVis: 0, legTieVis: 1, tieDangerGlow: 1.0, rakaReachTie: 0.4, c1Alpha: 1.0,
+  camX: -2.65, camY: 2.15, camZ: 7.55, lookX: -0.22, lookY: 0.98, lookZ: 0.25, fov: 25,
+  snakeStrikeProg: 0.0, snakeJawOpen: 0.28, biteFlashAlpha: 0.0,
+  rakaReachTie: 1.0, handTieVis: 1.0, snakeZOff: -0.08, rakaHeadPitch: 0.25,
+  duration: 0.95, ease: 'power3.inOut'
+}, 1.45);
+tl.to(S, { camZ: 7.25, duration: 1.25, ease: 'sine.inOut' }, 2.45);
+
+// S02 (03.75 - 06.80s): "justru sering bikin kakinya berakhir diamputasi." (Clean 3/4 side-front leg close-up, NO broken knee overlap)
+tl.to(S, {
+  stageIdx: 0, camX: -2.15, camY: 1.48, camZ: 3.35, lookX: -0.56, lookY: 0.56, lookZ: -0.05, fov: 23,
+  rakaMood: 1, handTieVis: 0, legTieVis: 1, tieDangerGlow: 1.0, rakaReachTie: 0.45, c1Alpha: 1.0,
   duration: 0.75, ease: 'power3.inOut'
 }, 3.75);
 tl.to(S, { c1Alpha: 0, duration: 0.25 }, 6.50);
 
 // S03 (06.80 - 11.90s): "Biasanya orang langsung ngikat kakinya kencang-kencang, biar racunnya nggak naik lewat darah."
 tl.to(S, {
-  stageIdx: 0, camX: -2.45, camY: 1.00, camZ: 1.45, lookX: -0.66, lookY: 0.40, lookZ: 0.04, fov: 21,
-  legTieVis: 1, tieDangerGlow: 0.65, rakaReachTie: 1.0, c1Alpha: 1.0,
+  stageIdx: 0, camX: -2.25, camY: 1.52, camZ: 3.25, lookX: -0.56, lookY: 0.56, lookZ: -0.05, fov: 23,
+  rakaMood: 1, legTieVis: 1, tieDangerGlow: 0.65, rakaReachTie: 0.85, c1Alpha: 1.0,
   duration: 0.85, ease: 'sine.inOut'
 }, 6.80);
 tl.to(S, { c1Alpha: 0, duration: 0.25 }, 11.60);
@@ -1448,10 +1962,10 @@ tl.to(S, { c2Alpha: 0, zeroPumpAlpha: 0, duration: 0.25 }, 26.05);
 
 // S09 (26.35 - 28.65s): "Jadi tiap kali kamu panik dan lari,"
 tl.set(S, {
-  stageIdx: 0, camX: -5.35, camY: 2.15, camZ: 5.35, lookX: -0.30, lookY: 1.15, lookZ: 0.0, fov: 25,
+  stageIdx: 0, camX: -4.95, camY: 2.02, camZ: 6.55, lookX: -0.32, lookY: 1.05, lookZ: 0.0, fov: 25,
   rakaPose: 1, rakaMood: 1, rakaReachTie: 0, handTieVis: 0, legTieVis: 0, tieDangerGlow: 0, c1Alpha: 1.0
 }, 26.35);
-tl.to(S, { camZ: 4.85, duration: 2.25, ease: 'sine.inOut' }, 26.36);
+tl.to(S, { camZ: 6.05, duration: 2.25, ease: 'sine.inOut' }, 26.36);
 tl.to(S, { c1Alpha: 0, duration: 0.20 }, 28.42);
 
 // S10 (28.65 - 31.85s): "otot kaki kamu sendiri yang memompa racunnya naik ke tubuh!"
@@ -1499,17 +2013,17 @@ tl.to(S, { c2Alpha: 0, suctionAlpha: 0, bacteriaAlpha: 0, duration: 0.25 }, 46.5
 
 // S16 (46.80 - 50.45s): "Jadi kalau digigit ular, perlakukan kayak lagi patah tulang!"
 tl.set(S, {
-  stageIdx: 0, camX: -3.55, camY: 2.20, camZ: 5.75, lookX: -0.45, lookY: 1.04, lookZ: 0.08, fov: 25,
+  stageIdx: 0, camX: -4.85, camY: 1.75, camZ: 3.25, lookX: -0.42, lookY: 0.84, lookZ: 0.04, fov: 26,
   rakaPose: 0, rakaMood: 2, rakaHeadPitch: 0.06, rakaHeadYaw: -0.22,
   rakaLegStraight: 1, rakaReachTie: 0, handTieVis: 0, legTieVis: 0, tieDangerGlow: 0,
   footRestVis: 1, shoeOffProg: 0, swellAlpha: 0, splintVis: 0, splintProg: 0,
   miniXrayAlpha: 0, snakePhotoAlpha: 0, rakaHoldPhone: 0, c3Alpha: 0, c4Alpha: 0
 }, 46.80);
-tl.to(S, { camX: -3.35, camZ: 5.45, duration: 3.45, ease: 'sine.inOut' }, 46.85);
+tl.to(S, { camX: -4.65, camZ: 3.05, duration: 3.45, ease: 'sine.inOut' }, 46.85);
 
 // S17 (50.45 - 52.80s): Step 1 — "Jangan digerakkan, jangan dipakai jalan."
 tl.to(S, {
-  stageIdx: 0, camX: -3.45, camY: 2.15, camZ: 5.65, lookX: -0.35, lookY: 1.02, lookZ: 0.16, fov: 25,
+  stageIdx: 0, camX: -4.75, camY: 1.75, camZ: 3.15, lookX: -0.36, lookY: 0.86, lookZ: 0.14, fov: 26,
   miniXrayAlpha: 1.0, c3Alpha: 1.0,
   duration: 0.45, ease: 'power2.out'
 }, 50.45);
@@ -1517,7 +2031,7 @@ tl.to(S, { c3Alpha: 0, miniXrayAlpha: 0, duration: 0.25 }, 52.50);
 
 // S18 (52.80 - 58.30s): Step 2 — "Segera lepas sepatu, jam tangan, atau cincin sebelum area gigitan membengkak dan menjepit kulit."
 tl.to(S, {
-  stageIdx: 0, camX: -2.95, camY: 1.38, camZ: 2.95, lookX: -0.78, lookY: 0.56, lookZ: 0.28, fov: 23,
+  stageIdx: 0, camX: -2.85, camY: 1.28, camZ: 2.55, lookX: -0.68, lookY: 0.50, lookZ: 0.06, fov: 23,
   shoeOffProg: 1.0, swellAlpha: 1.0, c3Alpha: 1.0,
   duration: 1.10, ease: 'power2.inOut'
 }, 52.80);
@@ -1525,7 +2039,7 @@ tl.to(S, { c3Alpha: 0, swellAlpha: 0, duration: 0.25 }, 58.00);
 
 // S19 (58.30 - 63.05s): Step 3 — "Lalu pasang penyangga dari kayu atau kardus biar kakinya nggak bisa ditekuk sama sekali."
 tl.to(S, {
-  stageIdx: 0, camX: -3.10, camY: 1.42, camZ: 3.05, lookX: -0.68, lookY: 0.58, lookZ: 0.24, fov: 23,
+  stageIdx: 0, camX: -2.95, camY: 1.32, camZ: 2.65, lookX: -0.66, lookY: 0.52, lookZ: 0.04, fov: 23,
   splintVis: 1, splintProg: 1.0, c4Alpha: 1.0,
   duration: 1.00, ease: 'back.out(1.4)'
 }, 58.30);
@@ -1533,18 +2047,21 @@ tl.to(S, { c4Alpha: 0, duration: 0.25 }, 62.75);
 
 // S20 (63.05 - 66.00s): Step 4A — "Kalau aman, foto ularnya dari jauh buat dokter,"
 tl.to(S, {
-  stageIdx: 0, camX: -3.15, camY: 2.28, camZ: 7.15, lookX: -0.05, lookY: 1.02, lookZ: 0.30, fov: 26,
+  stageIdx: 0, camX: -3.10, camY: 2.22, camZ: 7.05, lookX: -0.05, lookY: 0.98, lookZ: 0.28, fov: 26,
   rakaHoldPhone: 1, snakePhotoAlpha: 1.0, c3Alpha: 1.0,
   duration: 0.70, ease: 'power2.inOut'
 }, 63.05);
 tl.to(S, { c3Alpha: 0, snakePhotoAlpha: 0, rakaHoldPhone: 0, duration: 0.25 }, 65.72);
 
-// S21 (66.00 - 69.95s): Step 4B — "lalu bawa ke rumah sakit tanpa jalan kaki untuk dapat serum antibisa."
+// S21 (66.00 - 69.95s): Step 4B — Two beats: Ambulance Evacuation (66.00-67.30s) -> Hospital IGD & Serum Antibisa (67.30-69.95s)
 tl.set(S, {
-  stageIdx: 2, camX: 0.0, camY: 2.15, camZ: 8.75, lookX: -0.05, lookY: 1.25, lookZ: 0.0, fov: 25,
-  rakaPose: 2, rakaMood: 2, splintVis: 1, shoeOffProg: 1, stretcherX: 0.35, vialBob: 0, c3Alpha: 1.0
+  stageIdx: 2, camX: 0.48, camY: 2.30, camZ: 15.6, lookX: 0.48, lookY: 0.95, lookZ: 0.0, fov: 26,
+  rakaPose: 2, rakaMood: 2, splintVis: 1, shoeOffProg: 1, stretcherX: -0.28, vialBob: 0, c3Alpha: 1.0
 }, 66.00);
-tl.to(S, { stretcherX: -0.35, vialBob: 1, duration: 3.65, ease: 'power1.out' }, 66.05);
+tl.to(S, {
+  camX: -3.45, camY: 2.15, camZ: 11.4, lookX: -3.45, lookY: 1.15, lookZ: 0.0,
+  stretcherX: -3.45, vialBob: 1, duration: 1.35, ease: 'power2.inOut'
+}, 67.30);
 tl.to(S, { c3Alpha: 0, duration: 0.25 }, 69.65);
 
 // S22 (69.95 - 72.60s): Contrast Payoff A — "Yang bikin racun cepat nyebar bukan telat disedot,"
@@ -1795,7 +2312,8 @@ function updateHUD(t) {
   else if (t < 58.30) $('#call3-text').textContent = 'cegah kulit terjepit saat bengkak';
   else if (t < 63.05) $('#call4-text').textContent = 'kunci sendi tetap lurus';
   else if (t < 66.00) $('#call3-text').textContent = 'foto dari jarak aman';
-  else if (t < 69.95) $('#call3-text').textContent = 'evakuasi tanpa jalan -> serum antibisa';
+  else if (t < 67.85) $('#call3-text').textContent = 'evakuasi ambulans tanpa jalan!';
+  else if (t < 69.95) $('#call3-text').textContent = 'segera dapat serum antibisa!';
   else $('#call1-text').textContent = 'gerak panik = pompa racun';
 
   // Verbatim Karaoke Subtitle Bar
@@ -1869,17 +2387,44 @@ function render(t) {
   ripEl.style.opacity = kp > 0.2 ? Math.max(0, 1 - (kp - 0.2) * 1.3).toFixed(3) : '0';
   ripEl.style.transform = `scale(${(0.85 + kp * 0.55).toFixed(3)})`;
 
-  // Camera
+  // Camera + immediate matrixWorldInverse sync so 3D->2D callout anchors are 100% accurate on deterministic seek!
   camera.fov = S.fov;
   camera.updateProjectionMatrix();
   camera.position.set(S.camX, S.camY, S.camZ);
   camera.lookAt(S.lookX, S.lookY, S.lookZ);
+  camera.updateMatrixWorld(true);
+  camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
 
-  // Snake Animation (Terrace) — positioned cleanly in visible yard corner for S01 & S20
-  snakeGroup.position.set(0.32, 0, 0.72 + S.snakeZOff);
-  snakeGroup.rotation.y = 0.25 + Math.sin(t * 2.5) * 0.05;
+  // Detailed Pit Viper Strike + Coiled Trail Pose + Articulated Jaws & Tongue
+  const spStrike = S.snakeStrikeProg;
+  const jawOpen = S.snakeJawOpen;
+  const baseSnakeX = 0.42, baseSnakeZ = 0.52 + S.snakeZOff;
+  snakeGroup.position.set(
+    baseSnakeX * (1 - spStrike) + (-0.46) * spStrike,
+    0.02 * spStrike,
+    baseSnakeZ * (1 - spStrike) + (0.16) * spStrike
+  );
+  snakeGroup.rotation.y = (0.65 + Math.sin(t * 2.2) * 0.04) * (1 - spStrike) + (0.85) * spStrike;
+
+  // Articulated strike neck & wide-open hinged viper jaws (NO translation gap — pivots cleanly at neck joint!)
+  SNAKE_RIG.strikeNeckPivot.position.set(0.0, 0.305, 0.02);
+  SNAKE_RIG.strikeNeckPivot.rotation.x = -spStrike * 0.16; // lunges downward smoothly onto calf!
+  SNAKE_RIG.upperHeadPivot.rotation.x = jawOpen * 0.32;
+  SNAKE_RIG.lowerJawPivot.rotation.x = -(0.04 + jawOpen * 0.76);
+  const tongueFlick = jawOpen < 0.45 ? (0.5 + 0.5 * Math.sin(t * 14.0)) : 0.0;
+  SNAKE_RIG.tongueGroup.visible = jawOpen < 0.55;
+  SNAKE_RIG.tongueGroup.position.z = -0.160 - tongueFlick * 0.045;
+  SNAKE_RIG.venomDrops.forEach(d => { d.scale.setScalar(0.75 + spStrike * 0.45); });
+
   photoBorder.rotation.z = Math.PI / 4 + Math.sin(t * 4.0) * 0.04;
   frameMat.opacity = S.snakePhotoAlpha * (0.75 + 0.25 * Math.sin(t * 10));
+
+  // Sharp Comic Impact Burst in front of calf bite point (clear of leg surface!)
+  biteFlashMat.opacity = S.biteFlashAlpha * 0.90;
+  biteFlashRing.visible = S.biteFlashAlpha > 0.04;
+  biteFlashRing.position.set(-0.62, 0.33, 0.04);
+  biteFlashRing.lookAt(camera.position);
+  biteFlashRing.scale.setScalar(0.60 + 0.45 * S.biteFlashAlpha);
 
   // Hide bench during S09 running pose so legs never clip bench
   benchGroup.visible = Math.round(S.rakaPose) !== 1;
@@ -1900,12 +2445,15 @@ function render(t) {
     });
   }
 
-  // Hospital Stretcher & Vial (S21)
+  // Ambulance + Hospital Stretcher & Vial (S21A -> S21B)
   if (hospitalGroup.visible) {
     stretcherGroup.position.x = S.stretcherX;
     serumVialGroup.position.y = 1.62 + Math.sin(t * 3.5) * 0.05;
     serumVialGroup.rotation.y = Math.sin(t * 1.8) * 0.18;
     vialAura.scale.setScalar(1.0 + 0.08 * Math.sin(t * 6.0));
+    const flash = Math.sin(t * 14.0) > 0;
+    ambBeaconRMat.color.setHex(flash ? 0xFF2222 : 0x450A0A);
+    ambBeaconBMat.color.setHex(flash ? 0x1E3A8A : 0x3B82F6);
   }
 
   // Anatomical X-Ray Animation (S04-S15, S22)
@@ -2012,10 +2560,10 @@ function render(t) {
   }
 
   // 4. Mas Raka Character Rig & Pose States
-  const moodNames = ['alert', 'panic', 'focused', 'smile'];
+  const moodNames = ['alert', 'panic', 'focused', 'smile', 'pain'];
   const curMood = isOutroStage ? 'smile' : (moodNames[Math.round(S.rakaMood)] || 'alert');
   const blinkCycle = ((t + 0.85) % 3.4);
-  const isBlinking = curMood !== 'panic' && (blinkCycle > 3.18 && blinkCycle < 3.32);
+  const isBlinking = curMood !== 'panic' && curMood !== 'pain' && (blinkCycle > 3.18 && blinkCycle < 3.32);
   updateRakaFace(curMood, isBlinking);
 
   const breath = Math.sin(t * 3.2) * 0.008;
@@ -2041,6 +2589,11 @@ function render(t) {
   detachedItemsGroup.visible = !isOutroStage && sp > 0.75;
 
   const pose = isOutroStage ? 3 : Math.round(S.rakaPose);
+  if (RAKA.backpackGroup) RAKA.backpackGroup.visible = (pose === 0 || pose === 1);
+  const hipBaseY = pose === 0 ? 0.56 : 0.72;
+  RAKA.legL.hip.position.y = hipBaseY;
+  RAKA.legR.hip.position.y = hipBaseY;
+
   if (pose === 3) {
     // Outro Stage: Centered inside Badge Circle — clean side wave away from face
     RAKA.root.position.set(0, 0.42 + S.outroLiftY + breath, 0);
@@ -2053,8 +2606,8 @@ function render(t) {
     RAKA.armR.root.rotation.set(-0.30, 0, -2.25 - Math.sin(t * 7.5) * 0.10); RAKA.armR.forearmPivot.rotation.set(-0.22, 0, -0.18); RAKA.armR.handPivot.rotation.set(0, 0, 0);
     RAKA.headPivot.rotation.set(Math.sin(S.outroNod * Math.PI) * 0.16, Math.sin(t * 2.2) * 0.04, S.outroHeadTilt);
   } else if (pose === 2) {
-    // S21: Reclined calmly on Hospital Stretcher (head toward -X IGD door, right splinted leg in +Z foreground)
-    RAKA.root.position.set(S.stretcherX + 0.62, 0.72, 0.24);
+    // S21: Reclined calmly centered ON TOP OF Hospital Stretcher (head well inside left edge, splinted leg visible)
+    RAKA.root.position.set(S.stretcherX + 0.88, 0.74, 0.35);
     RAKA.root.rotation.set(-1.18, 0, Math.PI / 2);
     RAKA.bodyPivot.position.set(0, 0.72, 0);
     RAKA.bodyPivot.rotation.set(0.22, 0, 0);
@@ -2076,32 +2629,39 @@ function render(t) {
     RAKA.armR.root.rotation.set(stride * 0.85 - 0.3, 0, 0.15); RAKA.armR.forearmPivot.rotation.set(-0.85, 0, 0);
     RAKA.headPivot.rotation.set(0.12, -0.15, 0);
   } else {
-    // Seated on Terrace Bench (S01-S03, S16-S20, S24)
+    // Seated on Forest Log Bench (S01-S03, S16-S20, S24)
     RAKA.root.position.set(-0.48, 0.0 + breath, -0.45);
     RAKA.root.rotation.set(0, 0, 0);
     RAKA.bodyPivot.position.set(0, 0.56, 0);
-    const leanFwd = S.rakaReachTie * 0.25;
+    const leanFwd = S.rakaReachTie * 0.22;
     RAKA.bodyPivot.rotation.set(leanFwd, 0, 0);
 
-    // Legs: Left leg always comfortably bent on terrace floor; Right leg extends straight forward in S16-S20 & S24!
-    RAKA.legL.hip.rotation.set(-1.35, 0.08, 0); RAKA.legL.knee.rotation.set(1.25, 0, 0);
+    // Legs: Both hips seated flush at hipBaseY=0.56 on top of log; Right leg extends cleanly on boulder in S16-S20 & S24!
+    RAKA.legL.hip.rotation.set(-1.42, 0.08, 0); RAKA.legL.knee.rotation.set(1.40, 0, 0);
     const st = S.rakaLegStraight;
-    RAKA.legR.hip.rotation.set(-1.35 * (1 - st) + (-1.52) * st, -0.06, 0);
-    RAKA.legR.knee.rotation.set(1.18 * (1 - st) + 0.06 * st, 0, 0);
+    RAKA.legR.hip.rotation.set(-1.38 * (1 - st) + (-1.52) * st, -0.06, 0);
+    RAKA.legR.knee.rotation.set(1.36 * (1 - st) + 0.06 * st, 0, 0);
 
     // Arms
     if (S.rakaHoldPhone > 0.5) {
-      // S20 holding phone toward foreground snake
-      RAKA.armR.root.rotation.set(-1.15, 0.42, 0.12);
-      RAKA.armR.forearmPivot.rotation.set(-0.45, 0, 0);
-      RAKA.armR.handPivot.rotation.set(0.35, -0.25, 0);
+      // S20 holding phone toward foreground snake with visible camera viewfinder screen
+      RAKA.armR.root.rotation.set(-1.12, 0.22, 0.16);
+      RAKA.armR.forearmPivot.rotation.set(-0.42, 0, 0);
+      RAKA.armR.handPivot.rotation.set(0.28, -0.35, 0);
       RAKA.armL.root.rotation.set(-0.35, 0, -0.15); RAKA.armL.forearmPivot.rotation.set(-0.45, 0, 0);
-    } else if (S.rakaReachTie > 0.5) {
-      // S01-S03 leaning forward reaching red tie onto right calf
-      RAKA.armL.root.rotation.set(-0.88, -0.28, -0.12);
-      RAKA.armL.forearmPivot.rotation.set(-0.55, 0, 0);
-      RAKA.armR.root.rotation.set(-0.72, 0.15, 0.12);
-      RAKA.armR.forearmPivot.rotation.set(-0.65, 0, 0);
+    } else if (S.rakaReachTie > 0.35) {
+      // S01-S03: When hands are raised out/apart from the knee/calf silhouette, the red cloth tourniquet & bent knee joint stay 100% crisp!
+      RAKA.armL.root.rotation.set(-0.72, -0.25, -0.15);
+      RAKA.armL.forearmPivot.rotation.set(-0.42, 0, 0);
+      if (t < 3.75) {
+        // S01 snake bite reaction: right hand holds hip/thigh side
+        RAKA.armR.root.rotation.set(-0.42, 0.18, 0.24);
+        RAKA.armR.forearmPivot.rotation.set(-0.48, 0, 0);
+      } else {
+        // S02-S03 close-up: right arm pulled gently back/out so forearm NEVER overlaps the right knee or calf!
+        RAKA.armR.root.rotation.set(-0.18, 0.25, 0.36);
+        RAKA.armR.forearmPivot.rotation.set(-0.35, 0, 0);
+      }
     } else if (S.rakaWave > 0.5 && t >= 74.5) {
       // S24 warm wave / calm seated sign-off (arm opened cleanly out to side away from face)
       RAKA.armL.root.rotation.set(-0.28, 0, -0.16); RAKA.armL.forearmPivot.rotation.set(-0.35, 0, 0);
@@ -2148,9 +2708,11 @@ function render(t) {
   } else if (t < 58.30) {
     c3T = getWorldAnchor(RAKA.swellHaloR); c3Ox = 185; c3Oy = -140;
   } else if (t < 66.00) {
-    c3T = getWorldAnchor(snakeHead); c3Ox = -175; c3Oy = -145;
+    c3T = getWorldAnchor(snakeHead); c3Ox = 85; c3Oy = -165;
+  } else if (t < 67.85) {
+    c3T = getWorldAnchor(ambulanceGroup, new THREE.Vector3(0.45, 1.55, 0.3)); c3Ox = -70; c3Oy = -145;
   } else {
-    c3T = getWorldAnchor(serumVialGroup); c3Ox = -225; c3Oy = 215;
+    c3T = getWorldAnchor(serumVialGroup); c3Ox = -45; c3Oy = 220;
   }
 
   const c4T = getWorldAnchor(RAKA.splintGroupR);
@@ -2216,7 +2778,12 @@ const seek = (t) => {
   return new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve(true))));
 };
 
-window.OPENER = { tl, DURATION, W, H, seek, S, render, RAKA, renderer, scene, camera, ready: false };
+window.OPENER = {
+  tl, DURATION, W, H, seek, S, render, RAKA, renderer, scene, camera,
+  snakeGroup, SNAKE_RIG, handTieProp, footRestGroup,
+  xrayGroup, xrayLowerShell, xrayStrapGroup, amputationPlaneRing, lymphVesselMesh, bloodVesselMesh,
+  ready: false
+};
 
 const avatarImg = $('#outro-avatar-img');
 const avatarReady = avatarImg && avatarImg.decode ? avatarImg.decode().catch(() => {}) : Promise.resolve();
