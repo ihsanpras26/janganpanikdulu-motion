@@ -4,7 +4,7 @@ tags:
   - moc
   - janganpanikdulu
   - production-system
-updated: 2026-11-08
+updated: 2026-11-19
 status: active
 ---
 
@@ -28,6 +28,8 @@ Selamat datang di **Single Source of Truth (SSOT)** untuk produksi konten **Code
    - Aturan baku penulisan naskah kalimat pendek (6–10 kata/kalimat), diksi kerja fisik visual, struktur nomor penahan retensi, dan anti-slop copywriting.
 7. **[[08-Production-Learnings-Log|08 — Catatan Pembelajaran Produksi Tiap Episode]]**
    - Log evaluasi teknis, visual, copywriting, dan alur render dari EP01 hingga episode terbaru.
+8. **[[09-Bank-Ide-Viral-Retensi-EP06-EP15|09 — Bank Ide Konten Viral & Retensi Tinggi (EP06–EP15)]]**
+   - Riset 10 topik terverifikasi sains, lolos *strict packaging linter*, audit celah portofolio, dan jadwal batch EP06–EP15.
 
 ## Daftar Episode (`05-Episodes/`)
 
@@ -36,3 +38,4 @@ Selamat datang di **Single Source of Truth (SSOT)** untuk produksi konten **Code
 - **[[05-Episodes/EP03-Rem-Matic-Blong-Di-Turunan|EP03 — Rem Motor Matic Blong di Turunan? Jangan Matikan Mesin!]]** *(Locked Backlog for Episode 3)*
 - **[[05-Episodes/EP04-Digigit-Ular-Jangan-Ikat-Dan-Sedot|EP04 - Digigit Ular? Jangan Diikat Kencang!]]** *(VO Synced & 25-Scene Storyboard Ready)*
 - **[[05-Episodes/EP05-Motor-Matic-Mogok-Banjir|EP05 - Motor Matic Mogok di Banjir? Jangan Pencet Starter!]]** *(Master 1080p, 3 Thumbnail & Publish Kit Ready)*
+- **[[05-Episodes/EP06-Jangan-Campur-Pemutih-Pembersih-WC|EP06 - Jangan Campur Pemutih dan Pembersih WC!]]** *(Script, ElevenLabs VO Kit & 18-Beat Storyboard Ready)*
