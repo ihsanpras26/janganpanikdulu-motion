@@ -1,0 +1,2756 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Jangan Panik Dulu — EP05: Motor Matic Mogok di Banjir? Jangan Pencet Starter!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<script src="./vendor/gsap.min.js"></script>
+<script type="importmap">
+{"imports":{
+  "three":"./vendor/three.module.js"
+}}
+</script>
+<style>
+/* ===== LOCKED BRAND IDENTITY (OPSI 2): Crisp White (#FFFFFF) x Deep Indigo (#261A66) x Solid Orange (#EF5F18) ===== */
+:root{
+  --brand-orange:#EF5F18;
+  --brand-blue:#261A66;
+  --brand-white:#FFFFFF;
+  --scrim-rgb:20,14,54;
+
+  --hook-stroke:#261A66;
+  --hook-pill-bg:#261A66; --hook-pill-ink:#FFFFFF; --hook-pill-shadow:#EF5F18;
+
+  --step-pill-bg:#FFFFFF; --step-pill-ink:#261A66; --step-pill-border:#261A66;
+  --step-num-bg:#EF5F18; --step-num-ink:#FFFFFF;
+  --prog-track:rgba(255,255,255,.45); --prog-fill:#EF5F18;
+
+  --sub-bg:#FFFFFF; --sub-ink:#261A66; --sub-border:#261A66;
+  --sub-hl-bg:#EF5F18; --sub-hl-ink:#FFFFFF;
+
+  --safe:#0FA968; --danger:#EF5F18;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  width:100%;height:100%;background:#0F141A;overflow:hidden;
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+#stage{
+  position:fixed;left:50%;top:50%;width:1080px;height:1920px;
+  transform:translate(-50%,-50%) scale(1);overflow:hidden;
+  background:linear-gradient(180deg,#A8C3DC 0%,#D3E3F1 48%,#C5D5E2 100%);
+}
+#stage.xray-bg{
+  background:linear-gradient(180deg,#DDE9F7 0%,#F3F7FD 52%,#E5EEF8 100%);
+}
+#stage.safe-bg{
+  background:linear-gradient(180deg,#CBEAF0 0%,#EAF6F8 48%,#D9ECE5 100%);
+}
+#gl{position:absolute;inset:0;width:1080px;height:1920px;display:block;z-index:1}
+#OverlaySVG{position:absolute;inset:0;width:1080px;height:1920px;pointer-events:none;z-index:4}
+#OverlaySVG line{stroke-width:3.5;stroke-linecap:round}
+#line-c1,#line-c2{stroke:var(--danger)}
+#dot-c1,#dot-c2{fill:var(--danger);stroke:#FFFFFF;stroke-width:3}
+#line-c3,#line-c4{stroke:var(--safe)}
+#dot-c3,#dot-c4{fill:var(--safe);stroke:#FFFFFF;stroke-width:3}
+
+#hud{position:absolute;inset:0;pointer-events:none;z-index:6}
+
+.scrim-top{
+  position:absolute;left:0;right:0;top:0;height:260px;
+  background:linear-gradient(180deg,rgba(var(--scrim-rgb),.28) 0%,rgba(var(--scrim-rgb),.08) 52%,rgba(var(--scrim-rgb),0) 100%);
+}
+.scrim-bottom{
+  position:absolute;left:0;right:0;bottom:0;height:520px;
+  background:linear-gradient(0deg,rgba(var(--scrim-rgb),.20) 0%,rgba(var(--scrim-rgb),.07) 58%,rgba(var(--scrim-rgb),0) 100%);
+}
+
+/* ZONA 1: Clean Frosted Brand Card */
+.account-card{
+  position:absolute;left:44px;top:46px;
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.55);
+  backdrop-filter:blur(30px) saturate(185%);
+  -webkit-backdrop-filter:blur(30px) saturate(185%);
+  padding:8px 20px 9px 14px;
+  border-radius:999px;
+  border:1.5px solid rgba(255,255,255,.78);
+  box-shadow:0 10px 24px rgba(20,14,54,.12), inset 0 1px 0 rgba(255,255,255,.92);
+  font-size:21px;font-weight:800;letter-spacing:-.015em;
+  color:var(--brand-blue);
+}
+.account-dot{
+  width:9px;height:9px;border-radius:50%;
+  background:var(--brand-orange);
+  display:inline-block;
+  box-shadow:0 0 8px rgba(239,95,24,.5);
+}
+
+/* ZONA 2A: HOOK LOCKUP */
+#hook-card{
+  position:absolute;left:46px;right:46px;top:148px;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  will-change:transform,opacity;
+}
+.hook-title{
+  font-size:84px;font-weight:800;letter-spacing:-.035em;line-height:1;
+  color:#FFFFFF;text-align:center;
+  -webkit-text-stroke:14px var(--hook-stroke);paint-order:stroke fill;
+  text-shadow:0 10px 24px rgba(20,14,54,.28);
+}
+.hook-pill{
+  background:var(--hook-pill-bg);color:var(--hook-pill-ink);
+  font-size:40px;font-weight:800;letter-spacing:-.02em;
+  padding:13px 34px;border-radius:16px;transform:rotate(-1.1deg);
+  border:3.5px solid #FFFFFF;
+  box-shadow:0 9px 0 var(--hook-pill-shadow), 0 16px 30px rgba(20,14,54,.28);
+}
+
+/* ZONA 2B: ULTRA-CLEAN SINGLE TOP PILL */
+#step-tracker{
+  position:absolute;left:0;right:0;top:132px;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  opacity:0;will-change:transform,opacity;
+}
+.step-pill{
+  display:inline-flex;align-items:center;gap:14px;
+  background:rgba(255,255,255,.62);
+  backdrop-filter:blur(34px) saturate(185%);
+  -webkit-backdrop-filter:blur(34px) saturate(185%);
+  padding:10px 28px 10px 12px;border-radius:999px;
+  border:2px solid rgba(255,255,255,.82);
+  box-shadow:0 12px 28px rgba(20,14,54,.16);
+}
+.step-pill.text-only{
+  padding:11px 32px 12px;
+}
+.step-num{
+  width:48px;height:48px;border-radius:50%;
+  background:var(--step-num-bg);color:var(--step-num-ink);
+  font-family:"Space Grotesk","Plus Jakarta Sans",sans-serif;
+  font-size:25px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.step-title{
+  font-size:31px;font-weight:800;letter-spacing:-.02em;
+  color:var(--step-pill-ink);white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.progress{display:flex;gap:14px;align-items:center}
+.progress i{
+  width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.72);
+  border:2.5px solid rgba(38,26,102,.25);
+  display:block;box-shadow:0 3px 8px rgba(20,14,54,.15);
+}
+.progress i.on{
+  background:var(--prog-fill);
+  border-color:#FFFFFF;
+}
+
+/* ZONA 3: COMPACT 3D CALLOUT LABELS */
+.callout{
+  position:absolute;left:0;top:0;
+  background:rgba(255,255,255,.76);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  padding:8px 18px 9px;border-radius:12px;
+  font-size:24px;font-weight:800;letter-spacing:-.015em;white-space:nowrap;opacity:0;
+  box-shadow:0 8px 20px rgba(12,10,36,.18);
+  display:inline-flex;align-items:center;
+  font-variant-numeric:tabular-nums;
+  will-change:transform;
+}
+.callout.danger{color:var(--danger);border:2.5px solid var(--danger)}
+.callout.safe{color:var(--safe);border:2.5px solid var(--safe)}
+
+/* ZONA 4: FROSTED GLASS CAPTION BAR (UPGRADED TRANSPARENCY + DEEP BLUR) */
+#sub-wrap{
+  position:absolute;left:64px;right:64px;bottom:375px;display:flex;justify-content:center;z-index:20;
+}
+.sub-card{
+  max-width:910px;
+  padding:16px 34px 18px;
+  border-radius:20px;
+  font-size:35px;font-weight:800;letter-spacing:-.016em;line-height:1.30;
+  text-align:center;
+  display:inline-block;
+  font-variant-numeric:tabular-nums;
+  will-change:transform;
+}
+.sub-card .w{display:inline-block;padding:0;margin:0;background:transparent;position:relative}
+
+body.cap-opt-1 .sub-card,
+body:not(.cap-opt-2):not(.cap-opt-3) .sub-card{
+  background:rgba(255,255,255,.52);
+  backdrop-filter:blur(44px) saturate(195%);
+  -webkit-backdrop-filter:blur(44px) saturate(195%);
+  border:1.5px solid rgba(255,255,255,.72);
+  box-shadow:0 16px 38px rgba(20,14,54,.18), inset 0 1px 1px rgba(255,255,255,.88);
+}
+body.cap-opt-1 .sub-card .w.past,
+body:not(.cap-opt-2):not(.cap-opt-3) .sub-card .w.past{
+  color:#1E1454;opacity:1;text-shadow:0 1px 6px rgba(255,255,255,.90);
+}
+body.cap-opt-1 .sub-card .w.active,
+body:not(.cap-opt-2):not(.cap-opt-3) .sub-card .w.active{
+  color:#EF5F18;opacity:1;transform:translateY(-1.5px);text-shadow:0 1px 6px rgba(255,255,255,.90);
+}
+body.cap-opt-1 .sub-card .w.future,
+body:not(.cap-opt-2):not(.cap-opt-3) .sub-card .w.future{
+  color:rgba(30,20,84,.54);text-shadow:0 1px 4px rgba(255,255,255,.70);
+}
+
+body.cap-opt-2 .sub-card{
+  background:rgba(38,26,102,.68);
+  backdrop-filter:blur(40px) saturate(185%);
+  -webkit-backdrop-filter:blur(40px) saturate(185%);
+  border:2px solid rgba(255,255,255,.55);
+  box-shadow:0 14px 32px rgba(10,8,32,.26);
+}
+body.cap-opt-2 .sub-card .w.past{color:#FFFFFF;opacity:1}
+body.cap-opt-2 .sub-card .w.active{color:#EF5F18;opacity:1;transform:translateY(-1.5px)}
+body.cap-opt-2 .sub-card .w.future{color:rgba(255,255,255,.46)}
+
+body.cap-opt-3 .sub-card{
+  background:rgba(255,255,255,.52);
+  backdrop-filter:blur(44px) saturate(195%);
+  -webkit-backdrop-filter:blur(44px) saturate(195%);
+  border:2px solid rgba(38,26,102,.85);
+  border-radius:999px;padding:15px 40px 20px;
+  box-shadow:0 12px 28px rgba(20,14,54,.18), 0 5px 0 #261A66;
+}
+body.cap-opt-3 .sub-card .w.past{color:#261A66;opacity:1}
+body.cap-opt-3 .sub-card .w.active{color:#EF5F18;opacity:1}
+body.cap-opt-3 .sub-card .w.active::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:4px;border-radius:99px;background:#EF5F18}
+body.cap-opt-3 .sub-card .w.future{color:rgba(38,26,102,.46)}
+
+/* ZONA 5: REUSABLE OUTRO TRIPLE-WIPE + UNIFIED PROFILE FOLLOW BAR */
+#outro-wipe{
+  position:absolute;inset:0;pointer-events:none;z-index:16;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.wipe-ring{
+  position:absolute;left:50%;top:50%;width:2400px;height:2400px;
+  border-radius:50%;transform:translate(-50%,-50%) scale(0);
+  will-change:transform;
+}
+#wipe-orange{background:#EF5F18;}
+#wipe-indigo{background:#261A66;}
+#wipe-white{background:#FFFFFF;}
+#outro-circle-badge{
+  position:absolute;left:50%;top:740px;width:460px;height:460px;
+  border-radius:50%;background:#261A66;border:12px solid #EF5F18;
+  box-shadow:0 22px 48px rgba(38,26,102,.18);
+  transform:translate(-50%,-50%) scale(0);
+  will-change:transform,opacity;
+}
+#stage.outro-active #gl{
+  z-index:17;
+  clip-path:path('M 0 0 H 1080 V 740 H 758 A 218 218 0 0 1 322 740 H 0 Z');
+}
+#stage.outro-active #hud{opacity:0;}
+
+#outro-ui{
+  position:absolute;left:0;right:0;top:1090px;z-index:19;
+  display:flex;flex-direction:column;align-items:center;pointer-events:none;
+}
+#outro-bar{
+  width:880px;height:156px;border-radius:999px;
+  background:#FFFFFF;border:4px solid #261A66;
+  box-shadow:0 20px 46px rgba(38,26,102,.15), 0 8px 0 #261A66;
+  padding:0 26px 0 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  opacity:0;transform:translateY(36px) scale(.92);
+  will-change:transform,opacity;
+}
+.outro-avatar-wrap{
+  width:118px;height:118px;border-radius:50%;flex-shrink:0;
+  border:4px solid #EF5F18;padding:3px;background:#FFFFFF;
+  box-shadow:0 6px 16px rgba(239,95,24,.22);
+}
+.outro-avatar{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.outro-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.outro-handle-txt{font-size:35px;font-weight:800;letter-spacing:-.025em;color:#261A66;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.outro-sub-txt{font-size:23px;font-weight:700;letter-spacing:-.01em;color:rgba(38,26,102,.68)}
+#outro-follow-btn{
+  position:relative;flex-shrink:0;height:86px;padding:0 38px;border-radius:999px;
+  background:#EF5F18;color:#FFFFFF;border:3.5px solid #261A66;
+  font-size:30px;font-weight:800;letter-spacing:-.015em;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 6px 0 #261A66;
+  will-change:transform,background-color;
+}
+#outro-follow-btn.followed{background:#261A66;color:#FFFFFF;box-shadow:0 4px 0 #EF5F18}
+#outro-ripple{position:absolute;inset:-8px;border-radius:999px;border:4px solid #EF5F18;opacity:0;transform:scale(.85);pointer-events:none}
+#outro-cursor{
+  position:absolute;right:116px;top:110px;width:58px;height:58px;
+  opacity:0;transform:translate(95px,95px) scale(1);
+  filter:drop-shadow(0 8px 14px rgba(20,14,54,.30));
+  will-change:transform,opacity;
+}
+
+#switcher{
+  position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:80;
+  display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:1050px;
+  background:rgba(24,30,38,.94);padding:8px 12px;border-radius:14px;color:#fff;font-size:11px;
+}
+body.clean-snap #switcher{display:none !important}
+#switcher .sw-label{font-weight:800;color:#EF5F18;text-transform:uppercase}
+#switcher button{background:#2D3748;color:#fff;border:none;padding:5px 8px;border-radius:7px;font:700 11px inherit;cursor:pointer}
+#switcher button.active{background:#EF5F18}
+#time-readout{font-family:"Space Grotesk",monospace;font-size:12px;font-weight:700;color:#90E0EF;min-width:92px;text-align:center}
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <canvas id="gl"></canvas>
+
+  <svg id="OverlaySVG" viewBox="0 0 1080 1920">
+    <line id="line-c1" x1="0" y1="0" x2="0" y2="0" stroke="#EF5F18" stroke-width="3.5" opacity="0"/>
+    <circle id="dot-c1" cx="0" cy="0" r="7" fill="#EF5F18" stroke="#FFF" stroke-width="3" opacity="0"/>
+
+    <line id="line-c2" x1="0" y1="0" x2="0" y2="0" stroke="#EF5F18" stroke-width="3.5" opacity="0"/>
+    <circle id="dot-c2" cx="0" cy="0" r="7" fill="#EF5F18" stroke="#FFF" stroke-width="3" opacity="0"/>
+
+    <line id="line-c3" x1="0" y1="0" x2="0" y2="0" stroke="#0FA968" stroke-width="3.5" opacity="0"/>
+    <circle id="dot-c3" cx="0" cy="0" r="7" fill="#0FA968" stroke="#FFF" stroke-width="3" opacity="0"/>
+
+    <line id="line-c4" x1="0" y1="0" x2="0" y2="0" stroke="#0FA968" stroke-width="3.5" opacity="0"/>
+    <circle id="dot-c4" cx="0" cy="0" r="7" fill="#0FA968" stroke="#FFF" stroke-width="3" opacity="0"/>
+  </svg>
+
+  <div id="hud">
+    <div class="scrim-top"></div>
+    <div class="scrim-bottom"></div>
+
+    <div class="account-card"><span class="account-dot"></span>@janganpanikdulu</div>
+
+    <div id="hook-card">
+      <h1 class="hook-title" id="hook-title">MOGOK DI BANJIR?</h1>
+      <div class="hook-pill" id="hook-pill">JANGAN PENCET STARTER!</div>
+    </div>
+
+    <div id="step-tracker">
+      <div class="step-pill" id="step-pill-box">
+        <span class="step-num" id="tr-badge">1</span>
+        <span class="step-title" id="tr-title">Matic 110cc · Kompresi 10:1</span>
+      </div>
+      <div class="progress" id="prog-wrap"><i id="seg1" class="on"></i><i id="seg2"></i><i id="seg3"></i></div>
+    </div>
+
+    <div class="callout danger" id="call1"><span id="call1-text">setang seher bengkok!</span></div>
+    <div class="callout danger" id="call2"><span id="call2-text">air menolak tekanan</span></div>
+    <div class="callout safe"   id="call3"><span id="call3-text">gas bisa ditekan</span></div>
+    <div class="callout safe"   id="call4"><span id="call4-text">air keluar lewat lubang busi</span></div>
+
+    <div id="sub-wrap">
+      <div class="sub-card" id="sub-card"></div>
+    </div>
+  </div>
+
+  <div id="outro-wipe">
+    <div class="wipe-ring" id="wipe-orange"></div>
+    <div class="wipe-ring" id="wipe-indigo"></div>
+    <div class="wipe-ring" id="wipe-white"></div>
+    <div id="outro-circle-badge"></div>
+  </div>
+  <div id="outro-ui">
+    <div id="outro-bar">
+      <div class="outro-avatar-wrap">
+        <img class="outro-avatar" id="outro-avatar-img" src="./pp_janganpanikdulu_final.png" alt="@janganpanikdulu">
+      </div>
+      <div class="outro-meta">
+        <div class="outro-handle-txt">@janganpanikdulu</div>
+        <div class="outro-sub-txt">Sains &amp; Tips Darurat</div>
+      </div>
+      <div id="outro-follow-btn">
+        <span id="outro-btn-label">+ Ikuti</span>
+        <span id="outro-ripple"></span>
+      </div>
+      <svg id="outro-cursor" viewBox="0 0 36 36" fill="none">
+        <path d="M7 4L29 17.5L18.5 20.5L13.5 30.5L7 4Z" fill="#FFFFFF" stroke="#261A66" stroke-width="3" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<audio id="vo-audio" src="audio_ep05_master.mp3" preload="auto"></audio>
+
+<div id="switcher">
+  <button id="btn-play" class="active">▶ Play Master</button>
+  <span id="time-readout">00.0s / 97.7s</span>
+  <button data-t="2.2">S01 Hook</button>
+  <button data-t="7.2">S02 Bengkok</button>
+  <button data-t="15.1">S03 Starter</button>
+  <button data-t="19.2">S04 Filter</button>
+  <button data-t="24.2">S05 Sedot</button>
+  <button data-t="30.0">S06 10:1</button>
+  <button data-t="35.2">S07 12mL</button>
+  <button data-t="38.2">S08 Sendok</button>
+  <button data-t="42.4">S09 Split</button>
+  <button data-t="47.8">S10 Hantam</button>
+  <button data-t="52.6">S11 Jebol</button>
+  <button data-t="61.0">S13A Step1</button>
+  <button data-t="63.8">S13B Dorong</button>
+  <button data-t="66.5">S14A Cek</button>
+  <button data-t="70.4">S14B KopiSusu</button>
+  <button data-t="74.6">S15A Busi</button>
+  <button data-t="77.6">S15B CVT</button>
+  <button data-t="88.5">S17 CTA</button>
+  <button data-t="92.2">S18 SignOff</button>
+  <button data-t="96.5">S19 Outro</button>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from './vendor/RoundedBoxGeometry.js';
+
+const $ = s => document.querySelector(s);
+const Q = new URLSearchParams(location.search);
+if (Q.has('clean') || Q.has('capture')) document.body.classList.add('clean-snap');
+
+/* ============ 1. RENDERER & CAMERA ============ */
+const W = 1080, H = 1920;
+const renderer = new THREE.WebGLRenderer({
+  canvas: $('#gl'),
+  antialias: true,
+  alpha: true,
+  logarithmicDepthBuffer: true,
+  preserveDrawingBuffer: true
+});
+renderer.setPixelRatio(1);
+renderer.setSize(W, H, false);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.06;
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0xC7D8E8, 12.2, 31.0);
+const camera = new THREE.PerspectiveCamera(24, W / H, 0.15, 180);
+
+const hemi = new THREE.HemisphereLight(0xFFFDF9, 0xBCCCD8, 1.75);
+hemi.position.set(0, 20, 0);
+scene.add(hemi);
+
+const sun = new THREE.DirectionalLight(0xFFF7EA, 2.25);
+sun.position.set(8.5, 15.0, 10.5);
+scene.add(sun);
+sun.castShadow = true;
+sun.shadow.mapSize.set(1024, 1024);
+const sd = 7.5;
+sun.shadow.camera.left = -sd; sun.shadow.camera.right = sd;
+sun.shadow.camera.top = sd;   sun.shadow.camera.bottom = -sd;
+sun.shadow.bias = -0.0005;
+
+const rim = new THREE.DirectionalLight(0x90E0EF, 0.95);
+rim.position.set(-8, 7, -6);
+scene.add(rim);
+
+const impactLight = new THREE.PointLight(0xFF4500, 0.0, 5.0);
+scene.add(impactLight);
+
+const mat = (hex, rough = 0.42, metal = 0.05, emissive = 0x000000, emInt = 0) =>
+  new THREE.MeshStandardMaterial({ color: hex, roughness: rough, metalness: metal, emissive, emissiveIntensity: emInt });
+
+const outlineMat = new THREE.MeshBasicMaterial({ color: 0x181E26, side: THREE.BackSide });
+function withOutline(mesh, scale = 1.055) {
+  const out = new THREE.Mesh(mesh.geometry, outlineMat);
+  out.scale.setScalar(scale);
+  mesh.add(out);
+  return mesh;
+}
+
+/* ============ 2. STAGE 0: JALAN BANJIR, TROTOAR KERING, & MOTOR MATIC MERAH ============ */
+const floodRoadGroup = new THREE.Group();
+scene.add(floodRoadGroup);
+
+// Asphalt Flooded Road (Extended length 58m so horizon blends smoothly into fog)
+const roadBase = new THREE.Mesh(
+  new RoundedBoxGeometry(13.5, 0.45, 58.0, 4, 0.08),
+  mat(0x2D3642, 0.80, 0.04)
+);
+roadBase.position.set(0.85, -0.225, -2.0);
+roadBase.receiveShadow = true;
+floodRoadGroup.add(roadBase);
+
+// Center Road Markings (Centered at x = 0.85 between left & right lanes)
+for (let i = -10; i <= 8; i++) {
+  const dash = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.02, 1.35), new THREE.MeshBasicMaterial({ color: 0xE2E8F0 }));
+  dash.position.set(0.85, 0.012, i * 2.6);
+  floodRoadGroup.add(dash);
+}
+
+// Raised Dry Sidewalk & Kanstin Curbs on Left (-X) and Right (+X)
+const drySidewalkGroup = new THREE.Group();
+floodRoadGroup.add(drySidewalkGroup);
+
+const sidewalkDeck = new THREE.Mesh(
+  new RoundedBoxGeometry(5.3, 0.44, 58.0, 4, 0.04),
+  mat(0xE2E8F0, 0.72, 0.03)
+);
+sidewalkDeck.position.set(-4.20, 0.0, -2.0);
+sidewalkDeck.receiveShadow = true;
+drySidewalkGroup.add(sidewalkDeck);
+
+const rightSidewalkDeck = new THREE.Mesh(
+  new RoundedBoxGeometry(3.4, 0.44, 58.0, 4, 0.04),
+  mat(0xDCE4EE, 0.74, 0.03)
+);
+rightSidewalkDeck.position.set(5.55, 0.0, -2.0);
+rightSidewalkDeck.receiveShadow = true;
+drySidewalkGroup.add(rightSidewalkDeck);
+
+// Sidewalk tile lines (left & right)
+for (let i = -15; i <= 14; i++) {
+  const seam = new THREE.Mesh(new THREE.BoxGeometry(5.1, 0.012, 0.04), mat(0xCBD5E1, 0.8));
+  seam.position.set(-4.20, 0.221, i * 1.6);
+  const seamR = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.012, 0.04), mat(0xCBD5E1, 0.8));
+  seamR.position.set(5.55, 0.221, i * 1.6);
+  drySidewalkGroup.add(seam, seamR);
+}
+
+// Black & White Indonesian Kanstin Curbs along x = -1.55 (left) and x = +3.85 (right)
+for (let i = -24; i <= 20; i++) {
+  const isDark = Math.abs(i) % 2 === 0;
+  const curbMat = mat(isDark ? 0x1E293B : 0xF8FAFC, 0.55);
+  const curbL = new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.28, 0.96, 3, 0.025), curbMat);
+  curbL.position.set(-1.55, 0.10, i * 1.0);
+  curbL.receiveShadow = true;
+  const curbR = new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.28, 0.96, 3, 0.025), curbMat);
+  curbR.position.set(3.85, 0.10, i * 1.0);
+  curbR.receiveShadow = true;
+  drySidewalkGroup.add(curbL, curbR);
+}
+
+// Stylized Trees along Safe Depth Corridors (never blocking -X,+Z or S04/S05 cameras)
+const bgTrees = [];
+function makeRoadTree(scale = 1.0) {
+  const g = new THREE.Group();
+  const trunk = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.15, 0.95, 10), mat(0x6B4423, 0.7)), 1.05);
+  trunk.position.y = 0.47;
+  const c1 = withOutline(new THREE.Mesh(new THREE.SphereGeometry(0.68, 14, 12), mat(0x3B8258, 0.65)), 1.04);
+  c1.position.y = 1.32;
+  const c2 = withOutline(new THREE.Mesh(new THREE.SphereGeometry(0.50, 12, 10), mat(0x4E9F6E, 0.65)), 1.04);
+  c2.position.set(0.22, 1.66, -0.15);
+  g.add(trunk, c1, c2);
+  g.scale.setScalar(scale);
+  return g;
+}
+[
+  { x: -4.95, z: -13.5, s: 1.08 },
+  { x: -4.80, z: -8.6,  s: 0.96 },
+  { x: -4.95, z: -4.8,  s: 1.02 },
+  { x: -5.45, z: 11.2,  s: 1.05 },
+  { x:  4.55, z: -13.2, s: 1.10 },
+  { x:  4.50, z: -10.6, s: 0.98 },
+  { x:  4.55, z:  4.8,  s: 1.04 },
+  { x:  4.65, z: 10.6,  s: 1.06 }
+].forEach(cfg => {
+  const tr = makeRoadTree(cfg.s);
+  tr.position.set(cfg.x, 0.22, cfg.z);
+  drySidewalkGroup.add(tr);
+  bgTrees.push(tr);
+});
+
+// Curved Arched Streetlights along Both Sides of Avenue
+function makeStreetLamp(facingSign = 1) {
+  const g = new THREE.Group();
+  const poleMat = mat(0x334155, 0.45, 0.55);
+  const basePed = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.14, 0.26, 10), poleMat);
+  basePed.position.y = 0.13;
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.075, 4.15, 10), poleMat);
+  pole.position.y = 2.08;
+  const arm = new THREE.Mesh(new RoundedBoxGeometry(1.15, 0.065, 0.07, 3, 0.02), poleMat);
+  arm.position.set(facingSign * 0.52, 4.10, 0);
+  arm.rotation.z = facingSign * -0.12;
+  const head = new THREE.Mesh(new RoundedBoxGeometry(0.36, 0.09, 0.18, 3, 0.02), poleMat);
+  head.position.set(facingSign * 1.02, 4.02, 0);
+  const bulbMat = new THREE.MeshStandardMaterial({ color: 0xFEF9C3, emissive: 0xFEF08A, emissiveIntensity: 0.95, roughness: 0.25 });
+  const bulb = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.035, 0.12), bulbMat);
+  bulb.position.set(facingSign * 1.02, 3.965, 0);
+  g.add(basePed, pole, arm, head, bulb);
+  return g;
+}
+[
+  { x:  4.30, z: -10.2, dir: -1 },
+  { x:  4.30, z:   1.6, dir: -1 },
+  { x:  4.30, z:  10.8, dir: -1 },
+  { x: -4.90, z:  -6.8, dir:  1 },
+  { x: -4.90, z: -15.2, dir:  1 }
+].forEach(l => {
+  const lamp = makeStreetLamp(l.dir);
+  lamp.position.set(l.x, 0.22, l.z);
+  floodRoadGroup.add(lamp);
+});
+
+// 2-Story Indonesian Ruko / Shophouses & Cross-Street Horizon Skyline
+function makeShophouseBlock(w, h, d, wallHex, trimHex, awningHex) {
+  const g = new THREE.Group();
+  const wallMat = mat(wallHex, 0.82, 0.02);
+  const winMat = mat(0x3B536D, 0.25, 0.35, 0x7DD3FC, 0.12);
+  const frameMat = mat(0xF8FAFC, 0.55);
+
+  const body = new THREE.Mesh(new RoundedBoxGeometry(w, h, d, 3, 0.08), wallMat);
+  body.position.y = h * 0.5;
+  g.add(body);
+
+  // Roof Parapet Cornice
+  const roofTrim = new THREE.Mesh(new RoundedBoxGeometry(w + 0.18, 0.26, d + 0.18, 3, 0.04), mat(trimHex, 0.65));
+  roofTrim.position.y = h + 0.06;
+  g.add(roofTrim);
+
+  // Front facade faces +Z locally (rotate group +/-PI/2 along street)
+  const frontZ = d * 0.5 + 0.02;
+  // Ground-floor awning/kanopi (compact depth 0.52m, height y = 2.48 so S04 camera stays >0.4m clear)
+  const awning = new THREE.Mesh(new RoundedBoxGeometry(w - 0.16, 0.14, 0.52, 3, 0.03), mat(awningHex, 0.62));
+  awning.position.set(0, 2.48, frontZ + 0.22);
+  awning.rotation.x = 0.16;
+  g.add(awning);
+
+  // Shopfront Roller Door / Window
+  const shopWindow = new THREE.Mesh(new THREE.BoxGeometry(w * 0.68, 1.85, 0.06), mat(0x94A3B8, 0.55, 0.15));
+  shopWindow.position.set(0, 1.05, frontZ);
+  g.add(shopWindow);
+
+  // Upper Floor Windows (3 across if wide, 2 if narrower)
+  const cols = w >= 4.2 ? [-w * 0.26, 0, w * 0.26] : [-w * 0.22, w * 0.22];
+  cols.forEach(wx => {
+    const wf = new THREE.Mesh(new THREE.BoxGeometry(0.76, 1.05, 0.06), frameMat);
+    wf.position.set(wx, h * 0.72, frontZ);
+    const wg = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.88, 0.08), winMat);
+    wg.position.set(wx, h * 0.72, frontZ + 0.01);
+    g.add(wf, wg);
+  });
+
+  return g;
+}
+
+// Right-side Shophouses (+X, facing -X, front wall at x = +6.25 -> always >=1.1m behind S04 camera at x = 5.15)
+[
+  { z: -15.6, w: 5.2, h: 4.8, d: 2.6, wall: 0xDFE6EE, trim: 0x475569, awn: 0xEF5F18 },
+  { z: -10.1, w: 5.0, h: 5.4, d: 2.6, wall: 0xF1ECE3, trim: 0x334155, awn: 0x0FA968 },
+  { z:  -4.6, w: 5.2, h: 4.6, d: 2.6, wall: 0xD8E2EC, trim: 0x261A66, awn: 0x2B7A78 },
+  { z:   1.1, w: 5.0, h: 5.2, d: 2.6, wall: 0xEBE5DC, trim: 0x475569, awn: 0xD97757 },
+  { z:   6.8, w: 5.2, h: 4.9, d: 2.6, wall: 0xCBD5E1, trim: 0x334155, awn: 0xEF5F18 }
+].forEach(r => {
+  const b = makeShophouseBlock(r.w, r.h, r.d, r.wall, r.trim, r.awn);
+  b.rotation.y = -Math.PI / 2;
+  b.position.set(7.55, 0.22, r.z);
+  floodRoadGroup.add(b);
+});
+
+// Left-side Shophouses (-X, facing +X, front wall at x = -6.95 so -X,+Z hero cameras stay completely clear)
+[
+  { z: -15.6, w: 5.2, h: 5.1, d: 2.6, wall: 0xD8E2EC, trim: 0x334155, awn: 0x2B7A78 },
+  { z:  -9.8, w: 5.2, h: 4.7, d: 2.6, wall: 0xEFEAE1, trim: 0x261A66, awn: 0xEF5F18 },
+  { z:  -4.2, w: 5.0, h: 5.0, d: 2.6, wall: 0xCBD5E1, trim: 0x475569, awn: 0x0FA968 },
+  { z:   3.2, w: 5.2, h: 4.5, d: 2.6, wall: 0xE2E8F0, trim: 0x334155, awn: 0xD97757 }
+].forEach(l => {
+  const b = makeShophouseBlock(l.w, l.h, l.d, l.wall, l.trim, l.awn);
+  b.rotation.y = Math.PI / 2;
+  b.position.set(-8.25, 0.22, l.z);
+  floodRoadGroup.add(b);
+});
+
+// Far -Z Cross-Street Shophouses & Distant City Skyline Silhouettes (dissolving smoothly into fog)
+[
+  { x: -6.2, z: -20.8, w: 4.8, h: 5.4, d: 3.0, wall: 0xCBD5E1, trim: 0x475569, awn: 0x2B7A78 },
+  { x:  0.8, z: -21.4, w: 5.4, h: 5.0, d: 3.0, wall: 0xD8E2EC, trim: 0x334155, awn: 0xD97757 },
+  { x:  6.4, z: -20.8, w: 4.8, h: 5.8, d: 3.0, wall: 0xCFD8E3, trim: 0x475569, awn: 0x0FA968 }
+].forEach(c => {
+  const b = makeShophouseBlock(c.w, c.h, c.d, c.wall, c.trim, c.awn);
+  b.position.set(c.x, 0.22, c.z);
+  floodRoadGroup.add(b);
+});
+[
+  { x: -9.5, z: -25.8, w: 4.6, h: 9.2, d: 3.8, col: 0xA8BBCF },
+  { x: -3.2, z: -26.5, w: 5.2, h: 8.4, d: 3.8, col: 0x9CB0C5 },
+  { x:  3.6, z: -26.2, w: 4.8, h: 10.2, d: 3.8, col: 0xA4B8CD },
+  { x:  9.2, z: -25.5, w: 4.4, h: 7.8, d: 3.8, col: 0xAFC2D5 }
+].forEach(s => {
+  const tower = new THREE.Mesh(new RoundedBoxGeometry(s.w, s.h, s.d, 3, 0.12), mat(s.col, 0.90, 0.0));
+  tower.position.set(s.x, s.h * 0.5, s.z);
+  floodRoadGroup.add(tower);
+});
+
+// Submerged Cars Stalled in Right Flooded Lane (with synchronous amber hazard blinkers)
+const submergedCars = [];
+function makeSubmergedCar(bodyHex, isSUV = false) {
+  const g = new THREE.Group();
+  const bodyMat = mat(bodyHex, 0.34, 0.28);
+  const glassMat = mat(0x223042, 0.14, 0.45);
+  const darkTrim = mat(0x1E293B, 0.65);
+
+  const l = isSUV ? 3.15 : 2.95;
+  const bodyH = isSUV ? 0.64 : 0.54;
+  const cabH = isSUV ? 0.52 : 0.46;
+
+  // Lower Chassis (half-submerged from wheel height up!)
+  const hull = withOutline(new THREE.Mesh(new RoundedBoxGeometry(1.42, bodyH, l, 4, 0.10), bodyMat), 1.03);
+  hull.position.y = 0.22 + bodyH * 0.5;
+  g.add(hull);
+
+  // Cabin & Dark Tinted Glass
+  const cabLen = isSUV ? 1.92 : 1.48;
+  const cabZ = isSUV ? -0.22 : -0.10;
+  const cabin = withOutline(new THREE.Mesh(new RoundedBoxGeometry(1.24, cabH, cabLen, 4, 0.08), glassMat), 1.035);
+  cabin.position.set(0, 0.22 + bodyH + cabH * 0.42, cabZ);
+  const roof = new THREE.Mesh(new RoundedBoxGeometry(1.20, 0.07, cabLen - 0.16, 3, 0.03), bodyMat);
+  roof.position.set(0, 0.22 + bodyH + cabH * 0.88, cabZ);
+  g.add(cabin, roof);
+
+  // Subtle Bumper & Partially Submerged Wheels
+  const wheelMat = darkTrim;
+  [-0.92, 0.92].forEach(wz => {
+    [-0.64, 0.64].forEach(wx => {
+      const wh = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.18, 16), wheelMat);
+      wh.rotation.z = Math.PI / 2;
+      wh.position.set(wx, 0.28, wz);
+      g.add(wh);
+    });
+  });
+
+  // 4 Corner Amber Hazard Lamps (pulsed cleanly in render loop)
+  const hazards = [];
+  const hazMatF = new THREE.MeshStandardMaterial({ color: 0xF59E0B, emissive: 0xFF7A00, emissiveIntensity: 1.5, roughness: 0.2 });
+  const hazMatR = new THREE.MeshStandardMaterial({ color: 0xF59E0B, emissive: 0xFF7A00, emissiveIntensity: 1.5, roughness: 0.2 });
+  [-0.54, 0.54].forEach(hx => {
+    const hF = new THREE.Mesh(new RoundedBoxGeometry(0.22, 0.12, 0.06, 2, 0.02), hazMatF);
+    hF.position.set(hx, 0.22 + bodyH * 0.58, l * 0.5 + 0.01);
+    const hR = new THREE.Mesh(new RoundedBoxGeometry(0.22, 0.12, 0.06, 2, 0.02), hazMatR);
+    hR.position.set(hx, 0.22 + bodyH * 0.62, -l * 0.5 - 0.01);
+    g.add(hF, hR);
+    hazards.push(hazMatF, hazMatR);
+  });
+
+  // Waterline halo around car hull
+  const halo = new THREE.Mesh(
+    new THREE.RingGeometry(1.15, 1.24, 32),
+    new THREE.MeshBasicMaterial({ color: 0xDCEEF8, transparent: true, opacity: 0.38, side: THREE.DoubleSide })
+  );
+  halo.rotation.x = -Math.PI / 2;
+  halo.scale.set(0.74, 1.48, 1.0);
+  halo.position.y = 0.427;
+  g.add(halo);
+
+  return { root: g, hazards };
+}
+
+const car1 = makeSubmergedCar(0x2563EB, false);
+car1.root.position.set(2.75, 0.0, -6.6);
+car1.root.scale.setScalar(0.88);
+floodRoadGroup.add(car1.root);
+submergedCars.push(car1);
+
+const car2 = makeSubmergedCar(0xF1F5F9, true);
+car2.root.position.set(2.30, 0.0, 6.2);
+car2.root.rotation.y = Math.PI;
+car2.root.scale.setScalar(0.94);
+floodRoadGroup.add(car2.root);
+submergedCars.push(car2);
+
+// Flood Depth Gauge Pole (Tiang Pengukur Ketinggian Banjir) near right curb at z = -9.2
+const floodGaugeGroup = new THREE.Group();
+floodGaugeGroup.position.set(3.58, 0.0, -9.2);
+[
+  { y: 0.20, h: 0.40, col: 0x0FA968 },
+  { y: 0.55, h: 0.30, col: 0xFACC15 },
+  { y: 0.85, h: 0.30, col: 0xEF4444 }
+].forEach(seg => {
+  const bar = withOutline(new THREE.Mesh(new THREE.BoxGeometry(0.11, seg.h, 0.11), mat(seg.col, 0.45)), 1.06);
+  bar.position.y = seg.y;
+  floodGaugeGroup.add(bar);
+});
+const gaugeSign = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.42, 0.32, 0.06, 3, 0.02), mat(0xFACC15, 0.4)), 1.05);
+gaugeSign.position.y = 1.18;
+gaugeSign.rotation.y = -0.35;
+floodGaugeGroup.add(gaugeSign);
+floodRoadGroup.add(floodGaugeGroup);
+
+// Orange-White Street Safety Traffic Cones
+function makeTrafficCone() {
+  const g = new THREE.Group();
+  const base = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.32, 0.05, 0.32, 2, 0.015), mat(0x1E293B, 0.65)), 1.04);
+  base.position.y = 0.025;
+  const cone = withOutline(new THREE.Mesh(new THREE.ConeGeometry(0.125, 0.46, 14), mat(0xEF5F18, 0.42)), 1.05);
+  cone.position.y = 0.27;
+  const band = new THREE.Mesh(new THREE.CylinderGeometry(0.062, 0.088, 0.11, 14), mat(0xF8FAFC, 0.35));
+  band.position.y = 0.28;
+  g.add(base, cone, band);
+  return g;
+}
+[
+  { x: -1.40, y: 0.22, z: -2.8 },
+  { x:  3.62, y: 0.22, z:  2.8 },
+  { x:  3.62, y: 0.22, z: -7.4 }
+].forEach(c => {
+  const cone = makeTrafficCone();
+  cone.position.set(c.x, c.y, c.z);
+  floodRoadGroup.add(cone);
+});
+
+// Floodwater Plane (Murky Brownish-Teal Indonesian Floodwater spanning full road between both curbs!)
+const floodWaterGroup = new THREE.Group();
+floodRoadGroup.add(floodWaterGroup);
+
+const floodWaterMat = new THREE.MeshStandardMaterial({
+  color: 0x6F7E79,
+  roughness: 0.14,
+  metalness: 0.12,
+  transparent: true,
+  opacity: 0.74
+});
+const floodWaterMesh = new THREE.Mesh(new THREE.BoxGeometry(5.40, 0.42, 58.0), floodWaterMat);
+floodWaterMesh.position.set(1.15, 0.21, -2.0);
+floodWaterGroup.add(floodWaterMesh);
+
+// Glossy top surface shimmer sheet
+const floodSurfaceMat = new THREE.MeshStandardMaterial({
+  color: 0x8CA09B,
+  roughness: 0.08,
+  metalness: 0.22,
+  transparent: true,
+  opacity: 0.46
+});
+const floodSurface = new THREE.Mesh(new THREE.PlaneGeometry(5.40, 58.0), floodSurfaceMat);
+floodSurface.rotation.x = -Math.PI / 2;
+floodSurface.position.set(1.15, 0.423, -2.0);
+floodWaterGroup.add(floodSurface);
+
+// Concentric Water Ripples around Scooter Wheels
+const waterRipples = [];
+for (let i = 0; i < 6; i++) {
+  const rpMat = new THREE.MeshBasicMaterial({ color: 0xE2F1F5, transparent: true, opacity: 0.65, side: THREE.DoubleSide });
+  const rp = new THREE.Mesh(new THREE.RingGeometry(0.26, 0.31, 32), rpMat);
+  rp.rotation.x = -Math.PI / 2;
+  rp.position.set(0.25, 0.428, i < 3 ? 1.05 : -0.92);
+  rp.userData = { phase: (i % 3) * 0.33, isFront: i < 3 };
+  floodWaterGroup.add(rp);
+  waterRipples.push(rp);
+}
+
+// Falling Rain Streaks (Deterministic trig loop)
+const rainStreaksGroup = new THREE.Group();
+floodRoadGroup.add(rainStreaksGroup);
+const rainDrops = [];
+const rainMat = new THREE.MeshBasicMaterial({ color: 0xDCEEF8, transparent: true, opacity: 0.42 });
+for (let i = 0; i < 38; i++) {
+  const drop = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.36, 0.015), rainMat);
+  const rx = -3.0 + ((i * 37) % 72) / 10.0;
+  const rz = -4.5 + ((i * 53) % 90) / 10.0;
+  drop.userData = { x: rx, z: rz, phase: (i * 0.17) % 1.0, spd: 2.1 + (i % 4) * 0.25 };
+  drop.rotation.z = 0.08;
+  rainStreaksGroup.add(drop);
+  rainDrops.push(drop);
+}
+
+// Dry Parking Zone Green Ring on Sidewalk (S13B)
+const dryRingMat = new THREE.MeshBasicMaterial({ color: 0x0FA968, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
+const drySafeRing = new THREE.Mesh(new THREE.RingGeometry(0.88, 1.12, 36), dryRingMat);
+drySafeRing.rotation.x = -Math.PI / 2;
+drySafeRing.position.set(-2.55, 0.23, 0.0);
+floodRoadGroup.add(drySafeRing);
+
+/* --- 2B. MOTOR MATIC MERAH + BOX FILTER UDARA + STARTER + DIPSTICK + CVT --- */
+const mioGroup = new THREE.Group();
+mioGroup.position.set(0.25, 0, 0);
+mioGroup.scale.setScalar(1.38);
+floodRoadGroup.add(mioGroup);
+
+const mioRedMat = mat(0xC81422, 0.22, 0.18);
+const mioDarkPlasticMat = mat(0x1B2028, 0.58, 0.06);
+const mioSeatMat = mat(0x161A20, 0.65, 0.03);
+const mioSilverMat = mat(0xDCE3EC, 0.24, 0.68);
+const mioDarkMetalMat = mat(0x2A323D, 0.35, 0.55);
+const mioRimMat = mat(0x14181F, 0.32, 0.45);
+const mioTireMat = mat(0x151920, 0.78, 0.04);
+
+// Front Wheel Assembly
+const frontWheelAssy = new THREE.Group();
+frontWheelAssy.position.set(0, 0.35, 0.76);
+mioGroup.add(frontWheelAssy);
+
+const frontWheelSpinGroup = new THREE.Group();
+frontWheelAssy.add(frontWheelSpinGroup);
+const fTire = withOutline(new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.075, 16, 36), mioTireMat), 1.04);
+fTire.rotation.y = Math.PI / 2;
+frontWheelSpinGroup.add(fTire);
+const fRimRing = new THREE.Mesh(new THREE.TorusGeometry(0.21, 0.024, 12, 32), mioRimMat);
+fRimRing.rotation.y = Math.PI / 2;
+frontWheelSpinGroup.add(fRimRing);
+for (let i = 0; i < 5; i++) {
+  const a = (i / 5) * Math.PI * 2;
+  const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.20, 0.032), mioRimMat);
+  spoke.position.set(0, Math.cos(a) * 0.105, Math.sin(a) * 0.105);
+  spoke.rotation.x = -a;
+  frontWheelSpinGroup.add(spoke);
+}
+[-0.115, 0.115].forEach(fx => {
+  const lowerFork = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.028, 0.42, 14), mioDarkMetalMat), 1.06);
+  lowerFork.position.set(fx, 0.16, -0.05); lowerFork.rotation.x = -0.24;
+  const innerTube = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.34, 12), mioSilverMat);
+  innerTube.position.set(fx, 0.44, -0.12); innerTube.rotation.x = -0.24;
+  frontWheelAssy.add(lowerFork, innerTube);
+});
+const frontFender = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.21, 0.085, 0.34, 6, 0.042), mioRedMat), 1.05);
+frontFender.position.set(0, 0.255, 0.08); frontFender.rotation.x = 0.28;
+frontWheelAssy.add(frontFender);
+
+// Rear Wheel Assembly
+const rearWheelAssy = new THREE.Group();
+rearWheelAssy.position.set(0, 0.35, -0.66);
+mioGroup.add(rearWheelAssy);
+
+const rearWheelSpinGroup = new THREE.Group();
+rearWheelAssy.add(rearWheelSpinGroup);
+const rTire = withOutline(new THREE.Mesh(new THREE.TorusGeometry(0.27, 0.08, 16, 36), mioTireMat), 1.04);
+rTire.rotation.y = Math.PI / 2;
+rearWheelSpinGroup.add(rTire);
+const rRimRing = new THREE.Mesh(new THREE.TorusGeometry(0.195, 0.024, 12, 32), mioRimMat);
+rRimRing.rotation.y = Math.PI / 2;
+rearWheelSpinGroup.add(rRimRing);
+for (let i = 0; i < 5; i++) {
+  const a = (i / 5) * Math.PI * 2;
+  const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.19, 0.034), mioRimMat);
+  spoke.position.set(0, Math.cos(a) * 0.098, Math.sin(a) * 0.098);
+  spoke.rotation.x = -a;
+  rearWheelSpinGroup.add(spoke);
+}
+
+// Exhaust (-X side)
+const exhaustGroup = new THREE.Group();
+exhaustGroup.position.set(-0.18, 0.04, 0.08);
+exhaustGroup.rotation.x = -0.18;
+rearWheelAssy.add(exhaustGroup);
+const mufflerBody = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.058, 0.052, 0.56, 16), mioDarkPlasticMat), 1.05);
+mufflerBody.rotation.x = Math.PI / 2;
+const mufflerShield = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.025, 0.075, 0.38, 4, 0.012), mioSilverMat), 1.05);
+mufflerShield.position.set(-0.052, 0.01, -0.02);
+exhaustGroup.add(mufflerBody, mufflerShield);
+
+// Dipstick / Engine Oil Filler Cap on Right Lower Crankcase (-X side)
+const dipstickGroup = new THREE.Group();
+dipstickGroup.position.set(-0.16, -0.02, 0.38);
+rearWheelAssy.add(dipstickGroup);
+const dipstickBoss = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.036, 0.05, 14), mioSilverMat);
+dipstickBoss.rotation.z = 0.45;
+const dipstickCapPivot = new THREE.Group();
+dipstickCapPivot.position.set(-0.02, 0.03, 0);
+dipstickGroup.add(dipstickBoss, dipstickCapPivot);
+const dipstickCap = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.055, 0.045, 0.03, 3, 0.01), mat(0xF59E0B, 0.32)), 1.08);
+const dipstickStem = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.16, 10), mioDarkMetalMat);
+dipstickStem.position.y = -0.09;
+const dipstickOilTipMat = new THREE.MeshStandardMaterial({ color: 0xC4A482, roughness: 0.28 });
+const dipstickOilTip = new THREE.Mesh(new THREE.CylinderGeometry(0.010, 0.009, 0.06, 10), dipstickOilTipMat);
+dipstickOilTip.position.y = -0.15;
+dipstickCapPivot.add(dipstickCap, dipstickStem, dipstickOilTip);
+
+// --- BAK CVT SISI KIRI (+X) + KICK STARTER ---
+const cvtGroup = new THREE.Group();
+cvtGroup.position.set(0.135, 0.0, 0.22);
+rearWheelAssy.add(cvtGroup);
+
+const cvtOuterCover = new THREE.Group();
+const cvtMainShell = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.075, 0.24, 0.60, 6, 0.06), mioDarkMetalMat), 1.05);
+const cvtKickStarter = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.016, 0.19, 12), mioSilverMat);
+cvtKickStarter.rotation.x = Math.PI / 2;
+cvtKickStarter.position.set(0.048, -0.04, -0.14);
+const cvtKickPedal = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.03, 0.08, 0.025, 3, 0.006), mat(0x111827, 0.5)), 1.08);
+cvtKickPedal.position.set(0.048, -0.04, -0.04);
+cvtOuterCover.add(cvtMainShell, cvtKickStarter, cvtKickPedal);
+cvtOuterCover.position.set(0.035, 0, 0);
+cvtGroup.add(cvtOuterCover);
+
+const cvtInnerCase = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.045, 0.25, 0.62, 6, 0.06), mat(0x1E293B, 0.5, 0.3)), 1.04);
+cvtInnerCase.position.set(-0.01, 0, 0);
+cvtGroup.add(cvtInnerCase);
+
+const frontPulley = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.085, 0.032, 24), mioSilverMat);
+frontPulley.rotation.z = Math.PI / 2; frontPulley.position.set(0.022, 0, 0.18);
+const rearClutchBell = new THREE.Mesh(new THREE.CylinderGeometry(0.092, 0.092, 0.035, 24), mioSilverMat);
+rearClutchBell.rotation.z = Math.PI / 2; rearClutchBell.position.set(0.022, 0, -0.18);
+const vBeltBarTop = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.02, 0.36), mat(0x111827, 0.7));
+vBeltBarTop.position.set(0.02, 0.075, 0);
+const vBeltBarBot = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.02, 0.36), mat(0x111827, 0.7));
+vBeltBarBot.position.set(0.02, -0.075, 0);
+cvtGroup.add(frontPulley, rearClutchBell, vBeltBarTop, vBeltBarBot);
+
+// CVT Dry Air Arrows (S15B)
+const cvtDryAirGroup = new THREE.Group();
+cvtGroup.add(cvtDryAirGroup);
+const cvtDryArrows = [];
+for (let i = 0; i < 4; i++) {
+  const ag = new THREE.Group();
+  const sh = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.025, 0.16), new THREE.MeshBasicMaterial({ color: 0x0EA5E9 }));
+  const hd = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.08, 10), new THREE.MeshBasicMaterial({ color: 0x0EA5E9 }));
+  hd.rotation.x = Math.PI / 2; hd.position.z = 0.10;
+  ag.add(sh, hd);
+  ag.position.set(0.18, -0.06 + i * 0.045, 0);
+  ag.rotation.y = -Math.PI / 2;
+  cvtDryAirGroup.add(ag);
+  cvtDryArrows.push(ag);
+}
+
+// Kick Starter Forbidden Ring (S13A)
+const kickRingMat = new THREE.MeshBasicMaterial({ color: 0xEF5F18, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
+const kickRing = new THREE.Mesh(new THREE.RingGeometry(0.11, 0.14, 28), kickRingMat);
+kickRing.rotation.y = Math.PI / 2;
+kickRing.position.set(0.22, -0.04, 0.14);
+rearWheelAssy.add(kickRing);
+
+// --- BOX FILTER UDARA RENDAH DI ATAS CVT (+X SISI KIRI, SEJAJAR SETENGAH BAN BELAKANG) ---
+const airboxGroup = new THREE.Group();
+airboxGroup.position.set(0.145, 0.165, 0.12); // Directly atop CVT, sitting close to floodwater level!
+rearWheelAssy.add(airboxGroup);
+
+const airboxInnerHousing = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(0.11, 0.17, 0.34, 5, 0.03), mat(0x1E293B, 0.55)),
+  1.05
+);
+airboxGroup.add(airboxInnerHousing);
+
+// Foam Filter Element inside Airbox (Amber dry -> dark wet brown when flooded)
+const airFoamMat = new THREE.MeshStandardMaterial({ color: 0xF59E0B, roughness: 0.92, metalness: 0.0 });
+const airFoamMesh = new THREE.Mesh(new RoundedBoxGeometry(0.055, 0.125, 0.25, 4, 0.02), airFoamMat);
+airFoamMesh.position.set(0.035, 0.0, 0.0);
+airboxGroup.add(airFoamMesh);
+
+// Outer Airbox Cover (Slides open during S05 cutaway & S14A inspection)
+const airboxOuterCover = withOutline(
+  new THREE.Mesh(new RoundedBoxGeometry(0.05, 0.165, 0.33, 5, 0.028), mioDarkPlasticMat),
+  1.06
+);
+airboxOuterCover.position.set(0.058, 0.0, 0.0);
+airboxGroup.add(airboxOuterCover);
+
+// Low Air Intake Snorkel Mouth dipping toward floodwater line
+const airSnorkel = withOutline(
+  new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.045, 0.16, 14), mioDarkPlasticMat),
+  1.06
+);
+airSnorkel.position.set(0.02, -0.10, -0.06);
+airSnorkel.rotation.x = 0.38;
+airboxGroup.add(airSnorkel);
+
+// Glowing Airbox Highlight Ring (S04-S05) — subtle tight ring around intake mouth
+const airboxRingMat = new THREE.MeshBasicMaterial({ color: 0xEF5F18, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
+const airboxRing = new THREE.Mesh(new THREE.RingGeometry(0.065, 0.082, 28), airboxRingMat);
+airboxRing.rotation.y = Math.PI / 2;
+airboxRing.position.set(0.082, -0.04, -0.04);
+airboxGroup.add(airboxRing);
+
+// Transparent Intake Hose & Animated Water Suction Stream forward into Engine Cylinder (S05)
+const intakeCurve = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(0.02, -0.14, -0.06),
+  new THREE.Vector3(0.02, -0.02, 0.02),
+  new THREE.Vector3(-0.02, 0.03, 0.22),
+  new THREE.Vector3(-0.14, -0.02, 0.44)
+]);
+const intakeHoseMat = new THREE.MeshStandardMaterial({ color: 0x334155, transparent: true, opacity: 0.92, roughness: 0.4 });
+const intakeHose = new THREE.Mesh(new THREE.TubeGeometry(intakeCurve, 22, 0.028, 12, false), intakeHoseMat);
+airboxGroup.add(intakeHose);
+
+const intakeWaterOrbs = [];
+const intakeOrbMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8 });
+for (let i = 0; i < 12; i++) {
+  const orb = new THREE.Mesh(new THREE.SphereGeometry(0.020, 10, 10), intakeOrbMat);
+  orb.userData = { phase: i / 12 };
+  airboxGroup.add(orb);
+  intakeWaterOrbs.push(orb);
+}
+
+// Main Scooter Body (Floorboard, Legshield, Front Fairing, Key, Seat, Handlebar + Red Starter Button)
+const floorboard = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.42, 0.11, 0.72, 4, 0.035), mioDarkPlasticMat), 1.05);
+floorboard.position.set(0, 0.34, 0.04);
+mioGroup.add(floorboard);
+
+const innerLegshield = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.38, 0.68, 0.18, 5, 0.04), mioDarkPlasticMat), 1.05);
+innerLegshield.position.set(0, 0.68, 0.42); innerLegshield.rotation.x = -0.24;
+mioGroup.add(innerLegshield);
+
+const frontFairing = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.44, 0.66, 0.24, 6, 0.075), mioRedMat), 1.05);
+frontFairing.position.set(0, 0.72, 0.54); frontFairing.rotation.x = -0.26;
+mioGroup.add(frontFairing);
+
+const smileLampMat = new THREE.MeshStandardMaterial({ color: 0xF8FAFC, roughness: 0.12, emissive: 0xFFFBEB, emissiveIntensity: 0.35 });
+const smileLampCenter = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.32, 0.075, 0.04, 4, 0.02), smileLampMat), 1.05);
+smileLampCenter.position.set(0, 0.58, 0.645); smileLampCenter.rotation.x = -0.26;
+mioGroup.add(smileLampCenter);
+
+// Ignition Key (-X side of inner legshield)
+const ignitionGroup = new THREE.Group();
+ignitionGroup.position.set(-0.13, 0.84, 0.34); ignitionGroup.rotation.x = -0.24;
+mioGroup.add(ignitionGroup);
+const keyCylinder = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.042, 0.04, 16), mioDarkMetalMat), 1.08);
+keyCylinder.rotation.x = Math.PI / 2;
+const keyPivot = new THREE.Group(); keyPivot.position.set(0, 0, 0.025);
+const keyBow = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.032, 0.058, 0.045, 3, 0.008), mat(0x111827, 0.4)), 1.08);
+keyPivot.add(keyBow);
+const keyRingMat = new THREE.MeshBasicMaterial({ color: 0x0FA968, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
+const keyStatusRing = new THREE.Mesh(new THREE.RingGeometry(0.055, 0.078, 28), keyRingMat);
+keyStatusRing.position.set(0, 0, 0.028);
+ignitionGroup.add(keyCylinder, keyPivot, keyStatusRing);
+
+const underSeatBox = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.40, 0.38, 0.58, 5, 0.05), mioDarkPlasticMat), 1.04);
+underSeatBox.position.set(0, 0.56, -0.34);
+mioGroup.add(underSeatBox);
+[-0.19, 0.19].forEach(sx => {
+  const sidePanel = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.08, 0.24, 0.68, 5, 0.035), mioRedMat), 1.05);
+  sidePanel.position.set(sx, 0.64, -0.42); sidePanel.rotation.x = 0.18;
+  const stripeWhite = new THREE.Mesh(new THREE.BoxGeometry(0.086, 0.055, 0.48), new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
+  stripeWhite.position.set(sx, 0.65, -0.40); stripeWhite.rotation.x = 0.22;
+  mioGroup.add(sidePanel, stripeWhite);
+});
+const scooterSeat = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.38, 0.14, 0.68, 6, 0.055), mioSeatMat), 1.05);
+scooterSeat.position.set(0, 0.78, -0.36); scooterSeat.rotation.x = 0.06;
+const rearGrabBar = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.34, 0.065, 0.22, 4, 0.025), mioRedMat), 1.06);
+rearGrabBar.position.set(0, 0.82, -0.74); rearGrabBar.rotation.x = 0.15;
+const tailLight = new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.10, 0.06, 3, 0.02), mat(0xDC2626, 0.2, 0.1, 0xEF4444, 0.6));
+tailLight.position.set(0, 0.70, -0.78);
+mioGroup.add(scooterSeat, rearGrabBar, tailLight);
+
+// Handlebar, Speedometer, Throttle & RED ELECTRIC STARTER BUTTON
+const steeringGroup = new THREE.Group();
+steeringGroup.position.set(0, 1.08, 0.36);
+mioGroup.add(steeringGroup);
+
+const handlebarCowl = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.38, 0.20, 0.24, 6, 0.065), mioRedMat), 1.05);
+handlebarCowl.position.set(0, 0.04, 0.04);
+const mainHeadlamp = new THREE.Mesh(new RoundedBoxGeometry(0.22, 0.13, 0.06, 4, 0.025), smileLampMat);
+mainHeadlamp.position.set(0, 0.04, 0.155);
+steeringGroup.add(handlebarCowl, mainHeadlamp);
+
+const speedoFace = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.085, 0.02, 24), new THREE.MeshBasicMaterial({ color: 0xF8FAFC }));
+speedoFace.rotation.x = Math.PI / 3; speedoFace.position.set(0, 0.135, -0.02);
+const speedoNeedlePivot = new THREE.Group();
+speedoNeedlePivot.position.set(0, 0.145, -0.015); speedoNeedlePivot.rotation.x = Math.PI / 3;
+const speedoNeedle = new THREE.Mesh(new THREE.BoxGeometry(0.010, 0.062, 0.008), new THREE.MeshBasicMaterial({ color: 0xEF5F18 }));
+speedoNeedle.position.y = 0.026;
+speedoNeedlePivot.add(speedoNeedle);
+steeringGroup.add(speedoFace, speedoNeedlePivot);
+
+[-0.22, 0.22].forEach((mx, idx) => {
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.20, 8), mioDarkPlasticMat);
+  stem.position.set(mx, 0.18, 0.02); stem.rotation.z = idx === 0 ? 0.38 : -0.38;
+  const mirrorHousing = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.12, 0.075, 0.035, 4, 0.02), mioDarkPlasticMat), 1.07);
+  mirrorHousing.position.set(mx * 1.32, 0.26, 0.02);
+  steeringGroup.add(stem, mirrorHousing);
+});
+
+const gripRightMesh = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.15, 14), mioDarkPlasticMat), 1.07);
+gripRightMesh.rotation.z = Math.PI / 2; gripRightMesh.position.set(-0.28, 0.02, -0.02);
+const gripLeftMesh = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.15, 14), mioDarkPlasticMat), 1.07);
+gripLeftMesh.rotation.z = Math.PI / 2; gripLeftMesh.position.set(0.28, 0.02, -0.02);
+steeringGroup.add(gripRightMesh, gripLeftMesh);
+
+// Right Handlebar Switch Housing + Prominent Red Starter Button!
+const starterHousing = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.062, 0.075, 0.072, 4, 0.014), mioDarkMetalMat), 1.07);
+starterHousing.position.set(-0.195, 0.025, -0.015);
+steeringGroup.add(starterHousing);
+
+const starterBtnMat = new THREE.MeshStandardMaterial({ color: 0xEF5F18, roughness: 0.28, emissive: 0xEF5F18, emissiveIntensity: 0.45 });
+const starterBtnMesh = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.036, 0.032, 0.028, 3, 0.008), starterBtnMat), 1.08);
+starterBtnMesh.position.set(-0.195, 0.012, -0.052);
+steeringGroup.add(starterBtnMesh);
+
+const starterRingMat = new THREE.MeshBasicMaterial({ color: 0xEF5F18, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
+const starterRing = new THREE.Mesh(new THREE.RingGeometry(0.026, 0.036, 24), starterRingMat);
+starterRing.position.set(-0.195, 0.012, -0.068);
+steeringGroup.add(starterRing);
+
+/* ============ 3. STAGE 1: 3D X-RAY CUTAWAY SILINDER 110cc, PISTON, SETANG SEHER, BUSI & SENDOK ============ */
+const engineStageGroup = new THREE.Group();
+scene.add(engineStageGroup);
+
+const cylMetalMat = mat(0x475569, 0.36, 0.52);
+const cylInnerMat = mat(0x94A3B8, 0.28, 0.65);
+const blockGlassMat = new THREE.MeshStandardMaterial({ color: 0x94A3B8, roughness: 0.25, metalness: 0.15, transparent: true, opacity: 0.24 });
+
+// Crankcase Lower Housing (Open Front Window)
+const crankBack = withOutline(new THREE.Mesh(new RoundedBoxGeometry(1.18, 0.76, 0.36, 5, 0.08), cylMetalMat), 1.04);
+crankBack.position.set(0, 0.56, -0.22);
+const crankSideL = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.22, 0.78, 0.72, 4, 0.06), cylMetalMat), 1.05);
+crankSideL.position.set(-0.56, 0.56, 0.0);
+const crankSideR = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.22, 0.78, 0.72, 4, 0.06), cylMetalMat), 1.05);
+crankSideR.position.set(0.56, 0.56, 0.0);
+const crankFloor = withOutline(new THREE.Mesh(new RoundedBoxGeometry(1.22, 0.22, 0.74, 4, 0.06), cylMetalMat), 1.04);
+crankFloor.position.set(0, 0.18, 0.0);
+engineStageGroup.add(crankBack, crankSideL, crankSideR, crankFloor);
+
+// Cylinder Barrel Cutaway (Back & Side Cooling Fins, Open Front Bore!)
+const cylBackWall = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.92, 0.96, 0.28, 4, 0.04), cylInnerMat), 1.04);
+cylBackWall.position.set(0, 1.42, -0.24);
+const cylWallL = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.18, 0.96, 0.56, 4, 0.04), cylMetalMat), 1.05);
+cylWallL.position.set(-0.44, 1.42, -0.05);
+const cylWallR = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.18, 0.96, 0.56, 4, 0.04), cylMetalMat), 1.05);
+cylWallR.position.set(0.44, 1.42, -0.05);
+engineStageGroup.add(cylBackWall, cylWallL, cylWallR);
+
+// Cooling fins along left & right walls
+for (let i = 0; i < 6; i++) {
+  const fy = 1.04 + i * 0.145;
+  const finL = new THREE.Mesh(new RoundedBoxGeometry(0.30, 0.042, 0.58, 3, 0.012), cylMetalMat);
+  finL.position.set(-0.52, fy, -0.05);
+  const finR = new THREE.Mesh(new RoundedBoxGeometry(0.30, 0.042, 0.58, 3, 0.012), cylMetalMat);
+  finR.position.set(0.52, fy, -0.05);
+  engineStageGroup.add(finL, finR);
+}
+
+// Cylinder Head & Valves
+const cylHead = withOutline(new THREE.Mesh(new RoundedBoxGeometry(1.16, 0.34, 0.64, 5, 0.06), mat(0x64748B, 0.32, 0.58)), 1.04);
+cylHead.position.set(0, 2.08, -0.08);
+engineStageGroup.add(cylHead);
+
+const intakeValve = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.14, 14), mioSilverMat);
+intakeValve.position.set(-0.18, 1.88, -0.02);
+const exhaustValve = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.14, 14), mioSilverMat);
+exhaustValve.position.set(0.18, 1.88, -0.02);
+engineStageGroup.add(intakeValve, exhaustValve);
+
+// Front Transparent Cutaway Shield (Subtle specular glass rim)
+const frontGlass = new THREE.Mesh(new THREE.PlaneGeometry(0.70, 0.94), blockGlassMat);
+frontGlass.position.set(0, 1.42, 0.25);
+engineStageGroup.add(frontGlass);
+
+// Spark Plug (Busi) in Cylinder Head Top Center — Can unscrew and lift out in S15A!
+const sparkPlugGroup = new THREE.Group();
+sparkPlugGroup.position.set(0, 2.15, 0.02);
+engineStageGroup.add(sparkPlugGroup);
+const spElectrode = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.18, 12), mat(0x334155, 0.3, 0.8));
+spElectrode.position.y = -0.14;
+const spNut = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.12, 6), mioSilverMat), 1.07);
+spNut.position.y = 0.08;
+const spCeramic = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.058, 0.24, 16), mat(0xF8FAFC, 0.2)), 1.06);
+spCeramic.position.y = 0.24;
+const spTip = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.06, 12), mioSilverMat);
+spTip.position.y = 0.38;
+sparkPlugGroup.add(spElectrode, spNut, spCeramic, spTip);
+
+// Water Ejection Spurt from Open Spark Plug Hole (S15A)
+const waterEjectGroup = new THREE.Group();
+waterEjectGroup.position.set(0, 2.22, 0.02);
+engineStageGroup.add(waterEjectGroup);
+const ejectDrops = [];
+const ejectMat = new THREE.MeshBasicMaterial({ color: 0x0EA5E9 });
+for (let i = 0; i < 18; i++) {
+  const dr = new THREE.Mesh(new THREE.SphereGeometry(0.038 + (i % 3) * 0.014, 10, 10), ejectMat);
+  dr.userData = { phase: i / 18, vx: ((i % 5) - 2) * 0.11, vz: (((i * 3) % 5) - 2) * 0.06 };
+  waterEjectGroup.add(dr);
+  ejectDrops.push(dr);
+}
+
+// Rotating Crankshaft Counterweight
+const crankWheelGroup = new THREE.Group();
+crankWheelGroup.position.set(0, 0.56, 0.0);
+engineStageGroup.add(crankWheelGroup);
+const crankDisc = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.22, 24), mat(0x334155, 0.32, 0.68)), 1.05);
+crankDisc.rotation.x = Math.PI / 2;
+const crankPin = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, 0.26, 14), mioSilverMat);
+crankPin.rotation.x = Math.PI / 2;
+crankPin.position.set(0, 0.16, 0.02);
+crankWheelGroup.add(crankDisc, crankPin);
+
+// Articulated Connecting Rod (Setang Seher) that bends dramatically into "S" / kink during Water Hammer!
+const conRodBase = new THREE.Group();
+conRodBase.position.set(0, 0.72, 0.02);
+engineStageGroup.add(conRodBase);
+
+const rodMat = new THREE.MeshStandardMaterial({ color: 0xCBD5E1, roughness: 0.26, metalness: 0.72, emissive: 0xEF5F18, emissiveIntensity: 0.0 });
+const rodLowerPivot = new THREE.Group();
+conRodBase.add(rodLowerPivot);
+const rodLowerBeam = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.095, 0.30, 0.07, 3, 0.02), rodMat), 1.07);
+rodLowerBeam.position.y = 0.14;
+rodLowerPivot.add(rodLowerBeam);
+
+const rodMidPivot = new THREE.Group();
+rodMidPivot.position.y = 0.28;
+rodLowerPivot.add(rodMidPivot);
+const rodUpperBeam = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.09, 0.30, 0.07, 3, 0.02), rodMat), 1.07);
+rodUpperBeam.position.y = 0.14;
+rodMidPivot.add(rodUpperBeam);
+
+// Piston with Dual Piston Rings
+const pistonGroup = new THREE.Group();
+pistonGroup.position.set(0, 1.35, 0.0);
+engineStageGroup.add(pistonGroup);
+const pistonBody = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.30, 24), mat(0xE2E8F0, 0.22, 0.65)), 1.04);
+const pistonRing1 = new THREE.Mesh(new THREE.TorusGeometry(0.324, 0.012, 8, 28), mat(0x1E293B, 0.4));
+pistonRing1.rotation.x = Math.PI / 2; pistonRing1.position.y = 0.09;
+const pistonRing2 = new THREE.Mesh(new THREE.TorusGeometry(0.324, 0.012, 8, 28), mat(0x1E293B, 0.4));
+pistonRing2.rotation.x = Math.PI / 2; pistonRing2.position.y = 0.04;
+const pistonPin = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.56, 14), mat(0x1E293B, 0.35));
+pistonPin.rotation.z = Math.PI / 2;
+pistonGroup.add(pistonBody, pistonRing1, pistonRing2, pistonPin);
+
+// Chamber Fluids: (A) Compressible Fuel-Air Mist Particles (S06) vs (B) Solid Incompressible Blue Water (S02, S10, S11, S15A)
+const gasMistGroup = new THREE.Group();
+engineStageGroup.add(gasMistGroup);
+const gasParticles = [];
+const gasOrbMat = new THREE.MeshBasicMaterial({ color: 0x38BDF8, transparent: true, opacity: 0.85 });
+for (let i = 0; i < 24; i++) {
+  const gp = new THREE.Mesh(new THREE.SphereGeometry(0.032, 8, 8), gasOrbMat);
+  gp.userData = {
+    nx: (((i * 37) % 100) / 100 - 0.5) * 0.46,
+    ny: ((i * 61) % 100) / 100,
+    nz: (((i * 29) % 100) / 100 - 0.5) * 0.22,
+    phase: i * 0.41
+  };
+  gasMistGroup.add(gp);
+  gasParticles.push(gp);
+}
+
+const chamberWaterMat = new THREE.MeshStandardMaterial({
+  color: 0x0284C7, roughness: 0.12, metalness: 0.1, transparent: true, opacity: 0.86,
+  emissive: 0x0EA5E9, emissiveIntensity: 0.25
+});
+const chamberWaterMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.315, 0.315, 0.36, 24), chamberWaterMat);
+chamberWaterMesh.position.set(0, 1.72, 0.0);
+engineStageGroup.add(chamberWaterMesh);
+
+// 12 mL Clearance Highlight Pocket & Measurement Brackets (S07-S08)
+const clearancePocketMat = new THREE.MeshBasicMaterial({ color: 0xEF5F18, transparent: true, opacity: 0.0 });
+const clearancePocket = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.095, 24), clearancePocketMat);
+clearancePocket.position.set(0, 1.855, 0.0);
+engineStageGroup.add(clearancePocket);
+
+const dimBracketGroup = new THREE.Group();
+dimBracketGroup.position.set(0.46, 1.855, 0.06);
+engineStageGroup.add(dimBracketGroup);
+const dimTopBar = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.016, 0.02), new THREE.MeshBasicMaterial({ color: 0xEF5F18 }));
+dimTopBar.position.y = 0.048;
+const dimBotBar = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.016, 0.02), new THREE.MeshBasicMaterial({ color: 0xEF5F18 }));
+dimBotBar.position.y = -0.048;
+const dimVertBar = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.10, 0.02), new THREE.MeshBasicMaterial({ color: 0xEF5F18 }));
+dimVertBar.position.x = 0.04;
+dimBracketGroup.add(dimTopBar, dimBotBar, dimVertBar);
+
+// 3D Stainless Tablespoon (Sendok Makan 15 mL) Scale Comparison beside Cylinder Head (S08)
+const spoonGroup = new THREE.Group();
+spoonGroup.position.set(0.56, 1.76, 0.24);
+spoonGroup.rotation.set(0.32, -0.35, 0.14);
+engineStageGroup.add(spoonGroup);
+const spoonMat = mat(0xE2E8F0, 0.18, 0.82);
+const spoonBowl = withOutline(new THREE.Mesh(new THREE.SphereGeometry(0.20, 20, 14, 0, Math.PI * 2, Math.PI * 0.5, Math.PI * 0.5), spoonMat), 1.05);
+spoonBowl.scale.set(1.02, 0.45, 1.38);
+const spoonLiquid = new THREE.Mesh(new THREE.CylinderGeometry(0.165, 0.135, 0.035, 20), new THREE.MeshBasicMaterial({ color: 0x0EA5E9 }));
+spoonLiquid.scale.set(1.0, 1.0, 1.35); spoonLiquid.position.y = -0.025;
+const spoonHandle = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.055, 0.024, 0.52, 4, 0.01), spoonMat), 1.05);
+spoonHandle.position.set(0, 0.03, -0.44); spoonHandle.rotation.x = 0.14;
+spoonGroup.add(spoonBowl, spoonLiquid, spoonHandle);
+
+// Impact Shockwave Rings & Block Wall Crack (S02, S10, S11, S16B)
+const impactShockMat = new THREE.MeshBasicMaterial({ color: 0xEF5F18, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
+const impactShockRing = new THREE.Mesh(new THREE.RingGeometry(0.28, 0.34, 32), impactShockMat);
+impactShockRing.rotation.x = Math.PI / 2.2;
+impactShockRing.position.set(0, 1.66, 0.04);
+engineStageGroup.add(impactShockRing);
+
+const blockCrackGroup = new THREE.Group();
+blockCrackGroup.position.set(0.45, 1.15, 0.18);
+engineStageGroup.add(blockCrackGroup);
+const crackMat = new THREE.MeshBasicMaterial({ color: 0xEF5F18 });
+[
+  { x: 0.0, y: 0.0, rz: 0.65, len: 0.36 },
+  { x: 0.08, y: 0.14, rz: -0.55, len: 0.28 },
+  { x: 0.06, y: -0.15, rz: -0.78, len: 0.30 }
+].forEach(c => {
+  const bar = new THREE.Mesh(new THREE.BoxGeometry(0.042, c.len, 0.05), crackMat);
+  bar.position.set(c.x, c.y, 0); bar.rotation.z = c.rz;
+  blockCrackGroup.add(bar);
+});
+
+/* ============ 4. STAGE 2: SPLIT-VIEW FISIKA GAS vs AIR (S09) ============ */
+const splitPhysicsGroup = new THREE.Group();
+scene.add(splitPhysicsGroup);
+
+function buildMiniCylinder(xPos, isWater) {
+  const g = new THREE.Group();
+  g.position.set(xPos, 0.95, 0);
+  const back = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.68, 1.18, 0.16, 4, 0.03), cylInnerMat), 1.04);
+  back.position.z = -0.18;
+  const sideL = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.12, 1.18, 0.42, 3, 0.025), cylMetalMat), 1.05);
+  sideL.position.set(-0.32, 0, -0.02);
+  const sideR = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.12, 1.18, 0.42, 3, 0.025), cylMetalMat), 1.05);
+  sideR.position.set(0.32, 0, -0.02);
+  const cap = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.82, 0.20, 0.46, 4, 0.04), mat(0x64748B, 0.3, 0.5)), 1.04);
+  cap.position.set(0, 0.66, -0.02);
+  const pist = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.20, 20), mat(0xE2E8F0, 0.25, 0.65)), 1.05);
+  const rod = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.075, 0.42, 0.06, 3, 0.015), mat(0xCBD5E1, 0.3, 0.7)), 1.06);
+  rod.position.y = -0.28;
+  pist.add(rod);
+  g.add(back, sideL, sideR, cap, pist);
+
+  if (!isWater) {
+    const mist = [];
+    for (let i = 0; i < 14; i++) {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(0.028, 8, 8), new THREE.MeshBasicMaterial({ color: 0x0FA968 }));
+      m.userData = { nx: (((i * 23) % 100) / 100 - 0.5) * 0.34, ny: ((i * 41) % 100) / 100, nz: (((i * 17) % 100) / 100 - 0.5) * 0.14 };
+      g.add(m);
+      mist.push(m);
+    }
+    const okBadge = new THREE.Mesh(new THREE.RingGeometry(0.20, 0.25, 32), new THREE.MeshBasicMaterial({ color: 0x0FA968, side: THREE.DoubleSide }));
+    okBadge.position.set(0, 0.86, 0.05);
+    g.add(okBadge);
+    return { g, pist, mist, okBadge };
+  } else {
+    const waterBlock = new THREE.Mesh(new THREE.CylinderGeometry(0.245, 0.245, 0.44, 22), chamberWaterMat);
+    waterBlock.position.set(0, 0.32, 0);
+    const bounceArr = new THREE.Group();
+    const sh = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.22, 0.06), new THREE.MeshBasicMaterial({ color: 0xEF5F18 }));
+    const hd = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.16, 12), new THREE.MeshBasicMaterial({ color: 0xEF5F18 }));
+    hd.rotation.x = Math.PI; hd.position.y = -0.16;
+    bounceArr.add(sh, hd);
+    bounceArr.position.set(0, 0.18, 0.28);
+    const stopRing = new THREE.Mesh(new THREE.RingGeometry(0.20, 0.25, 32), new THREE.MeshBasicMaterial({ color: 0xEF5F18, side: THREE.DoubleSide }));
+    stopRing.position.set(0, 0.86, 0.05);
+    g.add(waterBlock, bounceArr, stopRing);
+    return { g, pist, waterBlock, bounceArr, stopRing };
+  }
+}
+
+const splitGas = buildMiniCylinder(-0.46, false);
+const splitWater = buildMiniCylinder(0.46, true);
+splitPhysicsGroup.add(splitGas.g, splitWater.g);
+
+/* ============ 5. STAGE 3: PERBANDINGAN VISUAL OLI NORMAL vs OLI KOPI SUSU (S14B - F6) ============ */
+const oilCompareGroup = new THREE.Group();
+scene.add(oilCompareGroup);
+
+function buildOilTube(xPos, isEmulsified) {
+  const g = new THREE.Group();
+  g.position.set(xPos, 1.05, 0);
+
+  // Pedestal Base
+  const base = withOutline(new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.36, 0.14, 24), mat(0x1E293B, 0.45)), 1.05);
+  base.position.y = -0.58;
+  g.add(base);
+
+  // Clear Glass Beaker / Sample Tube
+  const glassMat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.1, metalness: 0.1, transparent: true, opacity: 0.34 });
+  const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.96, 24), glassMat);
+  tube.position.y = -0.04;
+  g.add(tube);
+
+  // Oil Liquid Column
+  const oilMat = isEmulsified
+    ? new THREE.MeshStandardMaterial({ color: 0xC6A27E, roughness: 0.35, metalness: 0.02, transparent: true, opacity: 0.96 })
+    : new THREE.MeshStandardMaterial({ color: 0xF59E0B, roughness: 0.12, metalness: 0.08, transparent: true, opacity: 0.88, emissive: 0xD97706, emissiveIntensity: 0.18 });
+  const liquid = new THREE.Mesh(new THREE.CylinderGeometry(0.215, 0.215, 0.68, 24), oilMat);
+  liquid.position.y = -0.16;
+  g.add(liquid);
+
+  // Dipstick Dipped into Oil Tube
+  const stick = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.055, 0.92, 0.028, 3, 0.008), mioDarkMetalMat), 1.07);
+  stick.position.set(0, 0.24, 0.05);
+  const knob = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.16, 0.11, 0.05, 4, 0.015), mat(0xF59E0B, 0.3)), 1.06);
+  knob.position.set(0, 0.72, 0.05);
+  g.add(stick, knob);
+
+  // Water Emulsion Globules inside Kopi Susu Tube
+  if (isEmulsified) {
+    for (let i = 0; i < 12; i++) {
+      const drop = new THREE.Mesh(new THREE.SphereGeometry(0.032 + (i % 3) * 0.012, 10, 10), new THREE.MeshBasicMaterial({ color: 0xE8DFD5 }));
+      const a = (i / 12) * Math.PI * 2;
+      drop.position.set(Math.cos(a) * 0.14, -0.38 + (i % 5) * 0.11, Math.sin(a) * 0.14);
+      g.add(drop);
+    }
+  }
+
+  // Semantic Status Ring
+  const ring = new THREE.Mesh(
+    new THREE.RingGeometry(0.32, 0.38, 32),
+    new THREE.MeshBasicMaterial({ color: isEmulsified ? 0xEF5F18 : 0x0FA968, side: THREE.DoubleSide })
+  );
+  ring.rotation.x = -Math.PI / 2;
+  ring.position.y = -0.49;
+  g.add(ring);
+
+  return g;
+}
+
+const oilTubeNormal = buildOilTube(-0.46, false);
+const oilTubeCoffee = buildOilTube(0.46, true);
+oilCompareGroup.add(oilTubeNormal, oilTubeCoffee);
+
+// Wet Air Filter Sponge Pad below/between tubes in Stage 3
+const wetFilterCard = new THREE.Group();
+wetFilterCard.position.set(0, 0.34, 0.25);
+const wfFrame = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.74, 0.14, 0.36, 4, 0.03), mioDarkPlasticMat), 1.05);
+const wfSponge = new THREE.Mesh(new RoundedBoxGeometry(0.62, 0.12, 0.26, 3, 0.02), mat(0x785B3C, 0.92));
+wfSponge.position.y = 0.04;
+wetFilterCard.add(wfFrame, wfSponge);
+oilCompareGroup.add(wetFilterCard);
+
+/* --- 5B. STUDIO WORKBENCH & TURNTABLE BACKDROP FOR STAGES 1, 2, 3 --- */
+const studioBackdropGroup = new THREE.Group();
+scene.add(studioBackdropGroup);
+
+const studioTurntableTop = new THREE.Mesh(
+  new THREE.CylinderGeometry(1.12, 1.18, 0.14, 48),
+  mat(0xF1F5F9, 0.45, 0.06)
+);
+studioTurntableTop.position.set(0, -0.01, -0.05);
+studioTurntableTop.receiveShadow = true;
+
+const studioTurntableBase = new THREE.Mesh(
+  new THREE.CylinderGeometry(1.48, 1.56, 0.12, 48),
+  mat(0xCBD5E1, 0.58, 0.10)
+);
+studioTurntableBase.position.set(0, -0.11, -0.05);
+studioTurntableBase.receiveShadow = true;
+
+const studioRingAccent = new THREE.Mesh(
+  new THREE.RingGeometry(1.125, 1.165, 48),
+  new THREE.MeshBasicMaterial({ color: 0x3B82F6, transparent: true, opacity: 0.24, side: THREE.DoubleSide })
+);
+studioRingAccent.rotation.x = -Math.PI / 2;
+studioRingAccent.position.set(0, 0.062, -0.05);
+
+const studioFloor = new THREE.Mesh(
+  new THREE.PlaneGeometry(28, 28),
+  mat(0xE2EBF6, 0.85, 0.0)
+);
+studioFloor.rotation.x = -Math.PI / 2;
+studioFloor.position.set(0, -0.17, -4.0);
+studioFloor.receiveShadow = true;
+studioBackdropGroup.add(studioTurntableTop, studioTurntableBase, studioRingAccent, studioFloor);
+
+// Perspective Studio Floor Grid Lines receding into fog
+const gridStripMat = mat(0xCBD8E8, 0.82, 0.0);
+for (let gx = -5; gx <= 5; gx++) {
+  const lineZ = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.008, 16.0), gridStripMat);
+  lineZ.position.set(gx * 0.9, -0.165, -4.0);
+  studioBackdropGroup.add(lineZ);
+}
+for (let gz = -11; gz <= 4; gz++) {
+  const lineX = new THREE.Mesh(new THREE.BoxGeometry(10.0, 0.008, 0.025), gridStripMat);
+  lineX.position.set(0, -0.165, gz * 0.9);
+  studioBackdropGroup.add(lineX);
+}
+
+// Half-height Studio Dado Rail & Architectural Depth Pilasters (keeps CSS gradient sky breathing on top)
+const studioDadoWall = new THREE.Mesh(
+  new RoundedBoxGeometry(11.0, 1.05, 0.28, 3, 0.04),
+  mat(0xDAE5F2, 0.78, 0.04)
+);
+studioDadoWall.position.set(0, 0.35, -3.55);
+const studioDadoCap = new THREE.Mesh(
+  new RoundedBoxGeometry(11.2, 0.10, 0.36, 3, 0.02),
+  mat(0xC2D1E3, 0.65, 0.08)
+);
+studioDadoCap.position.set(0, 0.90, -3.55);
+studioBackdropGroup.add(studioDadoWall, studioDadoCap);
+
+[-2.05, -1.16, 1.16, 2.05].forEach((px, idx) => {
+  const col = new THREE.Mesh(
+    new RoundedBoxGeometry(0.18, 4.4, 0.26, 3, 0.03),
+    mat(idx === 1 || idx === 2 ? 0xCFDCEB : 0xD8E3F0, 0.72, 0.05)
+  );
+  col.position.set(px, 2.0, -3.50);
+  studioBackdropGroup.add(col);
+});
+
+const studioTopBeam = new THREE.Mesh(
+  new RoundedBoxGeometry(8.5, 0.16, 0.32, 3, 0.03),
+  mat(0xCFDCEB, 0.70, 0.06)
+);
+studioTopBeam.position.set(0, 4.15, -3.50);
+studioBackdropGroup.add(studioTopBeam);
+
+/* ============ 6. RIG KARAKTER EKSPRESIF: MAS RAKA (4 EKSPRESI + HELM OPEN-VISOR + WALK/CROUCH/RIDE) ============ */
+const faceCanvas = document.createElement('canvas');
+faceCanvas.width = 512; faceCanvas.height = 512;
+const faceCtx = faceCanvas.getContext('2d');
+const faceTexture = new THREE.CanvasTexture(faceCanvas);
+faceTexture.colorSpace = THREE.SRGBColorSpace;
+let lastFaceKey = '';
+
+function updateRakaFace(mood = 'alert', isBlinking = false) {
+  const key = `${mood}_${isBlinking ? 1 : 0}`;
+  if (key === lastFaceKey) return;
+  lastFaceKey = key;
+  const ctx = faceCtx;
+  ctx.clearRect(0, 0, 512, 512);
+  ctx.fillStyle = '#181E26'; ctx.strokeStyle = '#181E26';
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+
+  ctx.lineWidth = 20;
+  ctx.beginPath();
+  if (mood === 'panic') {
+    ctx.moveTo(108, 182); ctx.quadraticCurveTo(156, 145, 206, 152);
+    ctx.moveTo(306, 152); ctx.quadraticCurveTo(356, 145, 404, 182);
+  } else if (mood === 'focused') {
+    ctx.moveTo(110, 162); ctx.quadraticCurveTo(158, 158, 208, 176);
+    ctx.moveTo(304, 176); ctx.quadraticCurveTo(354, 158, 402, 162);
+  } else if (mood === 'smile') {
+    ctx.moveTo(112, 174); ctx.quadraticCurveTo(156, 156, 204, 170);
+    ctx.moveTo(308, 170); ctx.quadraticCurveTo(356, 156, 400, 174);
+  } else {
+    ctx.moveTo(110, 168); ctx.quadraticCurveTo(156, 146, 204, 164);
+    ctx.moveTo(308, 164); ctx.quadraticCurveTo(356, 146, 402, 168);
+  }
+  ctx.stroke();
+
+  [158, 354].forEach(cx => {
+    if (isBlinking) {
+      ctx.lineWidth = 16; ctx.beginPath();
+      ctx.moveTo(cx - 24, 252); ctx.quadraticCurveTo(cx, 260, cx + 24, 252); ctx.stroke();
+    } else {
+      const eyeH = mood === 'panic' ? 64 : 56, eyeW = mood === 'panic' ? 48 : 44;
+      ctx.fillStyle = '#181E26'; ctx.beginPath(); ctx.roundRect(cx - eyeW / 2, 222, eyeW, eyeH, 21); ctx.fill();
+      ctx.fillStyle = '#FFFFFF'; ctx.beginPath(); ctx.arc(cx - 7, 240, mood === 'panic' ? 10.5 : 9, 0, Math.PI * 2); ctx.fill();
+    }
+  });
+
+  ctx.strokeStyle = 'rgba(145, 92, 58, 0.78)'; ctx.lineWidth = 10;
+  ctx.beginPath(); ctx.moveTo(256, 238); ctx.lineTo(248, 288); ctx.lineTo(268, 292); ctx.stroke();
+
+  ctx.strokeStyle = '#181E26'; ctx.fillStyle = '#181E26'; ctx.lineWidth = 14;
+  ctx.beginPath();
+  if (mood === 'panic') { ctx.roundRect(228, 328, 56, 42, 20); ctx.fill(); }
+  else if (mood === 'alert') { ctx.moveTo(214, 352); ctx.quadraticCurveTo(256, 336, 298, 352); ctx.stroke(); }
+  else if (mood === 'focused') { ctx.moveTo(212, 346); ctx.quadraticCurveTo(256, 352, 302, 342); ctx.stroke(); }
+  else { ctx.moveTo(204, 344); ctx.quadraticCurveTo(258, 376, 312, 334); ctx.stroke(); }
+  faceTexture.needsUpdate = true;
+}
+updateRakaFace('alert', false);
+
+function buildMasRaka() {
+  const root = new THREE.Group();
+  const bodyPivot = new THREE.Group();
+  bodyPivot.position.y = 0.72;
+  root.add(bodyPivot);
+
+  const skinMat = mat(0xF1C29B, 0.36);
+  const innerTee = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.68, 0.82, 0.44, 6, 0.11), mat(0xFFFFFF, 0.32)), 1.07);
+  innerTee.position.y = 0.41; innerTee.castShadow = true; bodyPivot.add(innerTee);
+  [-0.21, 0.21].forEach(px => {
+    const panel = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.28, 0.83, 0.47, 5, 0.07), mat(0xD95D39, 0.38)), 1.06);
+    panel.position.set(px, 0.41, 0.01); panel.castShadow = true; bodyPivot.add(panel);
+  });
+  const backPanel = new THREE.Mesh(new RoundedBoxGeometry(0.70, 0.83, 0.24, 5, 0.07), mat(0xD95D39, 0.38));
+  backPanel.position.set(0, 0.41, -0.12); bodyPivot.add(backPanel);
+  [-0.16, 0.16].forEach((cx, idx) => {
+    const collar = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.20, 0.12, 0.26, 4, 0.03), mat(0xD95D39, 0.36)), 1.06);
+    collar.position.set(cx, 0.81, 0.12); collar.rotation.z = idx === 0 ? 0.35 : -0.35; bodyPivot.add(collar);
+  });
+  const pocket = new THREE.Mesh(new RoundedBoxGeometry(0.16, 0.18, 0.04, 3, 0.015), mat(0xB84627, 0.4));
+  pocket.position.set(-0.22, 0.56, 0.245); bodyPivot.add(pocket);
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 0.22, 16), skinMat);
+  neck.position.set(0, 0.86, 0); bodyPivot.add(neck);
+
+  const headPivot = new THREE.Group();
+  headPivot.position.y = 0.90; bodyPivot.add(headPivot);
+  const head = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.74, 0.74, 0.70, 8, 0.21), skinMat), 1.065);
+  head.position.y = 0.37; head.castShadow = true; headPivot.add(head);
+  const facePlane = new THREE.Mesh(new THREE.PlaneGeometry(0.64, 0.64), new THREE.MeshBasicMaterial({ map: faceTexture, transparent: true }));
+  facePlane.position.set(0, 0.37, 0.356); headPivot.add(facePlane);
+
+  const hairGroup = new THREE.Group(); headPivot.add(hairGroup);
+  const hairDark = mat(0x241A14, 0.36), hairMid = mat(0x2E221A, 0.34);
+  const hairBase = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.785, 0.27, 0.72, 10, 0.13), hairDark), 1.045);
+  hairBase.position.set(0, 0.65, -0.035); hairBase.rotation.x = -0.05;
+  const sideBackTaper = new THREE.Mesh(new RoundedBoxGeometry(0.762, 0.28, 0.58, 10, 0.11), hairDark);
+  sideBackTaper.position.set(0, 0.535, -0.075); sideBackTaper.rotation.x = 0.04;
+  const waveRightMain = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.47, 0.20, 0.70, 10, 0.095), hairMid), 1.045);
+  waveRightMain.position.set(0.135, 0.735, 0.015); waveRightMain.rotation.set(-0.09, -0.06, -0.13);
+  const frontCommaR = new THREE.Mesh(new RoundedBoxGeometry(0.38, 0.165, 0.36, 8, 0.08), hairMid);
+  frontCommaR.position.set(0.155, 0.705, 0.22); frontCommaR.rotation.set(-0.20, -0.14, -0.18);
+  const waveLeftPart = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.27, 0.16, 0.67, 10, 0.078), hairDark), 1.045);
+  waveLeftPart.position.set(-0.235, 0.70, 0.005); waveLeftPart.rotation.set(-0.06, 0.05, 0.15);
+  const topStrand = new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.11, 0.48, 8, 0.052), hairMid);
+  topStrand.position.set(0.05, 0.785, 0.06); topStrand.rotation.set(-0.12, -0.10, -0.08);
+  hairGroup.add(hairBase, sideBackTaper, waveRightMain, frontCommaR, waveLeftPart, topStrand);
+
+  // Open-Visor Half-Face Retro Helmet
+  const helmetGroup = new THREE.Group(); headPivot.add(helmetGroup);
+  const helmetShellMat = mat(0xF8FAFC, 0.22, 0.12), helmetTrimMat = mat(0x181E26, 0.45, 0.10);
+  const helmetCrown = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.85, 0.34, 0.82, 10, 0.16), helmetShellMat), 1.045);
+  helmetCrown.position.set(0, 0.70, -0.04); helmetCrown.rotation.x = -0.04;
+  const helmetBack = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.84, 0.48, 0.42, 8, 0.14), helmetShellMat), 1.045);
+  helmetBack.position.set(0, 0.50, -0.22);
+  const browTrim = new THREE.Mesh(new RoundedBoxGeometry(0.86, 0.05, 0.83, 6, 0.025), helmetTrimMat);
+  browTrim.position.set(0, 0.575, -0.04); browTrim.rotation.x = -0.04;
+  const helmetPeak = new THREE.Mesh(new RoundedBoxGeometry(0.76, 0.038, 0.18, 5, 0.018), helmetTrimMat);
+  helmetPeak.position.set(0, 0.585, 0.36); helmetPeak.rotation.x = 0.12;
+  const helmetStripe = new THREE.Mesh(new RoundedBoxGeometry(0.14, 0.35, 0.83, 4, 0.04), new THREE.MeshBasicMaterial({ color: 0x261A66 }));
+  helmetStripe.position.set(0, 0.705, -0.04); helmetStripe.rotation.x = -0.04;
+  const helmetAccentStripe = new THREE.Mesh(new RoundedBoxGeometry(0.05, 0.355, 0.835, 3, 0.02), new THREE.MeshBasicMaterial({ color: 0xEF5F18 }));
+  helmetAccentStripe.position.set(0, 0.708, -0.04); helmetAccentStripe.rotation.x = -0.04;
+  helmetGroup.add(helmetCrown, helmetBack, browTrim, helmetPeak, helmetStripe, helmetAccentStripe);
+  [-1, 1].forEach(side => {
+    const earShell = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.09, 0.42, 0.44, 6, 0.045), helmetShellMat), 1.045);
+    earShell.position.set(side * 0.395, 0.45, -0.07);
+    const cheekPad = new THREE.Mesh(new RoundedBoxGeometry(0.06, 0.32, 0.34, 4, 0.03), helmetTrimMat);
+    cheekPad.position.set(side * 0.375, 0.42, -0.06);
+    const strapSide = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.28, 0.045), helmetTrimMat);
+    strapSide.position.set(side * 0.375, 0.16, 0.02); strapSide.rotation.z = side * 0.22;
+    helmetGroup.add(earShell, cheekPad, strapSide);
+  });
+  const chinStrapBottom = new THREE.Mesh(new RoundedBoxGeometry(0.66, 0.04, 0.05, 3, 0.015), helmetTrimMat);
+  chinStrapBottom.position.set(0, 0.015, 0.03);
+  const strapBuckle = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.055, 0.065), new THREE.MeshBasicMaterial({ color: 0xEF5F18 }));
+  strapBuckle.position.set(0.08, 0.015, 0.035);
+  helmetGroup.add(chinStrapBottom, strapBuckle);
+
+  const sleeveMat = mat(0xD95D39, 0.36);
+  function makeArm(side) {
+    const p = new THREE.Group();
+    p.position.set(side * 0.42, 0.72, 0.02);
+    const upperSleeve = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.24, 0.44, 0.25, 5, 0.08), sleeveMat), 1.08);
+    upperSleeve.position.y = -0.18;
+    const cuffRoll = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.26, 0.08, 0.27, 4, 0.03), sleeveMat), 1.07);
+    cuffRoll.position.y = -0.38;
+    p.add(upperSleeve, cuffRoll);
+
+    const forearmPivot = new THREE.Group(); forearmPivot.position.set(0, -0.40, 0); p.add(forearmPivot);
+    const forearm = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.20, 0.40, 0.21, 5, 0.07), skinMat), 1.08);
+    forearm.position.y = -0.20; forearmPivot.add(forearm);
+    if (side === -1) {
+      const watchStrap = new THREE.Mesh(new RoundedBoxGeometry(0.22, 0.06, 0.23, 4, 0.02), mat(0x181E26, 0.3));
+      watchStrap.position.y = -0.32; forearmPivot.add(watchStrap);
+    }
+    const handPivot = new THREE.Group(); handPivot.position.set(0, -0.42, 0); forearmPivot.add(handPivot);
+    const hand = withOutline(new THREE.Mesh(new THREE.SphereGeometry(0.115, 16, 16), skinMat), 1.08);
+    const fingers = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.125, 0.065, 0.13, 3, 0.024), skinMat), 1.08);
+    fingers.position.set(0, -0.025, 0.085);
+    handPivot.add(hand, fingers);
+    bodyPivot.add(p);
+    return { root: p, forearmPivot, handPivot, fingers };
+  }
+  const armL = makeArm(1);
+  const armR = makeArm(-1);
+
+  function makeLeg(side) {
+    const p = new THREE.Group();
+    p.position.set(side * 0.17, 0.72, 0);
+    const leg = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.27, 0.60, 0.30, 5, 0.07), mat(0x1E293B, 0.45)), 1.08);
+    leg.position.y = -0.28;
+    const shoe = withOutline(new THREE.Mesh(new RoundedBoxGeometry(0.29, 0.16, 0.40, 4, 0.05), mat(0xF8FAFC, 0.3)), 1.08);
+    shoe.position.set(0, -0.56, 0.06);
+    p.add(leg, shoe);
+    root.add(p);
+    return p;
+  }
+  const legL = makeLeg(1);
+  const legR = makeLeg(-1);
+
+  return { root, bodyPivot, headPivot, hairGroup, helmetGroup, armL, armR, legL, legR };
+}
+
+const RAKA = buildMasRaka();
+scene.add(RAKA.root);
+
+/* ============ 7. CHOREOGRAPHY TIMELINE (EP05 — 97.66s) ============ */
+const OUTRO_START = 93.466;
+const DURATION = 97.66;
+
+const S = {
+  stageIdx: 0, // 0=FloodRoad, 1=EngineXRay, 2=SplitPhysics, 3=OilCompare
+  camX: -5.2, camY: 3.1, camZ: 6.4,
+  lookX: 0.25, lookY: 1.05, lookZ: 0.10,
+  fov: 24,
+
+  // Mio & Flood Motion
+  roadSpeed: 0.0,
+  mioX: 0.25, mioY: 0.0, mioZ: 0.0, mioYaw: 0.0,
+  keyOff: 0.0, keyRingAlpha: 0.0, keyRingSafe: 0.0,
+  starterPress: 0.0, starterRingAlpha: 0.0,
+  airboxOpen: 0.0, airboxWet: 1.0, airboxRingAlpha: 0.0, intakeWaterFlow: 0.0,
+  dipstickPull: 0.0,
+  cvtOpen: 0.0, cvtDryAlpha: 0.0, kickRingAlpha: 0.0,
+  dryRingAlpha: 0.0,
+
+  // Stage 1 Engine X-Ray States
+  crankAngle: 0.0,
+  pistonY: 1.35,       // 1.05 BDC .. 1.66 TDC
+  rodBend: 0.0,        // 0 = straight, 1 = violent S-buckle
+  blockCrack: 0.0,
+  chamberWater: 0.0,   // 0 = gas mist, 1 = solid water in bore
+  gasComp: 0.0,        // 0 = expanded, 1 = compressed 10:1
+  clearanceAlpha: 0.0, // S07-S08 12 mL highlight
+  spoonAlpha: 0.0,     // S08 1 tablespoon comparison
+  impactShock: 0.0,
+  sparkPlugOff: 0.0,   // S15A spark plug unscrewed & lifted
+  waterEject: 0.0,     // S15A water spurting out spark plug hole
+
+  // Mas Raka Pose & Expression
+  rakaPose: 0,         // 0=seated on Mio, 1=pushing walking beside Mio, 2=crouching inspecting, 3=standing beside Mio, 4=outro
+  rakaMood: 0,         // 0=alert, 1=panic, 2=focused, 3=smile
+  rakaHeadPitch: 0.0,
+  rakaHeadYaw: 0.0,
+  rakaHeadRoll: 0.0,
+  rakaWave: 0.0,
+
+  // 3D Callout Alphas
+  c1Alpha: 0.0, c2Alpha: 0.0, c3Alpha: 0.0, c4Alpha: 0.0,
+
+  // Outro States
+  outroWipeO: 0, outroWipeI: 0, outroWipeW: 0,
+  outroCircleScale: 0, outroHeadTilt: 0,
+  outroBarProg: 0, outroCursorProg: 0, outroClickProg: 0, outroNod: 0,
+  outroLiftY: -1.05
+};
+
+const tl = gsap.timeline({ paused: true });
+
+// S01 (0.00 - 5.05s): Hook — Frame 0 immediately active, Mas Raka hovering thumb over red starter button in flooded street
+tl.fromTo(S, {
+  stageIdx: 0,
+  camX: -6.1, camY: 2.95, camZ: 8.6,
+  lookX: 0.22, lookY: 1.76, lookZ: 0.05, fov: 24,
+  mioX: 0.25, mioY: 0.0, mioZ: 0.0, mioYaw: 0.0, roadSpeed: 0.0,
+  keyOff: 0.0, starterPress: 0.0, starterRingAlpha: 0.0,
+  airboxOpen: 0.0, airboxWet: 1.0, intakeWaterFlow: 0.0, dipstickPull: 0.0, cvtOpen: 0.0,
+  rakaPose: 0, rakaMood: 1, rakaHeadPitch: 0.22, rakaHeadYaw: -0.18,
+  c1Alpha: 0.0, c2Alpha: 0.0, c3Alpha: 0.0, c4Alpha: 0.0
+}, {
+  camX: -5.4, camY: 2.80, camZ: 7.8,
+  starterRingAlpha: 0.85,
+  duration: 4.90, ease: 'sine.inOut'
+}, 0);
+
+// S02 (5.05 - 10.85s): Stakes — Rapid X-Ray Flash to Stage 1: Water-filled bore, piston strikes, connecting rod buckles!
+tl.set(S, {
+  stageIdx: 1,
+  camX: 0.15, camY: 1.45, camZ: 6.2,
+  lookX: 0.0, lookY: 1.12, lookZ: 0.0, fov: 24,
+  starterRingAlpha: 0.0, chamberWater: 1.0, gasComp: 0.0,
+  pistonY: 1.24, crankAngle: 0.6, rodBend: 0.0, blockCrack: 0.0, impactShock: 0.0,
+  clearanceAlpha: 0.0, spoonAlpha: 0.0, sparkPlugOff: 0.0, waterEject: 0.0
+}, 5.05);
+tl.to(S, {
+  pistonY: 1.54, crankAngle: 2.8,
+  duration: 0.85, ease: 'power2.in'
+}, 5.15);
+tl.to(S, {
+  rodBend: 1.0, blockCrack: 1.0, impactShock: 1.0, c1Alpha: 1.0,
+  camX: 0.25, camY: 1.38, camZ: 5.5,
+  duration: 0.55, ease: 'back.out(2.2)'
+}, 5.95);
+tl.to(S, { c1Alpha: 0.0, impactShock: 0.0, duration: 0.30 }, 10.45);
+
+// S03 (10.85 - 16.52s): Micro-Scenario OTS Cockpit — "jalan tergenang setengah roda, mesin mati, jempol refleks pencet starter"
+tl.set(S, {
+  stageIdx: 0,
+  camX: -1.75, camY: 2.68, camZ: -2.35,
+  lookX: 0.05, lookY: 1.38, lookZ: 0.45, fov: 25,
+  rakaPose: 0, rakaMood: 0, rakaHeadPitch: 0.24, rakaHeadYaw: -0.15,
+  rodBend: 0.0, blockCrack: 0.0, chamberWater: 0.0,
+  starterPress: 0.0, starterRingAlpha: 0.6
+}, 10.85);
+tl.to(S, {
+  camX: -1.55, camY: 2.55, camZ: -2.05,
+  duration: 3.4, ease: 'sine.inOut'
+}, 10.95);
+tl.to(S, {
+  starterPress: 1.0, starterRingAlpha: 1.0, rakaMood: 1, c1Alpha: 1.0,
+  duration: 0.45, ease: 'back.out(2)'
+}, 14.55);
+tl.to(S, { c1Alpha: 0.0, starterPress: 0.0, starterRingAlpha: 0.0, duration: 0.30 }, 16.20);
+
+// S04 (16.52 - 21.70s): Low Macro +X Side — Box Filter Udara Rendah Sejajar Setengah Ban Belakang
+tl.set(S, {
+  stageIdx: 0,
+  camX: 5.15, camY: 1.68, camZ: -3.25,
+  lookX: 0.25, lookY: 0.72, lookZ: -0.65, fov: 26,
+  airboxRingAlpha: 1.0, rakaMood: 0, c1Alpha: 1.0
+}, 16.52);
+tl.to(S, {
+  camX: 4.85, camY: 1.58, camZ: -2.65,
+  duration: 4.6, ease: 'sine.inOut'
+}, 16.65);
+tl.to(S, { c1Alpha: 0.0, duration: 0.25 }, 21.35);
+
+// S05 (21.70 - 26.20s): Cutaway Box Filter & Intake — Hisapan Mesin Menyedot Air ke Ruang Bakar
+tl.to(S, {
+  camX: 4.70, camY: 1.58, camZ: -1.45,
+  lookX: 0.25, lookY: 0.74, lookZ: -0.58, fov: 25,
+  airboxOpen: 1.0, intakeWaterFlow: 1.0, airboxRingAlpha: 0.9, c1Alpha: 1.0,
+  duration: 0.85, ease: 'power3.inOut'
+}, 21.70);
+tl.to(S, { c1Alpha: 0.0, airboxRingAlpha: 0.0, intakeWaterFlow: 0.0, airboxOpen: 0.0, duration: 0.30 }, 25.85);
+
+// S06 (26.20 - 33.08s): INTERRUPT ~0:26 (F5) -> Stage 1 X-Ray Silinder 110cc Kompresi 10:1
+tl.set(S, {
+  stageIdx: 1,
+  camX: 0.0, camY: 1.38, camZ: 5.85,
+  lookX: 0.0, lookY: 1.24, lookZ: 0.0, fov: 24,
+  chamberWater: 0.0, gasComp: 0.2, pistonY: 1.15, crankAngle: 0.0,
+  rodBend: 0.0, blockCrack: 0.0, impactShock: 0.0,
+  clearanceAlpha: 0.0, spoonAlpha: 0.0, c3Alpha: 1.0
+}, 26.20);
+tl.to(S, {
+  pistonY: 1.66, crankAngle: Math.PI, gasComp: 1.0,
+  camZ: 5.25,
+  duration: 2.85, ease: 'power2.inOut'
+}, 27.20);
+tl.to(S, {
+  pistonY: 1.18, crankAngle: Math.PI * 2, gasComp: 0.2,
+  duration: 1.50, ease: 'sine.inOut'
+}, 30.20);
+tl.to(S, { c3Alpha: 0.0, duration: 0.28 }, 32.75);
+
+// S07 (33.08 - 37.24s): Extreme Macro TMA — Ruang Sisa Cuma 12 mL
+tl.to(S, {
+  camX: 0.05, camY: 1.82, camZ: 3.85,
+  lookX: 0.05, lookY: 1.78, lookZ: 0.0, fov: 22,
+  pistonY: 1.66, crankAngle: Math.PI * 3, gasComp: 1.0,
+  clearanceAlpha: 1.0, c1Alpha: 1.0,
+  duration: 0.85, ease: 'power3.inOut'
+}, 33.08);
+tl.to(S, { c1Alpha: 0.0, duration: 0.25 }, 36.90);
+
+// S08 (37.24 - 39.32s): Scale Shock — 3D 1 Sendok Makan (15 mL) muncul di samping ruang sisa 12 mL
+tl.to(S, {
+  camX: 0.25, camY: 1.82, camZ: 5.50,
+  lookX: 0.26, lookY: 1.76, lookZ: 0.05, fov: 24,
+  spoonAlpha: 1.0, c1Alpha: 1.0,
+  duration: 0.45, ease: 'back.out(1.8)'
+}, 37.24);
+tl.to(S, { c1Alpha: 0.0, spoonAlpha: 0.0, clearanceAlpha: 0.0, duration: 0.25 }, 39.02);
+
+// S09 (39.32 - 44.32s): Stage 2 Split-View Fisika — Kiri Gas Bisa Ditekan vs Kanan Air Menolak Tekanan
+tl.set(S, {
+  stageIdx: 2,
+  camX: 0.0, camY: 1.40, camZ: 7.45,
+  lookX: 0.0, lookY: 1.28, lookZ: 0.0, fov: 24,
+  c3Alpha: 1.0, c2Alpha: 0.0
+}, 39.32);
+tl.to(S, { c2Alpha: 1.0, duration: 0.40, ease: 'back.out(1.8)' }, 42.10);
+tl.to(S, { c3Alpha: 0.0, c2Alpha: 0.0, duration: 0.25 }, 44.02);
+
+// S10 (44.32 - 50.22s): Stage 1 Water Hammer Impact — Piston Menghantam Air Sekeras Beton
+tl.set(S, {
+  stageIdx: 1,
+  camX: -0.15, camY: 1.48, camZ: 5.45,
+  lookX: 0.0, lookY: 1.28, lookZ: 0.0, fov: 24,
+  chamberWater: 1.0, gasComp: 0.0, pistonY: 1.12, crankAngle: 0.0,
+  rodBend: 0.0, blockCrack: 0.0, impactShock: 0.0, c1Alpha: 0.0
+}, 44.32);
+tl.to(S, {
+  pistonY: 1.54, crankAngle: 2.5,
+  duration: 2.85, ease: 'power3.in'
+}, 44.60);
+tl.to(S, {
+  impactShock: 1.0, c1Alpha: 1.0, camZ: 5.10,
+  duration: 0.38, ease: 'back.out(2.4)'
+}, 47.48);
+tl.to(S, { c1Alpha: 0.0, duration: 0.25 }, 49.90);
+
+// S11 (50.22 - 55.28s): F3 Fix — Tenaga Berbalik Menekan Setang Seher Bengkok / Patah Menembus Blok
+tl.to(S, {
+  camX: 0.22, camY: 1.12, camZ: 4.85,
+  lookX: 0.08, lookY: 1.02, lookZ: 0.0, fov: 22,
+  rodBend: 1.0, blockCrack: 1.0, impactShock: 0.85, c1Alpha: 1.0,
+  duration: 0.95, ease: 'back.out(1.9)'
+}, 50.22);
+tl.to(S, { c1Alpha: 0.0, impactShock: 0.0, duration: 0.30 }, 54.92);
+
+// S12 (55.28 - 59.35s): Hero Reset — Latar Cerah, Mas Raka Tenang di Trotoar Kering sebelah Motor
+tl.set(S, {
+  stageIdx: 0,
+  camX: -5.4, camY: 2.95, camZ: 7.8,
+  lookX: -0.20, lookY: 1.35, lookZ: 0.0, fov: 25,
+  mioX: 0.25, mioY: 0.0, mioZ: 0.0, mioYaw: 0.0,
+  rakaPose: 3, rakaMood: 2, rakaHeadPitch: 0.04, rakaHeadYaw: 0.18,
+  rodBend: 0.0, blockCrack: 0.0, chamberWater: 0.0,
+  starterRingAlpha: 0.0, keyOff: 0.0, keyRingAlpha: 0.0, dryRingAlpha: 0.0
+}, 55.28);
+tl.to(S, { camX: -5.0, camZ: 7.3, duration: 3.6, ease: 'sine.inOut' }, 55.35);
+
+// S13A (59.35 - 62.50s): Langkah 1A — Jangan Pencet Starter atau Injak Engkol
+tl.set(S, {
+  camX: -1.75, camY: 2.65, camZ: -2.35,
+  lookX: 0.05, lookY: 1.38, lookZ: 0.45, fov: 25,
+  rakaPose: 0, rakaMood: 2, rakaHeadPitch: 0.18, rakaHeadYaw: -0.15,
+  starterRingAlpha: 1.0, kickRingAlpha: 1.0, c1Alpha: 1.0
+}, 59.35);
+tl.to(S, { c1Alpha: 0.0, starterRingAlpha: 0.0, kickRingAlpha: 0.0, duration: 0.25 }, 62.20);
+
+// S13B (62.50 - 65.10s): Langkah 1B — Matikan Kontak & Dorong ke Trotoar Kering
+tl.set(S, {
+  camX: -4.2, camY: 2.95, camZ: 8.6,
+  lookX: -2.15, lookY: 1.25, lookZ: 0.0, fov: 25,
+  rakaPose: 1, rakaMood: 2, keyOff: 1.0, keyRingAlpha: 1.0, keyRingSafe: 1.0, dryRingAlpha: 0.95, c3Alpha: 1.0
+}, 62.50);
+tl.to(S, {
+  mioX: -2.25, mioY: 0.22, mioYaw: -0.12,
+  duration: 2.15, ease: 'power2.out'
+}, 62.60);
+tl.to(S, { c3Alpha: 0.0, dryRingAlpha: 0.0, keyRingAlpha: 0.0, duration: 0.25 }, 64.82);
+
+// S14A (65.10 - 67.80s): Langkah 2A — Inspeksi Filter Udara & Dipstick Oli di Trotoar Kering
+tl.set(S, {
+  stageIdx: 0,
+  camX: -5.45, camY: 2.35, camZ: 5.85,
+  lookX: -2.55, lookY: 1.05, lookZ: -0.45, fov: 25,
+  mioX: -2.25, mioY: 0.22, mioYaw: 0.0,
+  rakaPose: 2, rakaMood: 2, dipstickPull: 1.0, airboxOpen: 1.0, c3Alpha: 1.0
+}, 65.10);
+tl.to(S, { camZ: 5.45, duration: 2.4, ease: 'sine.inOut' }, 65.15);
+tl.to(S, { c3Alpha: 0.0, duration: 0.22 }, 67.55);
+
+// S14B (67.80 - 72.70s): Langkah 2B — Stage 3 Perbandingan Visual Oli Normal vs Oli Kopi Susu (F6)
+tl.set(S, {
+  stageIdx: 3,
+  camX: 0.0, camY: 1.45, camZ: 7.40,
+  lookX: 0.0, lookY: 1.18, lookZ: 0.0, fov: 24,
+  c3Alpha: 1.0, c1Alpha: 1.0
+}, 67.80);
+tl.to(S, { camZ: 7.05, duration: 4.4, ease: 'sine.inOut' }, 67.90);
+tl.to(S, { c3Alpha: 0.0, c1Alpha: 0.0, duration: 0.25 }, 72.40);
+
+// S15A (72.70 - 75.90s): Langkah 3A — Stage 1 X-Ray Lepas Busi & Buang Air dari Ruang Bakar
+tl.set(S, {
+  stageIdx: 1,
+  camX: 0.15, camY: 2.25, camZ: 6.45,
+  lookX: 0.0, lookY: 2.05, lookZ: 0.0, fov: 25,
+  chamberWater: 1.0, gasComp: 0.0, pistonY: 1.25, crankAngle: 0.0,
+  rodBend: 0.0, blockCrack: 0.0, impactShock: 0.0,
+  sparkPlugOff: 0.0, waterEject: 0.0, c4Alpha: 1.0
+}, 72.70);
+tl.to(S, {
+  sparkPlugOff: 1.0, waterEject: 1.0, chamberWater: 0.2,
+  pistonY: 1.62, crankAngle: Math.PI * 3,
+  duration: 2.35, ease: 'power2.out'
+}, 73.15);
+tl.to(S, { c4Alpha: 0.0, waterEject: 0.0, sparkPlugOff: 0.0, duration: 0.25 }, 75.60);
+
+// S15B (75.90 - 79.50s): Langkah 3B — Stage 0 Rawat CVT Keringkan Angin & Kuras Oli di Trotoar Kering
+tl.set(S, {
+  stageIdx: 0,
+  camX: 2.45, camY: 1.55, camZ: 1.95,
+  lookX: -2.25, lookY: 0.78, lookZ: -0.68, fov: 26,
+  mioX: -2.25, mioY: 0.22, mioYaw: 0.0,
+  rakaPose: 3, rakaMood: 2, cvtOpen: 1.0, cvtDryAlpha: 1.0, airboxOpen: 0.0, dipstickPull: 0.0,
+  c3Alpha: 1.0
+}, 75.90);
+tl.to(S, { camZ: 1.65, duration: 3.1, ease: 'sine.inOut' }, 76.00);
+tl.to(S, { c3Alpha: 0.0, cvtOpen: 0.0, cvtDryAlpha: 0.0, duration: 0.28 }, 79.15);
+
+// S16A (79.50 - 83.02s): Payoff A — Bukan Air Banjirnya (Motor diam aman kontak OFF)
+tl.set(S, {
+  stageIdx: 0,
+  camX: -5.3, camY: 2.8, camZ: 7.4,
+  lookX: 0.20, lookY: 1.35, lookZ: 0.0, fov: 25,
+  mioX: 0.25, mioY: 0.0, mioYaw: 0.0, keyOff: 1.0,
+  rakaPose: 0, rakaMood: 2, rakaHeadPitch: 0.08, rakaHeadYaw: -0.10
+}, 79.50);
+tl.to(S, { camX: -4.9, camZ: 6.9, duration: 3.1, ease: 'sine.inOut' }, 79.60);
+
+// S16B (83.02 - 85.72s): Payoff B — Tapi Tombol Starter Saat Panik (Stage 1 Impact Replay)
+tl.set(S, {
+  stageIdx: 1,
+  camX: 0.15, camY: 1.35, camZ: 5.55,
+  lookX: 0.0, lookY: 1.22, lookZ: 0.0, fov: 24,
+  chamberWater: 1.0, pistonY: 1.54, rodBend: 1.0, blockCrack: 1.0, impactShock: 0.9, c1Alpha: 1.0
+}, 83.02);
+tl.to(S, { c1Alpha: 0.0, impactShock: 0.0, duration: 0.25 }, 85.42);
+
+// S17 (85.72 - 90.88s): F4 CTA — Mas Raka Berdiri Tenang di Samping Motor di Trotoar Kering
+tl.set(S, {
+  stageIdx: 0,
+  camX: -3.55, camY: 2.55, camZ: 9.25,
+  lookX: -2.95, lookY: 1.48, lookZ: 0.0, fov: 25,
+  mioX: -2.25, mioY: 0.22, mioYaw: 0.12,
+  rakaPose: 3, rakaMood: 3, rakaWave: 0.0, rakaHeadPitch: 0.0, rakaHeadYaw: -0.12,
+  rodBend: 0.0, blockCrack: 0.0, chamberWater: 0.0
+}, 85.72);
+tl.to(S, { camX: -3.35, camZ: 8.85, duration: 4.8, ease: 'sine.inOut' }, 85.80);
+
+// S18 (90.88 - 93.47s): Sign-Off — "Jadi... jangan panik dulu."
+tl.to(S, {
+  rakaMood: 3, rakaWave: 1.0, rakaHeadYaw: -0.05,
+  camZ: 8.20,
+  duration: 2.2, ease: 'power2.out'
+}, 90.88);
+
+// S19 (93.466 - 97.66s): Standard Outro CTA (4.19s)
+function buildOutroTimeline(tl, t0) {
+  tl.to(S, { outroWipeO: 1.15, duration: 0.65, ease: 'expo.inOut' }, t0 + 0.45);
+  tl.to(S, { outroWipeI: 1.15, duration: 0.65, ease: 'expo.inOut' }, t0 + 0.57);
+  tl.to(S, { outroWipeW: 1.15, duration: 0.65, ease: 'expo.inOut' }, t0 + 0.69);
+
+  tl.set(S, {
+    camX: 0, camY: 1.65, camZ: 15.6, lookX: 0, lookY: 1.15, lookZ: 0, fov: 22,
+    rakaPose: 4, rakaMood: 3, rakaWave: 0,
+    outroHeadTilt: 0.12, outroLiftY: -1.05
+  }, t0 + 1.05);
+  tl.to(S, { outroCircleScale: 1, duration: 0.50, ease: 'power3.out' }, t0 + 1.05);
+
+  tl.to(S, { outroLiftY: 0.0, duration: 0.65, ease: 'power4.out' }, t0 + 1.30);
+  tl.to(S, { outroHeadTilt: 0, duration: 0.50, ease: 'power2.out' }, t0 + 1.36);
+  tl.to(S, { rakaWave: 1.0, duration: 0.55, ease: 'power3.out' }, t0 + 1.38);
+
+  tl.to(S, { outroBarProg: 1, duration: 0.50, ease: 'power3.out' }, t0 + 1.75);
+  tl.to(S, { outroCursorProg: 1, duration: 0.48, ease: 'power2.inOut' }, t0 + 2.25);
+  tl.to(S, { outroClickProg: 1, duration: 0.38, ease: 'power2.out' }, t0 + 2.73);
+  tl.to(S, { outroNod: 1, duration: 0.45, ease: 'sine.inOut' }, t0 + 2.73);
+}
+buildOutroTimeline(tl, OUTRO_START);
+tl.to({}, { duration: 0.01 }, DURATION);
+
+/* ============ 8. HUD, SUBTITLES & 3D CALLOUT ANCHORS ============ */
+function easeOutBack(x) { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); }
+function easeInQuad(x) { return x * x; }
+function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
+
+function getWindowMotion(t, tIn, tOut, enterDur = 0.32, exitDur = 0.24) {
+  if (t < tIn || t > tOut) return { alpha: 0, y: -22, scale: 0.90 };
+  if (t - tIn < enterDur) {
+    const p = Math.max(0, Math.min(1, (t - tIn) / enterDur));
+    const eb = easeOutBack(p);
+    return { alpha: Math.min(1, p * 1.35), y: (1 - eb) * -22, scale: 0.88 + 0.12 * eb };
+  }
+  if (tOut - t < exitDur) {
+    const p = Math.max(0, Math.min(1, (tOut - t) / exitDur));
+    const eq = 1 - easeInQuad(1 - p);
+    return { alpha: eq, y: (1 - eq) * -18, scale: 0.94 + 0.06 * eq };
+  }
+  return { alpha: 1, y: 0, scale: 1 };
+}
+
+// 100% VERBATIM ACOUSTIC-ALIGNED CAPTION CHUNKS FOR EP05 (vo_ep05.mp3 = 93.466s)
+const CAPTION_CHUNKS = [
+  { s: 0.04, e: 2.52, words: ['Kenapa', 'kalau', 'motor', 'matic', 'mogok', 'di', 'tengah', 'banjir,'] },
+  { s: 2.72, e: 4.86, words: ['kamu', 'dilarang', 'keras', 'langsung', 'pencet', 'starter?'] },
+
+  { s: 5.26, e: 8.68, words: ['Karena', 'satu', 'pencetan', 'starter', 'bisa', 'bikin', 'setang', 'seher', 'bengkok'] },
+  { s: 8.92, e: 10.62, words: ['dan', 'mesin', 'jebol', 'seketika.'] },
+
+  { s: 11.08, e: 14.22, words: ['Misalnya', 'jalan', 'tergenang', 'setengah', 'roda,'] },
+  { s: 14.42, e: 16.34, words: ['mesin', 'mati,', 'jempol', 'refleks', 'pencet', 'tombol', 'starter.'] },
+
+  { s: 16.72, e: 19.76, words: ['Di', 'motor', 'matic,', 'box', 'filter', 'udara', 'posisinya', 'rendah,'] },
+  { s: 20.00, e: 21.56, words: ['sejajar', 'setengah', 'ban', 'belakang.'] },
+
+  { s: 21.86, e: 23.60, words: ['Saat', 'nerobos', 'banjir,'] },
+  { s: 23.60, e: 26.04, words: ['hisapan', 'mesin', 'langsung', 'menyedot', 'air', 'masuk', 'ke', 'ruang', 'bakar.'] },
+
+  { s: 26.38, e: 29.55, words: ['Normalnya,', 'piston', 'matic', '110cc', 'memampatkan', 'udara', 'dan', 'bensin'] },
+  { s: 29.55, e: 32.94, words: ['dengan', 'rasio', 'kompresi', '10', 'banding', '1.'] },
+
+  { s: 33.24, e: 37.14, words: ['Saat', 'piston', 'mentok', 'di', 'atas,', 'ruang', 'sisanya', 'cuma', '12', 'mililiter.'] },
+  { s: 37.36, e: 39.20, words: ['Nggak', 'sampai', '1', 'sendok', 'makan.'] },
+
+  { s: 39.44, e: 41.72, words: ['Bedanya,', 'gas', 'gampang', 'dimampatkan,'] },
+  { s: 42.02, e: 44.22, words: ['tapi', 'air', 'sama', 'sekali', 'nggak', 'bisa', 'ditekan.'] },
+
+  { s: 44.46, e: 47.00, words: ['Begitu', 'air', 'terperangkap', 'di', 'ruang', 'bakar,'] },
+  { s: 47.00, e: 50.14, words: ['mencet', 'starter', 'bikin', 'piston', 'menghantam', 'air', 'sekeras', 'beton.'] },
+
+  { s: 50.34, e: 53.30, words: ['Tenaga', 'itu', 'berbalik', 'menekan', 'setang', 'seher', 'sampai', 'bengkok,'] },
+  { s: 53.45, e: 55.14, words: ['atau', 'patah', 'menembus', 'blok', 'mesin.'] },
+
+  { s: 55.44, e: 57.60, words: ['Kalau', 'motor', 'matic', 'terlanjur', 'mogok', 'di', 'banjir,'] },
+  { s: 57.74, e: 59.18, words: ['lakukan', '3', 'langkah', 'ini.'] },
+
+  { s: 59.54, e: 62.42, words: ['Pertama,', 'jangan', 'pencet', 'starter', 'atau', 'injak', 'engkol.'] },
+  { s: 62.64, e: 64.96, words: ['Matikan', 'kontak,', 'lalu', 'dorong', 'ke', 'tempat', 'kering.'] },
+
+  { s: 65.30, e: 67.68, words: ['Kedua,', 'cek', 'filter', 'udara', 'dan', 'warna', 'oli.'] },
+  { s: 67.92, e: 70.90, words: ['Kalau', 'filter', 'basah', 'atau', 'oli', 'keruh', 'seperti', 'kopi', 'susu,'] },
+  { s: 71.04, e: 72.50, words: ['mesin', 'jangan', 'dinyalakan.'] },
+
+  { s: 72.92, e: 75.84, words: ['Ketiga,', 'lepas', 'busi', 'untuk', 'buang', 'air', 'di', 'ruang', 'bakar,'] },
+  { s: 75.96, e: 79.34, words: ['lalu', 'bawa', 'ke', 'bengkel', 'kuras', 'oli', 'dan', 'keringkan', 'CVT.'] },
+
+  { s: 79.65, e: 82.96, words: ['Jadi', 'yang', 'bikin', 'mesin', 'motor', 'jebol', 'bukan', 'air', 'banjirnya,'] },
+  { s: 83.12, e: 85.54, words: ['tapi', 'tombol', 'starter', 'yang', 'kita', 'pencet', 'saat', 'panik.'] },
+
+  { s: 85.94, e: 87.02, words: ['Pernah', 'mogok', 'di', 'banjir?'] },
+  { s: 87.26, e: 90.76, words: ['Ceritain', 'di', 'komen,', 'dan', 'subscribe', 'biar', 'nggak', 'panik', 'pas', 'giliranmu.'] },
+
+  {
+    s: 91.00, e: 93.34,
+    words: ['Jadi...', 'jangan', 'panik', 'dulu.'],
+    customTimes: [
+      { word: 'Jadi...', ws: 91.00, we: 91.82 },
+      { word: 'jangan',  ws: 92.04, we: 92.48 },
+      { word: 'panik',   ws: 92.48, we: 92.88 },
+      { word: 'dulu.',   ws: 92.88, we: 93.34 }
+    ]
+  }
+];
+
+const SPOKEN_WEIGHT_OVERRIDES = { '110cc': 10, '10': 5, '1': 4, '12': 6, '3': 4, 'CVT': 6 };
+CAPTION_CHUNKS.forEach(ch => {
+  if (ch.customTimes) { ch.wordTimes = ch.customTimes; return; }
+  const weights = ch.words.map(w => SPOKEN_WEIGHT_OVERRIDES[w] || Math.max(2, w.replace(/[^a-zA-Z0-9]/g, '').length));
+  const totalW = weights.reduce((a, b) => a + b, 0);
+  const span = (ch.e - ch.s) * 0.94;
+  let cursor = ch.s + 0.02;
+  ch.wordTimes = ch.words.map((w, idx) => {
+    const dur = (weights[idx] / totalW) * span;
+    const wt = { word: w, ws: cursor, we: cursor + dur };
+    cursor += dur;
+    return wt;
+  });
+});
+
+const capOpt = Q.get('caption') || '1';
+document.body.classList.add(`cap-opt-${capOpt}`);
+
+const TOP_SEGMENTS = [
+  { s: 0.00,  e: 4.95,  type: 'hook',   hTitle: 'MOGOK DI BANJIR?', hPill: 'JANGAN PENCET STARTER!' },
+  { s: 26.20, e: 33.08, type: 'metric', badge: '',  title: 'Matic 110cc · Kompresi 10:1', showDots: false },
+  { s: 33.08, e: 37.24, type: 'metric', badge: '',  title: 'Ruang sisa: 12 mL', showDots: false },
+  { s: 37.24, e: 39.32, type: 'metric', badge: '',  title: '< 1 sendok makan', showDots: false },
+  { s: 39.32, e: 44.32, type: 'metric', badge: '',  title: 'Air: tidak bisa ditekan', showDots: false },
+  { s: 55.28, e: 59.35, type: 'metric', badge: '',  title: '3 langkah saat mogok banjir', showDots: false },
+  { s: 59.35, e: 62.50, type: 'step',   badge: '1', title: 'Jangan starter / injak engkol', showDots: true, prog: 1 },
+  { s: 62.50, e: 65.10, type: 'step',   badge: '1', title: 'Matikan kontak & dorong', showDots: true, prog: 1 },
+  { s: 65.10, e: 67.80, type: 'step',   badge: '2', title: 'Cek filter udara & warna oli', showDots: true, prog: 2 },
+  { s: 67.80, e: 72.70, type: 'step',   badge: '2', title: 'Filter basah / oli kopi susu', showDots: true, prog: 2 },
+  { s: 72.70, e: 75.90, type: 'step',   badge: '3', title: 'Lepas busi & buang air', showDots: true, prog: 3 },
+  { s: 75.90, e: 79.50, type: 'step',   badge: '3', title: 'Kuras oli & keringkan CVT', showDots: true, prog: 3 },
+  { s: 85.72, e: 90.88, type: 'metric', badge: '',  title: 'Pernah ngalamin? Tulis di komen', showDots: false }
+];
+
+function setCalloutLine(lineId, dotId, callEl, worldTarget, offsetX, offsetY, alpha) {
+  const line = $(lineId), dot = $(dotId);
+  if (alpha <= 0.01) {
+    callEl.style.opacity = '0';
+    line.setAttribute('opacity', '0');
+    dot.setAttribute('opacity', '0');
+    return;
+  }
+  const v = worldTarget.clone().project(camera);
+  const px = (v.x * 0.5 + 0.5) * W;
+  const py = (-v.y * 0.5 + 0.5) * H;
+  const cx = Math.max(220, Math.min(860, px + offsetX));
+  const cy = Math.max(360, Math.min(1260, py + offsetY));
+
+  const lineProg = easeOutCubic(Math.min(1, alpha * 1.35));
+  const badgeProg = easeOutBack(Math.max(0, Math.min(1, (alpha - 0.18) / 0.82)));
+  const badgeAlpha = Math.max(0, Math.min(1, (alpha - 0.15) / 0.65));
+
+  line.setAttribute('x1', px.toFixed(1));
+  line.setAttribute('y1', py.toFixed(1));
+  line.setAttribute('x2', (px + (cx - px) * lineProg).toFixed(1));
+  line.setAttribute('y2', (py + (cy - py) * lineProg).toFixed(1));
+  line.setAttribute('opacity', Math.min(1, alpha * 1.4).toFixed(2));
+
+  dot.setAttribute('cx', px.toFixed(1));
+  dot.setAttribute('cy', py.toFixed(1));
+  dot.setAttribute('r', (7 * Math.min(1.12, easeOutBack(Math.min(1, alpha * 1.5)))).toFixed(1));
+  dot.setAttribute('opacity', Math.min(1, alpha * 1.5).toFixed(2));
+
+  callEl.style.left = `${cx}px`;
+  callEl.style.top = `${cy}px`;
+  callEl.style.opacity = badgeAlpha.toFixed(2);
+  const sc = (0.85 + 0.15 * badgeProg).toFixed(3);
+  const ty = ((1 - badgeProg) * 12).toFixed(1);
+  callEl.style.transform = `translate(-50%, calc(-50% + ${ty}px)) scale(${sc})`;
+}
+
+function updateHUD(t) {
+  const hook = $('#hook-card'), tracker = $('#step-tracker'), subCard = $('#sub-card');
+  const hookTitle = $('#hook-title'), hookPill = $('#hook-pill');
+  const pillBox = $('#step-pill-box'), badgeEl = $('#tr-badge'), titleEl = $('#tr-title');
+  const progWrap = $('#prog-wrap');
+  const segs = [$('#seg1'), $('#seg2'), $('#seg3')];
+
+  const seg = TOP_SEGMENTS.find(x => t >= x.s && t <= x.e);
+  if (!seg) {
+    hook.style.opacity = '0';
+    tracker.style.opacity = '0';
+  } else if (seg.type === 'hook') {
+    const m = getWindowMotion(t, seg.s, seg.e, 0.32, 0.24);
+    tracker.style.opacity = '0';
+    hook.style.opacity = m.alpha.toFixed(3);
+    hook.style.transform = `translate3d(0, ${m.y.toFixed(1)}px, 0) scale(${m.scale.toFixed(3)})`;
+    hookTitle.textContent = seg.hTitle;
+    hookPill.textContent = seg.hPill;
+  } else {
+    const m = getWindowMotion(t, seg.s, seg.e, 0.30, 0.22);
+    hook.style.opacity = '0';
+    tracker.style.opacity = m.alpha.toFixed(3);
+    tracker.style.transform = `translate3d(0, ${m.y.toFixed(1)}px, 0) scale(${m.scale.toFixed(3)})`;
+    if (seg.badge) {
+      badgeEl.style.display = 'flex';
+      badgeEl.textContent = seg.badge;
+      pillBox.classList.remove('text-only');
+    } else {
+      badgeEl.style.display = 'none';
+      pillBox.classList.add('text-only');
+    }
+    titleEl.textContent = seg.title;
+    progWrap.style.display = seg.showDots ? 'flex' : 'none';
+    if (seg.showDots) segs.forEach((el, i) => el.classList.toggle('on', i < seg.prog));
+  }
+
+  // Callout copy per scene
+  if (t < 10.85)       $('#call1-text').textContent = 'setang seher bengkok!';
+  else if (t < 16.52)  $('#call1-text').textContent = 'refleks pencet starter';
+  else if (t < 21.70)  $('#call1-text').textContent = 'posisi box filter rendah';
+  else if (t < 26.20)  $('#call1-text').textContent = 'air terisap ke ruang bakar';
+  else if (t < 33.08)  $('#call3-text').textContent = 'gas mudah dimampatkan';
+  else if (t < 37.24)  $('#call1-text').textContent = 'celah TMA hanya 12 mL';
+  else if (t < 39.32)  $('#call1-text').textContent = 'lebih kecil dari 1 sendok';
+  else if (t < 44.32)  { $('#call3-text').textContent = 'gas bisa ditekan'; $('#call2-text').textContent = 'air menolak tekanan'; }
+  else if (t < 50.22)  $('#call1-text').textContent = 'piston hantam air';
+  else if (t < 55.28)  $('#call1-text').textContent = 'setang bengkok & blok jebol';
+  else if (t < 62.50)  $('#call1-text').textContent = 'jangan starter atau engkol';
+  else if (t < 65.10)  $('#call3-text').textContent = 'dorong ke tempat kering';
+  else if (t < 67.80)  $('#call3-text').textContent = 'tarik dipstick & cek oli';
+  else if (t < 72.70)  { $('#call3-text').textContent = 'oli normal bening'; $('#call1-text').textContent = 'oli kopi susu = dilarang nyala'; }
+  else if (t < 75.90)  $('#call4-text').textContent = 'air keluar lewat lubang busi';
+  else if (t < 79.50)  $('#call3-text').textContent = 'kuras oli & keringkan CVT';
+  else                 $('#call1-text').textContent = 'tombol starter saat panik';
+
+  // Verbatim Karaoke Subtitle Bar
+  let activeChunk = CAPTION_CHUNKS.find(c => t >= c.s && t <= c.e);
+  let gapAlpha = 1;
+  if (!activeChunk) {
+    activeChunk = CAPTION_CHUNKS.reduce((best, cur) => {
+      const dist = Math.min(Math.abs(t - cur.s), Math.abs(t - cur.e));
+      const bestDist = Math.min(Math.abs(t - best.s), Math.abs(t - best.e));
+      return dist < bestDist ? cur : best;
+    }, CAPTION_CHUNKS[0]);
+    const minDist = Math.min(Math.abs(t - activeChunk.s), Math.abs(t - activeChunk.e));
+    if (minDist > 0.14) gapAlpha = Math.max(0, 1 - (minDist - 0.14) / 0.18);
+  }
+
+  const dtChunk = Math.max(0, t - activeChunk.s);
+  const popEase = easeOutBack(Math.min(1, dtChunk / 0.16));
+  subCard.style.opacity = gapAlpha.toFixed(3);
+  subCard.style.transform = `translate3d(0, ${((1 - popEase) * 8 + (1 - gapAlpha) * 8).toFixed(1)}px, 0) scale(${(0.97 + 0.03 * popEase).toFixed(3)})`;
+
+  let activeIdx = 0;
+  for (let i = 0; i < activeChunk.wordTimes.length; i++) {
+    if (t >= activeChunk.wordTimes[i].ws) activeIdx = i;
+  }
+  subCard.innerHTML = activeChunk.wordTimes.map((wt, idx) => {
+    const cls = idx < activeIdx ? 'w past' : (idx === activeIdx ? 'w active' : 'w future');
+    return `<span class="${cls}">${wt.word}</span>`;
+  }).join(' ');
+}
+
+function getWorldAnchor(obj, localVec = new THREE.Vector3()) {
+  scene.updateMatrixWorld(true);
+  return localVec.clone().applyMatrix4(obj.matrixWorld);
+}
+
+function render(t) {
+  updateHUD(t);
+  const tr = $('#time-readout');
+  if (tr) tr.textContent = `${t.toFixed(1).padStart(4, '0')}s / 97.7s`;
+
+  const isOutroStage = S.outroWipeW > 0.72;
+  const stageIdx = Math.round(S.stageIdx);
+  stage.classList.toggle('outro-active', isOutroStage);
+  stage.classList.toggle('xray-bg', !isOutroStage && (stageIdx === 1 || stageIdx === 2 || stageIdx === 3));
+  stage.classList.toggle('safe-bg', !isOutroStage && stageIdx === 0 && t >= 55.28 && t < 79.50);
+
+  floodRoadGroup.visible     = !isOutroStage && stageIdx === 0;
+  engineStageGroup.visible   = !isOutroStage && stageIdx === 1;
+  splitPhysicsGroup.visible  = !isOutroStage && stageIdx === 2;
+  oilCompareGroup.visible    = !isOutroStage && stageIdx === 3;
+  studioBackdropGroup.visible= !isOutroStage && (stageIdx === 1 || stageIdx === 2 || stageIdx === 3);
+  RAKA.root.visible          = isOutroStage || stageIdx === 0;
+  RAKA.helmetGroup.visible   = true;
+  RAKA.hairGroup.visible     = !RAKA.helmetGroup.visible;
+
+  // Dynamic Atmospheric Fog per Stage (0% fog on subject, soft depth on distant backdrop)
+  if (isOutroStage) {
+    scene.fog.near = 100;
+    scene.fog.far = 200;
+  } else if (stageIdx === 0) {
+    const isSafeBg = t >= 55.28 && t < 79.50;
+    scene.fog.color.setHex(isSafeBg ? 0xDFEFEF : 0xC7D8E8);
+    scene.fog.near = 12.2;
+    scene.fog.far = 31.0;
+  } else {
+    scene.fog.color.setHex(0xEAF2FA);
+    scene.fog.near = 8.8;
+    scene.fog.far = 18.0;
+  }
+
+  // Outro DOM Updates
+  $('#wipe-orange').style.transform = `translate(-50%,-50%) scale(${S.outroWipeO.toFixed(4)})`;
+  $('#wipe-indigo').style.transform = `translate(-50%,-50%) scale(${S.outroWipeI.toFixed(4)})`;
+  $('#wipe-white').style.transform  = `translate(-50%,-50%) scale(${S.outroWipeW.toFixed(4)})`;
+  $('#outro-circle-badge').style.transform = `translate(-50%,-50%) scale(${S.outroCircleScale.toFixed(4)})`;
+  const barEl = $('#outro-bar'), btnEl = $('#outro-follow-btn');
+  const curEl = $('#outro-cursor'), ripEl = $('#outro-ripple');
+  const bp = S.outroBarProg, cp = S.outroCursorProg, kp = S.outroClickProg;
+  barEl.style.opacity = Math.min(1, bp * 1.4).toFixed(3);
+  barEl.style.transform = `translateY(${((1 - bp) * 36).toFixed(1)}px) scale(${(0.92 + 0.08 * bp).toFixed(3)})`;
+  curEl.style.opacity = Math.min(1, cp * 1.6).toFixed(3);
+  curEl.style.transform = `translate(${((1 - cp) * 95).toFixed(1)}px, ${((1 - cp) * 95).toFixed(1)}px) scale(${(kp > 0 && kp < 0.45) ? 0.86 : 1.0})`;
+  const isFollowed = kp >= 0.35;
+  btnEl.classList.toggle('followed', isFollowed);
+  $('#outro-btn-label').textContent = isFollowed ? '✓ Mengikuti' : '+ Ikuti';
+  btnEl.style.transform = `scale(${(kp > 0 ? (1 + Math.sin(Math.min(1, kp) * Math.PI) * 0.09) : 1).toFixed(3)})`;
+  ripEl.style.opacity = kp > 0.2 ? Math.max(0, 1 - (kp - 0.2) * 1.3).toFixed(3) : '0';
+  ripEl.style.transform = `scale(${(0.85 + kp * 0.55).toFixed(3)})`;
+
+  // Camera
+  camera.fov = S.fov;
+  camera.updateProjectionMatrix();
+  camera.position.set(S.camX, S.camY, S.camZ);
+  camera.lookAt(S.lookX, S.lookY, S.lookZ);
+  camera.updateMatrixWorld(true);
+  camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
+
+  // Stage 0 Updates (Flooded Street, Scooter, Airbox, Starter, Dipstick, CVT)
+  if (floodRoadGroup.visible) {
+    mioGroup.position.set(S.mioX, S.mioY, S.mioZ);
+    mioGroup.rotation.set(0, S.mioYaw, 0);
+
+    // Rain Drops & Ripples
+    rainStreaksGroup.visible = t < 55.28;
+    rainDrops.forEach(d => {
+      const cyc = (d.userData.phase + t * d.userData.spd) % 1.0;
+      d.position.set(d.userData.x, 3.8 - cyc * 3.5, d.userData.z);
+    });
+    waterRipples.forEach(rp => {
+      const cyc = (rp.userData.phase + t * 0.65) % 1.0;
+      rp.scale.setScalar(1.0 + cyc * 1.8);
+      rp.material.opacity = (1 - cyc) * 0.65;
+      rp.position.x = S.mioX;
+      rp.position.z = rp.userData.isFront ? 1.05 : -0.92;
+      rp.visible = S.mioY < 0.1;
+    });
+    const hazGlow = (Math.sin(t * 9.5) > 0) ? 1.85 : 0.08;
+    submergedCars.forEach(car => {
+      car.hazards.forEach(hm => { hm.emissiveIntensity = hazGlow; });
+    });
+
+    // Starter Button & Ring
+    starterBtnMesh.position.z = -0.052 + S.starterPress * 0.012;
+    starterRingMat.opacity = S.starterRingAlpha * (0.75 + 0.25 * Math.sin(t * 9.0));
+    starterRing.scale.setScalar(1.0 + 0.12 * Math.sin(t * 9.0));
+
+    // Ignition Key & Dry Ring
+    keyPivot.rotation.z = S.keyOff * (Math.PI * 0.42);
+    keyRingMat.color.setHex(S.keyRingSafe > 0.5 ? 0x0FA968 : 0xEF5F18);
+    keyRingMat.opacity = S.keyRingAlpha * (0.78 + 0.22 * Math.sin(t * 8.0));
+    dryRingMat.opacity = S.dryRingAlpha * (0.70 + 0.25 * Math.sin(t * 7.0));
+    speedoNeedlePivot.rotation.z = 0.85; // Dead zero speedometer needle
+
+    // Airbox & Intake Water Suction
+    airboxOuterCover.position.x = 0.058 + S.airboxOpen * 0.16;
+    airboxOuterCover.visible = S.airboxOpen < 0.75;
+    airFoamMat.color.setHex(S.airboxWet > 0.5 ? 0x785B3C : 0xF59E0B);
+    airboxRingMat.opacity = S.airboxRingAlpha * (0.78 + 0.22 * Math.sin(t * 9.0));
+    intakeHoseMat.opacity = 0.92 - S.airboxOpen * 0.68;
+    intakeWaterOrbs.forEach(orb => {
+      orb.visible = S.intakeWaterFlow > 0.1;
+      const u = (orb.userData.phase + t * 0.75) % 1.0;
+      orb.position.copy(intakeCurve.getPointAt(u));
+    });
+
+    // Dipstick Pull & CVT Open + Drying Airflow
+    dipstickCapPivot.position.y = 0.03 + S.dipstickPull * 0.14;
+    dipstickCapPivot.rotation.z = S.dipstickPull * 0.25;
+    cvtOuterCover.position.x = 0.035 + S.cvtOpen * 0.18;
+    cvtOuterCover.visible = S.cvtOpen < 0.75;
+    cvtDryAirGroup.visible = S.cvtDryAlpha > 0.1;
+    cvtDryArrows.forEach((a, idx) => {
+      const cyc = (t * 1.4 + idx * 0.25) % 1.0;
+      a.position.x = 0.34 - cyc * 0.28;
+    });
+    kickRingMat.opacity = S.kickRingAlpha * (0.75 + 0.25 * Math.sin(t * 9.0));
+  }
+
+  // Stage 1 Updates (3D Engine Cutaway: Crank, Piston, Rod Buckle, Spark Plug, Water Eject, Spoon)
+  if (engineStageGroup.visible) {
+    crankWheelGroup.rotation.z = -S.crankAngle;
+    pistonGroup.position.y = S.pistonY;
+
+    // Connecting rod kinematics + dramatic S-buckle during Water Hammer
+    const crankTopY = 0.56 + Math.cos(S.crankAngle) * 0.14;
+    const crankPinX = Math.sin(S.crankAngle) * 0.14;
+    conRodBase.position.set(crankPinX * 0.6, crankTopY, 0.02);
+    const totalSpan = Math.max(0.25, S.pistonY - crankTopY);
+    const segScale = totalSpan / 0.56;
+    rodLowerPivot.scale.y = segScale;
+    const bend = S.rodBend;
+    rodLowerPivot.rotation.z = bend * 0.68;
+    rodMidPivot.rotation.z = -bend * 1.32;
+    rodMat.emissiveIntensity = bend * 0.65;
+
+    blockCrackGroup.visible = S.blockCrack > 0.2;
+    blockCrackGroup.scale.setScalar(0.85 + 0.25 * S.blockCrack);
+
+    impactShockMat.opacity = S.impactShock * 0.55 * (0.75 + 0.25 * Math.sin(t * 18.0));
+    impactShockRing.scale.setScalar(0.85 + S.impactShock * (0.45 + 0.2 * Math.sin(t * 16.0)));
+    impactLight.position.set(0, S.pistonY + 0.15, 0.45);
+    impactLight.intensity = S.impactShock * 3.5;
+
+    // Chamber Water vs Gas Mist
+    const hasWater = S.chamberWater > 0.1;
+    chamberWaterMesh.visible = hasWater;
+    if (hasWater) {
+      const waterTop = 1.90;
+      const waterBot = Math.min(1.85, S.pistonY + 0.15);
+      const h = Math.max(0.06, (waterTop - waterBot) * S.chamberWater);
+      chamberWaterMesh.scale.y = h / 0.36;
+      chamberWaterMesh.position.y = waterBot + h * 0.5;
+    }
+
+    gasMistGroup.visible = !hasWater;
+    if (!hasWater) {
+      const topY = 1.90;
+      const botY = S.pistonY + 0.16;
+      gasParticles.forEach((gp, idx) => {
+        gp.position.set(
+          gp.userData.nx + Math.sin(t * 4.5 + gp.userData.phase) * 0.02,
+          botY + gp.userData.ny * Math.max(0.08, topY - botY),
+          gp.userData.nz
+        );
+      });
+    }
+
+    clearancePocketMat.opacity = S.clearanceAlpha * (0.45 + 0.25 * Math.sin(t * 8.0));
+    dimBracketGroup.visible = S.clearanceAlpha > 0.1;
+    spoonGroup.visible = S.spoonAlpha > 0.1;
+    spoonGroup.scale.setScalar(0.5 + 0.5 * S.spoonAlpha);
+
+    // Spark Plug unscrew & water eject (S15A)
+    sparkPlugGroup.position.y = 2.15 + S.sparkPlugOff * 0.58;
+    sparkPlugGroup.rotation.y = S.sparkPlugOff * Math.PI * 3.0;
+    waterEjectGroup.visible = S.waterEject > 0.1;
+    ejectDrops.forEach(dr => {
+      const u = (dr.userData.phase + t * 1.45) % 1.0;
+      dr.position.set(dr.userData.vx * u * 1.8, u * 0.95 - u * u * 0.35, dr.userData.vz * u);
+      dr.scale.setScalar(Math.max(0.01, (1 - u * 0.6) * S.waterEject));
+    });
+  }
+
+  // Stage 2 Updates (Split-View Physics Gas vs Water)
+  if (splitPhysicsGroup.visible) {
+    const compWave = 0.5 - 0.5 * Math.cos(t * 3.8);
+    // Left cylinder: gas compresses smoothly all the way to top (+0.48)
+    const pGasY = -0.18 + compWave * 0.62;
+    splitGas.pist.position.y = pGasY;
+    splitGas.mist.forEach(m => {
+      const top = 0.55, bot = pGasY + 0.11;
+      m.position.set(m.userData.nx, bot + m.userData.ny * Math.max(0.06, top - bot), m.userData.nz);
+    });
+    // Right cylinder: piston hits solid water at +0.04 and stalls/rebounds!
+    const pWaterY = -0.18 + Math.min(0.22, compWave * 0.55);
+    splitWater.pist.position.y = pWaterY;
+    splitWater.bounceArr.scale.setScalar(0.85 + 0.22 * Math.sin(t * 10.0));
+  }
+
+  // Stage 3 Updates (Oil Comparison Tubes)
+  if (oilCompareGroup.visible) {
+    oilTubeNormal.rotation.y = Math.sin(t * 1.4) * 0.18;
+    oilTubeCoffee.rotation.y = -Math.sin(t * 1.4) * 0.18;
+  }
+
+  // Mas Raka Pose Rigging
+  const moodNames = ['alert', 'panic', 'focused', 'smile'];
+  const curMood = isOutroStage ? 'smile' : (moodNames[Math.round(S.rakaMood)] || 'alert');
+  const blinkCycle = ((t + 0.85) % 3.4);
+  const isBlinking = curMood !== 'panic' && (blinkCycle > 3.18 && blinkCycle < 3.32);
+  updateRakaFace(curMood, isBlinking);
+
+  const breath = Math.sin(t * 3.2) * 0.008;
+  const pose = isOutroStage ? 4 : Math.round(S.rakaPose);
+  if (pose === 4) {
+    // Outro Bust Centered inside Circle Badge
+    RAKA.root.position.set(0, 0.42 + S.outroLiftY + breath, 0);
+    RAKA.root.rotation.set(0, 0, 0);
+    RAKA.bodyPivot.position.set(0, 0.72, 0);
+    RAKA.bodyPivot.rotation.set(0, 0, 0);
+    RAKA.legL.rotation.set(0, 0, 0); RAKA.legR.rotation.set(0, 0, 0);
+    RAKA.armL.root.rotation.set(-0.25, 0, -0.14); RAKA.armL.forearmPivot.rotation.set(0, 0, 0);
+    RAKA.armR.root.rotation.set(-0.30, 0, -2.25 - Math.sin(t * 7.5) * 0.10); RAKA.armR.forearmPivot.rotation.set(-0.22, 0, -0.18);
+    RAKA.headPivot.rotation.set(Math.sin(S.outroNod * Math.PI) * 0.16, Math.sin(t * 2.2) * 0.04, S.outroHeadTilt);
+  } else if (pose === 1) {
+    // S13B Pushing Scooter onto Dry Sidewalk with Procedural Walk-Cycle!
+    const walkPhase = t * 8.5;
+    const bounce = Math.abs(Math.sin(walkPhase)) * 0.055;
+    RAKA.root.position.set(S.mioX - 0.82, S.mioY + bounce, S.mioZ - 0.15);
+    RAKA.root.rotation.set(0, S.mioYaw + 0.25, 0);
+    RAKA.bodyPivot.position.set(0, 0.72, 0);
+    RAKA.bodyPivot.rotation.set(0.18, 0, Math.sin(walkPhase) * 0.04);
+    RAKA.legL.rotation.set(Math.sin(walkPhase) * 0.55, 0, 0);
+    RAKA.legR.rotation.set(-Math.sin(walkPhase) * 0.55, 0, 0);
+    RAKA.armL.root.rotation.set(-0.92, -0.35, -0.18); RAKA.armL.forearmPivot.rotation.set(-0.35, 0, 0);
+    RAKA.armR.root.rotation.set(-0.92, -0.15, 0.12);  RAKA.armR.forearmPivot.rotation.set(-0.35, 0, 0);
+    RAKA.headPivot.rotation.set(0.10, -0.20, 0);
+  } else if (pose === 2) {
+    // S14A Crouching Beside Parked Scooter Inspecting Dipstick & Airbox
+    RAKA.root.position.set(S.mioX - 0.92, S.mioY - 0.16 + breath, S.mioZ - 0.92);
+    RAKA.root.rotation.set(0, 0.52, 0);
+    RAKA.bodyPivot.position.set(0, 0.52, 0);
+    RAKA.bodyPivot.rotation.set(0.28, 0, 0);
+    RAKA.legL.rotation.set(-1.15, 0, 0); RAKA.legR.rotation.set(-1.15, 0, 0);
+    RAKA.armR.root.rotation.set(-0.95, 0.22, 0.15); RAKA.armR.forearmPivot.rotation.set(-0.45, 0, 0);
+    RAKA.armL.root.rotation.set(-0.65, -0.15, -0.18); RAKA.armL.forearmPivot.rotation.set(-0.55, 0, 0);
+    RAKA.headPivot.rotation.set(0.18, 0.15, 0);
+  } else if (pose === 3) {
+    // Standing Calmly Beside Scooter (S12, S15B, S17, S18)
+    RAKA.root.position.set(S.mioX - 0.95, S.mioY + breath, S.mioZ - 0.10);
+    RAKA.root.rotation.set(0, -0.18, 0);
+    RAKA.bodyPivot.position.set(0, 0.72, 0);
+    RAKA.bodyPivot.rotation.set(0, 0, 0);
+    RAKA.legL.rotation.set(0, 0, 0); RAKA.legR.rotation.set(0, 0, 0);
+    RAKA.armL.root.rotation.set(-0.28, 0, -0.16); RAKA.armL.forearmPivot.rotation.set(-0.32, 0, 0);
+    if (S.rakaWave > 0.5) {
+      RAKA.armR.root.rotation.set(-0.32, 0, -2.08 - Math.sin(t * 5.8) * 0.10);
+      RAKA.armR.forearmPivot.rotation.set(-0.24, 0, -0.18);
+    } else {
+      RAKA.armR.root.rotation.set(-0.42, 0.18, 0.18);
+      RAKA.armR.forearmPivot.rotation.set(-0.48, 0, 0);
+    }
+    RAKA.headPivot.rotation.set(S.rakaHeadPitch, S.rakaHeadYaw, S.rakaHeadRoll);
+  } else {
+    // Seated Riding Mio in Floodwater (S01, S03, S04, S05, S13A, S16A)
+    const tenseJitter = (curMood === 'panic') ? Math.sin(t * 28.0) * 0.005 : 0;
+    RAKA.root.position.set(S.mioX + tenseJitter, S.mioY + 0.61 + breath, S.mioZ - 0.66);
+    RAKA.root.rotation.set(0, S.mioYaw, 0);
+    RAKA.bodyPivot.position.set(0, 0.68, 0);
+    RAKA.bodyPivot.rotation.set(0.18, 0, 0);
+    RAKA.legL.rotation.set(-1.12, 0.12, 0); RAKA.legR.rotation.set(-1.12, -0.12, 0);
+    RAKA.armR.root.rotation.set(-0.88 + S.starterPress * 0.08, -0.08, 0.18);
+    RAKA.armR.forearmPivot.rotation.set(-0.56, -0.06, -0.14);
+    RAKA.armR.handPivot.rotation.set(S.starterPress * 0.18 - 0.12, 0.15, -0.25);
+    RAKA.armL.root.rotation.set(-0.88, 0.08, -0.18);
+    RAKA.armL.forearmPivot.rotation.set(-0.56, 0.06, 0.14);
+    RAKA.armL.handPivot.rotation.set(-0.12, -0.15, 0.25);
+    RAKA.headPivot.rotation.set(S.rakaHeadPitch, S.rakaHeadYaw, S.rakaHeadRoll);
+  }
+
+  // Dynamic 3D Callout Target Anchors
+  let c1T = new THREE.Vector3(), c1Ox = 165, c1Oy = -140;
+  let c2T = new THREE.Vector3(), c2Ox = 165, c2Oy = -140;
+  let c3T = new THREE.Vector3(), c3Ox = 165, c3Oy = -140;
+  let c4T = getWorldAnchor(sparkPlugGroup, new THREE.Vector3(0, 0.1, 0));
+
+  if (t < 10.85) {
+    c1T = getWorldAnchor(rodMidPivot); c1Ox = 185; c1Oy = -130;
+  } else if (t < 16.52) {
+    c1T = getWorldAnchor(starterBtnMesh); c1Ox = -165; c1Oy = -145;
+  } else if (t < 26.20) {
+    c1T = getWorldAnchor(airboxGroup); c1Ox = -170; c1Oy = -150;
+  } else if (t < 33.08) {
+    c3T = getWorldAnchor(pistonGroup, new THREE.Vector3(0, 0.22, 0)); c3Ox = -175; c3Oy = -140;
+  } else if (t < 37.24) {
+    c1T = getWorldAnchor(clearancePocket); c1Ox = 140; c1Oy = -125;
+  } else if (t < 39.32) {
+    c1T = getWorldAnchor(spoonBowl); c1Ox = -70; c1Oy = -150;
+  } else if (t < 44.32) {
+    c3T = getWorldAnchor(splitGas.pist, new THREE.Vector3(0, 0.25, 0)); c3Ox = -20; c3Oy = -165;
+    c2T = getWorldAnchor(splitWater.bounceArr); c2Ox = 20; c2Oy = -165;
+  } else if (t < 55.28) {
+    c1T = getWorldAnchor(rodMidPivot); c1Ox = 185; c1Oy = -125;
+  } else if (t < 62.50) {
+    c1T = getWorldAnchor(starterBtnMesh); c1Ox = -155; c1Oy = -145;
+  } else if (t < 65.10) {
+    c3T = getWorldAnchor(drySafeRing); c3Ox = -120; c3Oy = -155;
+  } else if (t < 67.80) {
+    c3T = getWorldAnchor(dipstickCapPivot); c3Ox = -140; c3Oy = -140;
+  } else if (t < 72.70) {
+    c3T = getWorldAnchor(oilTubeNormal, new THREE.Vector3(0, 0.45, 0)); c3Ox = 40; c3Oy = -135;
+    c1T = getWorldAnchor(oilTubeCoffee, new THREE.Vector3(0, 0.45, 0)); c1Ox = -40; c1Oy = -135;
+  } else if (t < 75.90) {
+    c4T = getWorldAnchor(waterEjectGroup, new THREE.Vector3(0, 0.25, 0));
+  } else if (t < 79.50) {
+    c3T = getWorldAnchor(cvtGroup); c3Ox = 165; c3Oy = -145;
+  } else {
+    c1T = getWorldAnchor(rodMidPivot); c1Ox = 185; c1Oy = -125;
+  }
+
+  setCalloutLine('#line-c1', '#dot-c1', $('#call1'), c1T, c1Ox, c1Oy, S.c1Alpha);
+  setCalloutLine('#line-c2', '#dot-c2', $('#call2'), c2T, c2Ox, c2Oy, S.c2Alpha);
+  setCalloutLine('#line-c3', '#dot-c3', $('#call3'), c3T, c3Ox, c3Oy, S.c3Alpha);
+  setCalloutLine('#line-c4', '#dot-c4', $('#call4'), c4T, 145, -75, S.c4Alpha);
+
+  renderer.render(scene, camera);
+}
+
+/* ============ 9. FIT, PLAYBACK & DETERMINISTIC CAPTURE HOOKS ============ */
+const stage = $('#stage');
+const fit = () => {
+  const s = Math.min(innerWidth / W, innerHeight / H);
+  stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+};
+addEventListener('resize', fit);
+fit();
+
+const audioEl = $('#vo-audio');
+let isPlaying = false;
+const isDeterministicCapture = Q.has('clean') || Q.has('capture');
+
+if (!isDeterministicCapture) {
+  (function frame() {
+    if (!window.THUMB_LOCK) {
+      if (isPlaying && !audioEl.paused) {
+        tl.time(audioEl.currentTime, false);
+      }
+      render(tl.time());
+    }
+    requestAnimationFrame(frame);
+  })();
+}
+
+$('#btn-play').onclick = () => {
+  if (audioEl.paused) {
+    isPlaying = true;
+    audioEl.play();
+    tl.play(audioEl.currentTime);
+    $('#btn-play').textContent = '⏸ Pause';
+  } else {
+    isPlaying = false;
+    audioEl.pause();
+    tl.pause();
+    $('#btn-play').textContent = '▶ Play Master';
+  }
+};
+
+document.querySelectorAll('#switcher button[data-t]').forEach(btn => {
+  btn.onclick = () => {
+    const t = parseFloat(btn.dataset.t);
+    isPlaying = false;
+    audioEl.pause();
+    audioEl.currentTime = t;
+    tl.pause(t);
+    render(t);
+    $('#btn-play').textContent = '▶ Play Master';
+  };
+});
+
+const seek = (t) => {
+  document.body.classList.add('clean-snap');
+  isPlaying = false;
+  tl.pause();
+  tl.time(t, false);
+  if (gsap.ticker.tick) gsap.ticker.tick();
+  render(t);
+  const gl = renderer.getContext();
+  if (gl && gl.finish) gl.finish();
+  return new Promise((resolve) => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => resolve(true));
+    });
+  });
+};
+
+window.OPENER = {
+  tl, DURATION, W, H, seek, S, render, RAKA, renderer, scene, camera,
+  floodRoadGroup, engineStageGroup, splitPhysicsGroup, oilCompareGroup,
+  ready: false
+};
+
+const avatarImg = $('#outro-avatar-img');
+const avatarReady = avatarImg && avatarImg.decode ? avatarImg.decode().catch(() => {}) : Promise.resolve();
+Promise.all([document.fonts.ready, avatarReady]).then(() => {
+  window.OPENER.ready = true;
+  if (!Q.has('clean')) render(0);
+});
+</script>
+</body>
+</html>
