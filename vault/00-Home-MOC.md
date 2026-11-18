@@ -26,6 +26,8 @@ Selamat datang di **Single Source of Truth (SSOT)** untuk produksi konten **Code
    - Panduan lengkap Foto Profil (`1080x1080`), Display Name SEO, Bio bebas klise AI, 5 Story Highlights, dan standar sampul Reels.
 6. **[[07-Scriptwriting-DNA-Playbook|07 — Scriptwriting DNA Playbook (Bedah @puckermanefacts × @hasyaaap)]]**
    - Aturan baku penulisan naskah kalimat pendek (6–10 kata/kalimat), diksi kerja fisik visual, struktur nomor penahan retensi, dan anti-slop copywriting.
+7. **[[08-Production-Learnings-Log|08 — Catatan Pembelajaran Produksi Tiap Episode]]**
+   - Log evaluasi teknis, visual, copywriting, dan alur render dari EP01 hingga episode terbaru.
 
 ## Daftar Episode (`05-Episodes/`)
 
@@ -33,3 +35,4 @@ Selamat datang di **Single Source of Truth (SSOT)** untuk produksi konten **Code
 - **[[05-Episodes/EP02-Wajan-Terbakar-Jangan-Siram-Air|EP02 — Wajan Terbakar? Jangan Siram Air!]]** *(In Production — Script & Storyboard Ready)*
 - **[[05-Episodes/EP03-Rem-Matic-Blong-Di-Turunan|EP03 — Rem Motor Matic Blong di Turunan? Jangan Matikan Mesin!]]** *(Locked Backlog for Episode 3)*
 - **[[05-Episodes/EP04-Digigit-Ular-Jangan-Ikat-Dan-Sedot|EP04 - Digigit Ular? Jangan Diikat Kencang!]]** *(VO Synced & 25-Scene Storyboard Ready)*
+- **[[05-Episodes/EP05-Motor-Matic-Mogok-Banjir|EP05 - Motor Matic Mogok di Banjir? Jangan Pencet Starter!]]** *(Master 1080p, 3 Thumbnail & Publish Kit Ready)*
